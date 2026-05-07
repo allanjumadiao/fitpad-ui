@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Session Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- ADMIN SIDEBAR -->
+    <aside class="hidden md:flex flex-col w-64 bg-fitpad-gray text-white h-screen sticky top-0 z-40">
+        <div class="p-8">
+            <img src="../images/fitpad-fitness.png" alt="Fitpad Logo" class="h-10 w-auto object-contain">
+            <div class="mt-2 text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em]">Admin Portal</div>
+        </div>
+        <nav class="flex-1 px-4 space-y-2 mt-4 overflow-y-auto">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="grid-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Admin Dashboard</span></a>
+            <a href="coach-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="id-card-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Coach List</span></a>
+            <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="people-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Client List</span></a>
+            
+            <!-- Session List (Active) -->
+            <a href="session-list.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow shadow-sm"><ion-icon name="calendar" class="text-xl brand-yellow"></ion-icon><span class="text-sm font-bold">Session List</span></a>
+            
+            <a href="setting.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all mt-6 border-t border-white/5 pt-6"><ion-icon name="settings-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Administration</span></a>
+        </nav>
+        <div class="p-4 mb-4">
+            <a href="../admin-login.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-red-400 rounded-xl transition-all"><ion-icon name="log-out-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Log Out</span></a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-4 md:p-10 mb-24 md:mb-0 overflow-x-hidden">
+        
+        <!-- Header -->
+        <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2"><span>System Oversight</span></div>
+                <h2 class="text-3xl font-black text-fitpad-gray uppercase tracking-tight">System Sessions</h2>
+            </div>
+            <button onclick="openManualSessionModal()" class="bg-brand-yellow text-fitpad-gray px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-md flex items-center justify-center gap-2 w-full md:w-auto">
+                <ion-icon name="construct" class="text-lg"></ion-icon> Manual Session Control
+            </button>
+        </header>
+
+        <!-- SEARCH & FILTER BAR -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Search -->
+            <div class="relative md:col-span-1">
+                <ion-icon name="search-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></ion-icon>
+                <input type="text" placeholder="Search Coach or Client..." class="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+            </div>
+            
+            <!-- Date Filter (From) -->
+            <div class="relative">
+                <label class="absolute -top-2 left-3 bg-white px-1 text-[8px] font-bold text-gray-400 uppercase tracking-widest">From Date</label>
+                <input type="date" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 cursor-pointer">
+            </div>
+
+            <!-- Date Filter (To) -->
+            <div class="relative">
+                <label class="absolute -top-2 left-3 bg-white px-1 text-[8px] font-bold text-gray-400 uppercase tracking-widest">To Date</label>
+                <input type="date" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 cursor-pointer">
+            </div>
+            
+            <!-- Status Filter -->
+            <div class="relative">
+                <label class="absolute -top-2 left-3 bg-white px-1 text-[8px] font-bold text-gray-400 uppercase tracking-widest">Status</label>
+                <select class="w-full pl-3 pr-8 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 cursor-pointer appearance-none">
+                    <option value="all">All Statuses</option>
+                    <option value="pending_approval">Completed (Needs Approval)</option>
+                    <option value="approved">Approved</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="ongoing">Ongoing</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <ion-icon name="chevron-down-outline" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></ion-icon>
+            </div>
+        </div>
+
+        <!-- DATA GRID -->
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-100">
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Date & Time</th>
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Coach Name</th>
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Client Name</th>
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        
+                        <!-- Row 1: COMPLETED (Requires Admin Approval) -->
+                        <tr class="hover:bg-gray-50/50 transition-colors group bg-yellow-50/30">
+                            <td class="p-5">
+                                <span class="block text-sm font-bold text-fitpad-gray">May 05, 2026</span>
+                                <span class="text-xs text-gray-500 font-medium">09:00 AM - 10:00 AM</span>
+                            </td>
+                            <td class="p-5 text-sm font-bold text-gray-600">Sarah Adams</td>
+                            <td class="p-5 text-sm font-bold text-gray-600">Jane Doe</td>
+                            <td class="p-5 text-center">
+                                <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-1">
+                                    <ion-icon name="time"></ion-icon> Completed
+                                </span>
+                                <span class="block text-[8px] font-bold text-red-500 uppercase tracking-widest mt-1 animate-pulse">Needs Approval</span>
+                            </td>
+                            <td class="p-5 text-right space-x-2">
+                                <button onclick="openAuditModal('SES-8921')" class="bg-brand-yellow text-fitpad-gray px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-sm">
+                                    Audit & Approve
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2: APPROVED -->
+                        <tr class="hover:bg-gray-50/50 transition-colors group">
+                            <td class="p-5">
+                                <span class="block text-sm font-bold text-fitpad-gray">May 04, 2026</span>
+                                <span class="text-xs text-gray-500 font-medium">02:00 PM - 03:00 PM</span>
+                            </td>
+                            <td class="p-5 text-sm font-bold text-gray-600">Marcus Reed</td>
+                            <td class="p-5 text-sm font-bold text-gray-600">Mark Smith</td>
+                            <td class="p-5 text-center">
+                                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-1">
+                                    <ion-icon name="checkmark-circle"></ion-icon> Approved
+                                </span>
+                            </td>
+                            <td class="p-5 text-right space-x-1">
+                                <button onclick="viewSessionDetails('SES-8910')" class="p-2 text-gray-400 hover:text-brand-yellow transition-colors rounded-lg hover:bg-gray-100" title="View Details">
+                                    <ion-icon name="eye" class="text-lg"></ion-icon>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3: UPCOMING -->
+                        <tr class="hover:bg-gray-50/50 transition-colors group">
+                            <td class="p-5">
+                                <span class="block text-sm font-bold text-fitpad-gray">May 06, 2026</span>
+                                <span class="text-xs text-gray-500 font-medium">10:00 AM - 11:00 AM</span>
+                            </td>
+                            <td class="p-5 text-sm font-bold text-gray-600">Sarah Adams</td>
+                            <td class="p-5 text-sm font-bold text-gray-600">Lisa Wong</td>
+                            <td class="p-5 text-center">
+                                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-1">
+                                    <ion-icon name="calendar"></ion-icon> Upcoming
+                                </span>
+                            </td>
+                            <td class="p-5 text-right space-x-1">
+                                <button onclick="triggerForceCancel('SES-8955')" class="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-gray-100" title="Force Cancel Session">
+                                    <ion-icon name="close-circle" class="text-lg"></ion-icon>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Row 4: CANCELLED -->
+                        <tr class="hover:bg-gray-50/50 transition-colors group opacity-75">
+                            <td class="p-5">
+                                <span class="block text-sm font-bold text-gray-400 line-through">May 01, 2026</span>
+                                <span class="text-xs text-gray-400 font-medium line-through">08:00 AM - 09:00 AM</span>
+                            </td>
+                            <td class="p-5 text-sm font-bold text-gray-400">Marcus Reed</td>
+                            <td class="p-5 text-sm font-bold text-gray-400">Jane Doe</td>
+                            <td class="p-5 text-center">
+                                <span class="bg-gray-200 text-gray-500 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-1">
+                                    <ion-icon name="ban"></ion-icon> Cancelled
+                                </span>
+                            </td>
+                            <td class="p-5 text-right space-x-1">
+                                <button class="p-2 text-gray-300 cursor-not-allowed rounded-lg">
+                                    <ion-icon name="remove" class="text-lg"></ion-icon>
+                                </button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="p-5 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Showing 1 to 4 of 3,240</span>
+                <div class="flex gap-2">
+                    <button disabled class="w-8 h-8 rounded-lg border border-gray-200 bg-white text-gray-300 flex items-center justify-center cursor-not-allowed"><ion-icon name="chevron-back"></ion-icon></button>
+                    <button class="w-8 h-8 rounded-lg border border-gray-200 bg-white text-fitpad-gray flex items-center justify-center hover:bg-gray-100 transition-colors shadow-sm"><ion-icon name="chevron-forward"></ion-icon></button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-1 py-4 flex justify-around items-center z-40 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.3)]">
+        <a href="dashboard.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors w-1/5"><ion-icon name="grid-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Dash</span></a>
+        <a href="coach-list.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors w-1/5"><ion-icon name="id-card-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Coaches</span></a>
+        <a href="client-list.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors w-1/5"><ion-icon name="people-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Clients</span></a>
+        <a href="session-list.html" class="flex flex-col items-center brand-yellow transition-colors w-1/5"><ion-icon name="calendar" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Sessions</span></a>
+        <a href="setting.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors w-1/5"><ion-icon name="settings-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Settings</span></a>
+    </nav>
+
+    <!-- ========================================= -->
+    <!-- 1. SESSION AUDIT & APPROVAL MODAL         -->
+    <!-- ========================================= -->
+    <div id="auditModal" class="fixed inset-0 z-[60] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity opacity-0">
+        <div id="auditModalContent" class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
+            
+            <div class="px-8 py-6 border-b border-gray-100 bg-yellow-50 flex justify-between items-center shrink-0">
+                <div>
+                    <h3 class="text-lg font-black text-fitpad-gray uppercase tracking-tight flex items-center gap-2"><ion-icon name="shield-checkmark" class="text-yellow-600 text-2xl"></ion-icon> Audit Session</h3>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Review Coach Notes Before Approval</p>
+                </div>
+                <button type="button" onclick="closeAuditModal()" class="text-gray-400 hover:text-red-500 transition-colors p-1"><ion-icon name="close-circle" class="text-2xl"></ion-icon></button>
+            </div>
+            
+            <div class="p-8 overflow-y-auto custom-scrollbar flex-1 bg-white">
+                <!-- Meta Info -->
+                <div class="grid grid-cols-2 gap-4 mb-6 pb-6 border-b border-gray-100">
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Coach</p>
+                        <p class="text-sm font-bold text-fitpad-gray">Sarah Adams</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Client</p>
+                        <p class="text-sm font-bold text-fitpad-gray">Jane Doe</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date & Time</p>
+                        <p class="text-sm font-bold text-fitpad-gray">May 05, 2026 (09:00 AM)</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Reported Status</p>
+                        <span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest inline-flex mt-0.5">Completed</span>
+                    </div>
+                </div>
+
+                <!-- Mock Notes (Read Only) -->
+                <div class="space-y-4">
+                    <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest">Submitted Workout Data</h4>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <p class="text-sm font-bold text-fitpad-gray mb-1">Main Set / Progress</p>
+                        <p class="text-xs text-gray-600 leading-relaxed">Completed 4 sets of Goblet Squats at 15kg. Client showed great improvement in form. No complaints regarding the previous lower back strain.</p>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <p class="text-sm font-bold text-blue-800 mb-1">Coach Remarks</p>
+                        <p class="text-xs text-blue-600 italic leading-relaxed">"Jane was energetic today. We hit all targets. Plan to increase weight next session."</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
+                <button type="button" onclick="closeAuditModal()" class="text-xs font-bold text-gray-400 uppercase hover:text-fitpad-gray px-4 py-2 transition-colors">Cancel</button>
+                <button type="button" onclick="approveSession()" class="bg-green-500 text-white px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-110 shadow-md transition-all flex items-center gap-2">
+                    <ion-icon name="checkmark-done" class="text-lg"></ion-icon> Approve Session
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 2. MANUAL SESSION CONTROL MODAL           -->
+    <!-- ========================================= -->
+    <div id="manualSessionModal" class="fixed inset-0 z-[60] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity opacity-0">
+        <div id="manualSessionModalContent" class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform scale-95 transition-transform duration-300">
+            
+            <div class="px-8 py-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                <h3 class="text-lg font-black text-fitpad-gray uppercase tracking-tight flex items-center gap-2"><ion-icon name="construct" class="text-brand-yellow text-2xl"></ion-icon> Manual Session Entry</h3>
+                <button type="button" onclick="closeManualSessionModal()" class="text-gray-400 hover:text-red-500 transition-colors p-1"><ion-icon name="close-circle" class="text-2xl"></ion-icon></button>
+            </div>
+            
+            <form onsubmit="handleManualSession(event)">
+                <div class="p-8 space-y-5">
+                    <div class="bg-yellow-50 border border-yellow-200 p-3 rounded-xl mb-2">
+                        <p class="text-[10px] font-bold text-yellow-800 uppercase tracking-widest">Admin Override Mode</p>
+                        <p class="text-xs text-yellow-700 mt-1">Use this to retroactively log a missed session or manually insert a completed record directly into the system.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Select Client *</label>
+                            <select required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] appearance-none cursor-pointer">
+                                <option value="" disabled selected>Search/Select Client...</option>
+                                <option value="PT-1042">Jane Doe (Assigned: Sarah Adams)</option>
+                                <option value="PT-1045">Mark Smith (Assigned: Marcus Reed)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Session Date *</label>
+                            <input type="date" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Start Time *</label>
+                            <input type="time" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Admin Reason / Note *</label>
+                            <input type="text" required placeholder="e.g. System offline yesterday, retroactive entry." class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                    <button type="button" onclick="closeManualSessionModal()" class="text-xs font-bold text-gray-400 uppercase hover:text-fitpad-gray px-4 py-2">Cancel</button>
+                    <button type="submit" class="bg-brand-yellow text-fitpad-gray px-6 py-3 rounded-xl text-xs font-black uppercase hover:brightness-110 shadow-md">Force Insert Session</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 3. GLOBAL ALERT / CONFIRM MODAL SYSTEM    -->
+    <!-- ========================================= -->
+    <div id="globalModal" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity opacity-0">
+        <div id="globalModalContent" class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="p-8 text-center">
+                <div id="globalModalIcon" class="w-16 h-16 mx-auto rounded-full bg-brand-yellow/20 text-yellow-600 flex items-center justify-center text-3xl mb-6"><ion-icon name="information-circle"></ion-icon></div>
+                <h3 id="globalModalTitle" class="text-xl font-black text-fitpad-gray uppercase tracking-tight mb-2">Notice</h3>
+                <p id="globalModalMessage" class="text-sm text-gray-500 font-medium leading-relaxed mb-8">Message goes here.</p>
+                <div id="globalModalActions" class="flex flex-col gap-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // Modal Toggles (Audit & Manual)
+        // ==========================================
+        function openAuditModal(id) {
+            const modal = document.getElementById('auditModal');
+            const content = document.getElementById('auditModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closeAuditModal() {
+            const modal = document.getElementById('auditModal');
+            const content = document.getElementById('auditModalContent');
+            modal.classList.add('opacity-0'); content.classList.remove('scale-100'); content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            document.body.style.overflow = '';
+        }
+
+        function openManualSessionModal() {
+            const modal = document.getElementById('manualSessionModal');
+            const content = document.getElementById('manualSessionModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closeManualSessionModal() {
+            const modal = document.getElementById('manualSessionModal');
+            const content = document.getElementById('manualSessionModalContent');
+            modal.classList.add('opacity-0'); content.classList.remove('scale-100'); content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            document.body.style.overflow = '';
+        }
+
+        // ==========================================
+        // Global Alert System logic
+        // ==========================================
+        const FitpadAlert = {
+            show: function({ title, message, type = 'info', confirmText = 'OK', cancelText = 'Cancel', onConfirm, onCancel }) {
+                const modal = document.getElementById('globalModal');
+                const content = document.getElementById('globalModalContent');
+                const titleEl = document.getElementById('globalModalTitle');
+                const msgEl = document.getElementById('globalModalMessage');
+                const iconEl = document.getElementById('globalModalIcon');
+                const actionsEl = document.getElementById('globalModalActions');
+
+                titleEl.innerText = title || (type === 'confirm' ? 'Confirm Action' : 'Notice');
+                msgEl.innerText = message;
+
+                if (type === 'success') {
+                    iconEl.innerHTML = '<ion-icon name="checkmark-circle"></ion-icon>';
+                    iconEl.className = 'w-16 h-16 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center text-4xl mb-6';
+                } else if (type === 'error' || type === 'danger') {
+                    iconEl.innerHTML = '<ion-icon name="alert-circle"></ion-icon>';
+                    iconEl.className = 'w-16 h-16 mx-auto rounded-full bg-red-100 text-red-600 flex items-center justify-center text-4xl mb-6';
+                } else if (type === 'confirm') {
+                    iconEl.innerHTML = '<ion-icon name="help-circle"></ion-icon>';
+                    iconEl.className = 'w-16 h-16 mx-auto rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-4xl mb-6';
+                } else {
+                    iconEl.innerHTML = '<ion-icon name="information-circle"></ion-icon>';
+                    iconEl.className = 'w-16 h-16 mx-auto rounded-full bg-brand-yellow/20 text-yellow-600 flex items-center justify-center text-4xl mb-6';
+                }
+
+                actionsEl.innerHTML = '';
+                if (type === 'confirm' || type === 'danger') {
+                    const btnConfirm = document.createElement('button');
+                    btnConfirm.className = type === 'danger' 
+                        ? 'w-full bg-red-500 text-white font-bold py-4 rounded-xl uppercase tracking-widest text-xs hover:bg-red-600 transition-all'
+                        : 'w-full bg-brand-yellow text-fitpad-gray font-bold py-4 rounded-xl uppercase tracking-widest text-xs hover:brightness-110 transition-all';
+                    btnConfirm.innerText = confirmText;
+                    btnConfirm.onclick = () => { this.hide(); if(onConfirm) onConfirm(); };
+
+                    const btnCancel = document.createElement('button');
+                    btnCancel.className = 'w-full bg-gray-100 text-gray-500 font-bold py-4 rounded-xl uppercase tracking-widest text-xs hover:bg-gray-200 transition-all';
+                    btnCancel.innerText = cancelText;
+                    btnCancel.onclick = () => { this.hide(); if(onCancel) onCancel(); };
+
+                    actionsEl.appendChild(btnConfirm);
+                    actionsEl.appendChild(btnCancel);
+                } else {
+                    const btnOk = document.createElement('button');
+                    btnOk.className = 'w-full bg-fitpad-gray text-white font-bold py-4 rounded-xl uppercase tracking-widest text-xs hover:brightness-125 transition-all';
+                    btnOk.innerText = confirmText;
+                    btnOk.onclick = () => { this.hide(); if(onConfirm) onConfirm(); };
+                    actionsEl.appendChild(btnOk);
+                }
+
+                modal.classList.remove('hidden');
+                setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+            },
+            hide: function() {
+                const modal = document.getElementById('globalModal');
+                const content = document.getElementById('globalModalContent');
+                modal.classList.add('opacity-0'); content.classList.remove('scale-100'); content.classList.add('scale-95');
+                setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            }
+        };
+
+        // ==========================================
+        // Action Handlers
+        // ==========================================
+        
+        function approveSession() {
+            closeAuditModal();
+            setTimeout(() => {
+                FitpadAlert.show({
+                    type: 'success',
+                    title: 'Session Approved',
+                    message: 'The session has been successfully audited and approved. The client’s remaining session count has been permanently updated.',
+                    confirmText: 'Done'
+                });
+            }, 400); // Wait for audit modal to close
+        }
+
+        function triggerForceCancel(sessionId) {
+            FitpadAlert.show({
+                type: 'danger',
+                title: 'Force Cancel Session',
+                message: `Are you sure you want to FORCE CANCEL upcoming session ${sessionId}? This action cannot be undone and will notify the coach and client.`,
+                confirmText: 'Yes, Force Cancel',
+                cancelText: 'Keep Session',
+                onConfirm: () => {
+                    setTimeout(() => {
+                        FitpadAlert.show({
+                            type: 'success',
+                            title: 'Session Cancelled',
+                            message: `Session ${sessionId} has been marked as Cancelled.`,
+                            confirmText: 'Close'
+                        });
+                    }, 400);
+                }
+            });
+        }
+
+        function handleManualSession(event) {
+            event.preventDefault();
+            closeManualSessionModal();
+            setTimeout(() => {
+                FitpadAlert.show({
+                    type: 'success',
+                    title: 'System Override Successful',
+                    message: 'The manual session entry has been successfully logged into the system.',
+                    confirmText: 'Done'
+                });
+            }, 400);
+        }
+
+        function viewSessionDetails(id) {
+            FitpadAlert.show({ type: 'info', title: 'Routing', message: `Redirecting to View Details for Session ID: ${id}` });
+        }
+    </script>
+
+</body>
+</html>

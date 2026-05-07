@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Coach Directory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- ADMIN SIDEBAR -->
+    <aside class="hidden md:flex flex-col w-64 bg-fitpad-gray text-white h-screen sticky top-0 z-40">
+        <div class="p-8">
+            <img src="../images/fitpad-fitness.png" alt="Fitpad Logo" class="h-10 w-auto object-contain">
+            <div class="mt-2 text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em]">Admin Portal</div>
+        </div>
+        <nav class="flex-1 px-4 space-y-2 mt-4 overflow-y-auto">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="grid-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Admin Dashboard</span></a>
+            <a href="coach-list.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow shadow-sm"><ion-icon name="id-card" class="text-xl brand-yellow"></ion-icon><span class="text-sm font-bold">Coach List</span></a>
+            <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="people-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Client List</span></a>
+            <a href="session-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="calendar-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Session List</span></a>
+            <a href="setting.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all mt-6 border-t border-white/5 pt-6"><ion-icon name="settings-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Administration</span></a>
+        </nav>
+        <div class="p-4 mb-4">
+            <a href="../admin-login.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-red-400 rounded-xl transition-all"><ion-icon name="log-out-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Log Out</span></a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-4 md:p-10 mb-24 md:mb-0 overflow-x-hidden">
+        
+        <!-- Header -->
+        <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2"><span>Directory Management</span></div>
+                <h2 class="text-3xl font-black text-fitpad-gray uppercase tracking-tight">Coach List</h2>
+            </div>
+            <button onclick="openRegisterModal()" class="bg-brand-yellow text-fitpad-gray px-8 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-md flex items-center justify-center gap-2 w-full md:w-auto">
+                <ion-icon name="add-circle" class="text-lg"></ion-icon> Register Coach
+            </button>
+        </header>
+
+        <!-- SEARCH & FILTER BAR -->
+        <div class="flex flex-col md:flex-row gap-4 mb-6">
+            <div class="relative flex-1">
+                <ion-icon name="search-outline" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></ion-icon>
+                <input type="text" placeholder="Search by Coach Name, ID, or Email..." class="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all shadow-sm">
+            </div>
+            <div class="w-full md:w-56 relative">
+                <ion-icon name="filter-outline" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none"></ion-icon>
+                <select class="w-full pl-12 pr-10 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all shadow-sm cursor-pointer appearance-none">
+                    <option value="all">All Statuses</option>
+                    <option value="active">Active Coaches</option>
+                    <option value="inactive">Inactive Coaches</option>
+                </select>
+                <ion-icon name="chevron-down-outline" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></ion-icon>
+            </div>
+        </div>
+
+        <!-- DATA GRID -->
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-100">
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Coach ID</th>
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Coach Name</th>
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Email Address</th>
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Clients</th>
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
+                            <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        <tr class="hover:bg-gray-50/50 transition-colors group">
+                            <td class="p-5 text-sm font-mono font-bold text-gray-500">CP-8820</td>
+                            <td class="p-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-brand-yellow/20 text-yellow-600 flex items-center justify-center font-black text-xs">SA</div>
+                                    <span class="text-sm font-bold text-fitpad-gray">Sarah Adams</span>
+                                </div>
+                            </td>
+                            <td class="p-5 text-sm font-medium text-gray-500">sarah.adams@fitpad.com</td>
+                            <td class="p-5 text-center"><span class="bg-gray-100 text-fitpad-gray font-black text-xs px-3 py-1 rounded-lg">24</span></td>
+                            <td class="p-5 text-center"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest">Active</span></td>
+                            <td class="p-5 text-right space-x-1">
+                                <button onclick="viewProfile('CP-8820')" class="p-2 text-gray-400 hover:text-brand-yellow transition-colors rounded-lg hover:bg-gray-100" title="View Profile"><ion-icon name="eye" class="text-lg"></ion-icon></button>
+                                <button onclick="triggerResetPassword('CP-8820')" class="p-2 text-gray-400 hover:text-blue-500 transition-colors rounded-lg hover:bg-gray-100" title="Reset Password"><ion-icon name="key" class="text-lg"></ion-icon></button>
+                                <button onclick="triggerToggleStatus('CP-8820', 'Deactivate')" class="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-gray-100" title="Deactivate Account"><ion-icon name="power" class="text-lg"></ion-icon></button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50/50 transition-colors group opacity-75">
+                            <td class="p-5 text-sm font-mono font-bold text-gray-400">CP-5501</td>
+                            <td class="p-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-black text-xs">EL</div>
+                                    <span class="text-sm font-bold text-gray-500">Emily Lawson</span>
+                                </div>
+                            </td>
+                            <td class="p-5 text-sm font-medium text-gray-400">emily.lawson@fitpad.com</td>
+                            <td class="p-5 text-center"><span class="bg-gray-100 text-gray-400 font-black text-xs px-3 py-1 rounded-lg">0</span></td>
+                            <td class="p-5 text-center"><span class="bg-gray-200 text-gray-600 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest">Inactive</span></td>
+                            <td class="p-5 text-right space-x-1">
+                                <button onclick="viewProfile('CP-5501')" class="p-2 text-gray-400 hover:text-brand-yellow transition-colors rounded-lg hover:bg-gray-100" title="View Profile"><ion-icon name="eye" class="text-lg"></ion-icon></button>
+                                <button onclick="triggerResetPassword('CP-5501')" class="p-2 text-gray-400 hover:text-blue-500 transition-colors rounded-lg hover:bg-gray-100" title="Reset Password"><ion-icon name="key" class="text-lg"></ion-icon></button>
+                                <button onclick="triggerToggleStatus('CP-5501', 'Activate')" class="p-2 text-gray-400 hover:text-green-500 transition-colors rounded-lg hover:bg-gray-100" title="Activate Account"><ion-icon name="power" class="text-lg"></ion-icon></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="p-5 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Showing 1 to 2 of 18</span>
+                <div class="flex gap-2">
+                    <button disabled class="w-8 h-8 rounded-lg border border-gray-200 bg-white text-gray-300 flex items-center justify-center cursor-not-allowed"><ion-icon name="chevron-back"></ion-icon></button>
+                    <button class="w-8 h-8 rounded-lg border border-gray-200 bg-white text-fitpad-gray flex items-center justify-center hover:bg-gray-100 transition-colors shadow-sm"><ion-icon name="chevron-forward"></ion-icon></button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-1 py-4 flex justify-around items-center z-40 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.3)]">
+        <a href="dashboard.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors"><ion-icon name="grid-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Dash</span></a>
+        <a href="coach-list.html" class="flex flex-col items-center brand-yellow transition-colors"><ion-icon name="id-card" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Coaches</span></a>
+        <a href="client-list.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors"><ion-icon name="people-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Clients</span></a>
+        <a href="session-list.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors"><ion-icon name="calendar-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Sessions</span></a>
+        <a href="setting.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors"><ion-icon name="settings-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Settings</span></a>
+    </nav>
+
+    <!-- ========================================= -->
+    <!-- 1. REGISTER COACH FORM MODAL              -->
+    <!-- ========================================= -->
+    <div id="registerModal" class="fixed inset-0 z-[60] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity opacity-0">
+        <div id="registerModalContent" class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="px-8 py-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                <h3 class="text-lg font-black text-fitpad-gray uppercase tracking-tight flex items-center gap-2"><ion-icon name="person-add" class="text-brand-yellow text-2xl"></ion-icon> Register New Coach</h3>
+                <button type="button" onclick="closeRegisterModal()" class="text-gray-400 hover:text-red-500 transition-colors p-1"><ion-icon name="close-circle" class="text-2xl"></ion-icon></button>
+            </div>
+            <form onsubmit="handleRegisterCoach(event)">
+                <div class="p-8 space-y-5">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">First Name *</label><input type="text" required placeholder="e.g. John" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
+                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Last Name *</label><input type="text" required placeholder="e.g. Doe" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
+                    </div>
+                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Email Address *</label><input type="email" required placeholder="coach@fitpad.com" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
+                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Temporary Password *</label><input type="password" required minlength="8" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"><p class="text-[10px] text-gray-400 font-medium mt-1">Minimum 8 characters.</p></div>
+                </div>
+                <div class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                    <button type="button" onclick="closeRegisterModal()" class="text-xs font-bold text-gray-400 uppercase hover:text-fitpad-gray px-4 py-2">Cancel</button>
+                    <button type="submit" class="bg-brand-yellow text-fitpad-gray px-6 py-3 rounded-xl text-xs font-black uppercase hover:brightness-110 shadow-md">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 2. GLOBAL ALERT / CONFIRM MODAL SYSTEM    -->
+    <!-- ========================================= -->
+    <!-- You can copy-paste this block into ANY file to replace standard alerts -->
+    <div id="globalModal" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity opacity-0">
+        <div id="globalModalContent" class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="p-8 text-center">
+                <!-- Dynamic Icon -->
+                <div id="globalModalIcon" class="w-16 h-16 mx-auto rounded-full bg-brand-yellow/20 text-yellow-600 flex items-center justify-center text-3xl mb-6">
+                    <ion-icon name="information-circle"></ion-icon>
+                </div>
+                <!-- Texts -->
+                <h3 id="globalModalTitle" class="text-xl font-black text-fitpad-gray uppercase tracking-tight mb-2">Notice</h3>
+                <p id="globalModalMessage" class="text-sm text-gray-500 font-medium leading-relaxed mb-8">Message goes here.</p>
+                <!-- Buttons injected via JS -->
+                <div id="globalModalActions" class="flex flex-col gap-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // UI Logic for Register Form Modal
+        // ==========================================
+        function openRegisterModal() {
+            const modal = document.getElementById('registerModal');
+            const content = document.getElementById('registerModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRegisterModal() {
+            const modal = document.getElementById('registerModal');
+            const content = document.getElementById('registerModalContent');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            document.body.style.overflow = '';
+        }
+
+        // ==========================================
+        // Custom Alert/Confirm System Utility
+        // ==========================================
+        const FitpadAlert = {
+            show: function({ title, message, type = 'info', confirmText = 'OK', cancelText = 'Cancel', onConfirm, onCancel }) {
+                const modal = document.getElementById('globalModal');
+                const content = document.getElementById('globalModalContent');
+                const titleEl = document.getElementById('globalModalTitle');
+                const msgEl = document.getElementById('globalModalMessage');
+                const iconEl = document.getElementById('globalModalIcon');
+                const actionsEl = document.getElementById('globalModalActions');
+
+                titleEl.innerText = title || (type === 'confirm' ? 'Confirm Action' : 'Notice');
+                msgEl.innerText = message;
+
+                // Theme Icons based on 'type'
+                if (type === 'success') {
+                    iconEl.innerHTML = '<ion-icon name="checkmark-circle"></ion-icon>';
+                    iconEl.className = 'w-16 h-16 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center text-4xl mb-6';
+                } else if (type === 'error') {
+                    iconEl.innerHTML = '<ion-icon name="alert-circle"></ion-icon>';
+                    iconEl.className = 'w-16 h-16 mx-auto rounded-full bg-red-100 text-red-600 flex items-center justify-center text-4xl mb-6';
+                } else if (type === 'confirm') {
+                    iconEl.innerHTML = '<ion-icon name="help-circle"></ion-icon>';
+                    iconEl.className = 'w-16 h-16 mx-auto rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-4xl mb-6';
+                } else { // info
+                    iconEl.innerHTML = '<ion-icon name="information-circle"></ion-icon>';
+                    iconEl.className = 'w-16 h-16 mx-auto rounded-full bg-brand-yellow/20 text-yellow-600 flex items-center justify-center text-4xl mb-6';
+                }
+
+                // Build Buttons
+                actionsEl.innerHTML = '';
+                if (type === 'confirm') {
+                    const btnConfirm = document.createElement('button');
+                    btnConfirm.className = 'w-full bg-brand-yellow text-fitpad-gray font-bold py-4 rounded-xl uppercase tracking-widest text-xs hover:brightness-110 transition-all';
+                    btnConfirm.innerText = confirmText;
+                    btnConfirm.onclick = () => { this.hide(); if(onConfirm) onConfirm(); };
+
+                    const btnCancel = document.createElement('button');
+                    btnCancel.className = 'w-full bg-gray-100 text-gray-500 font-bold py-4 rounded-xl uppercase tracking-widest text-xs hover:bg-gray-200 transition-all';
+                    btnCancel.innerText = cancelText;
+                    btnCancel.onclick = () => { this.hide(); if(onCancel) onCancel(); };
+
+                    actionsEl.appendChild(btnConfirm);
+                    actionsEl.appendChild(btnCancel);
+                } else {
+                    const btnOk = document.createElement('button');
+                    btnOk.className = 'w-full bg-fitpad-gray text-white font-bold py-4 rounded-xl uppercase tracking-widest text-xs hover:brightness-125 transition-all';
+                    btnOk.innerText = confirmText;
+                    btnOk.onclick = () => { this.hide(); if(onConfirm) onConfirm(); };
+                    actionsEl.appendChild(btnOk);
+                }
+
+                // Show Animate
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                }, 10);
+            },
+            hide: function() {
+                const modal = document.getElementById('globalModal');
+                const content = document.getElementById('globalModalContent');
+                modal.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            }
+        };
+
+        // ==========================================
+        // Replacing old alert() / confirm() logic
+        // ==========================================
+        
+        function handleRegisterCoach(event) {
+            event.preventDefault();
+            closeRegisterModal(); // Hide the form
+            
+            // Replaces: alert("New Coach Account Created Successfully!");
+            FitpadAlert.show({
+                type: 'success',
+                title: 'Success!',
+                message: 'New coach account created and added to the directory.',
+                confirmText: 'Done'
+            });
+        }
+
+        function viewProfile(coachId) {
+            // Replaces: alert(`Redirecting...`);
+            FitpadAlert.show({
+                type: 'info',
+                title: 'Routing',
+                message: `Redirecting to View Profile for Coach ID: ${coachId}`
+            });
+        }
+
+        function triggerResetPassword(coachId) {
+            // Replaces native confirm()
+            FitpadAlert.show({
+                type: 'confirm',
+                title: 'Reset Password',
+                message: `Are you sure you want to trigger a manual password reset for Coach ${coachId}? An email will be sent to them.`,
+                confirmText: 'Yes, Send Email',
+                cancelText: 'Cancel',
+                onConfirm: () => {
+                    // Action upon confirmation
+                    setTimeout(() => {
+                        FitpadAlert.show({
+                            type: 'success',
+                            title: 'Email Sent',
+                            message: `Password reset instructions have been sent to Coach ${coachId}.`
+                        });
+                    }, 400); // slight delay to allow previous modal to close smoothly
+                }
+            });
+        }
+
+        function triggerToggleStatus(coachId, action) {
+            // Replaces native confirm()
+            FitpadAlert.show({
+                type: 'confirm',
+                title: 'Update Status',
+                message: `Are you sure you want to ${action.toLowerCase()} the account for Coach ${coachId}?`,
+                confirmText: `Yes, ${action}`,
+                cancelText: 'Cancel',
+                onConfirm: () => {
+                    // Action upon confirmation
+                    setTimeout(() => {
+                        FitpadAlert.show({
+                            type: 'success',
+                            title: 'Status Updated',
+                            message: `The account status has been updated for Coach ${coachId}.`
+                        });
+                    }, 400);
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

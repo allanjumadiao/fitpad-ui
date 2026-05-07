@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Edit Client Information</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <aside class="hidden md:flex flex-col w-64 bg-fitpad-gray text-white h-screen sticky top-0 z-40">
+        <div class="p-8"><h1 class="brand-yellow text-2xl font-bold tracking-[0.2em] uppercase">Fitpad</h1></div>
+        <nav class="flex-1 px-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all">
+                <ion-icon name="grid-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Dashboard</span>
+            </a>
+            <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow">
+                <ion-icon name="people" class="text-xl brand-yellow"></ion-icon>
+                <span class="text-sm font-bold">Client List</span>
+            </a>
+            <a href="session.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all">
+                <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Sessions</span>
+            </a>
+            <a href="profile.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all">
+                <ion-icon name="person-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">My Profile</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-8 mb-20 md:mb-0 overflow-x-hidden">
+        
+        <header class="mb-8">
+            <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+                <a href="client-list.html" class="hover:text-fitpad-gray transition-colors">Client List</a>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <a href="client-details.html" class="hover:text-fitpad-gray transition-colors">Samantha Collins</a>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <span class="text-brand-yellow">Edit</span>
+            </div>
+            <div>
+                <h2 class="text-3xl font-bold text-fitpad-gray uppercase tracking-tight">Edit Information</h2>
+                <p class="text-gray-500 text-sm">Update basic details and package information for PT00842.</p>
+            </div>
+        </header>
+
+        <div class="max-w-4xl bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <form action="client-details.html" method="POST" onsubmit="event.preventDefault(); alert('Client details updated successfully!');">
+                
+                <div class="p-8 border-b border-gray-100 flex flex-col md:flex-row items-center gap-6">
+                    <div class="w-24 h-24 rounded-full bg-brand-yellow flex items-center justify-center text-fitpad-gray font-black text-3xl shadow-inner flex-shrink-0 relative group cursor-pointer">
+                        SC
+                        <div class="absolute inset-0 bg-black/40 rounded-full hidden group-hover:flex items-center justify-center transition-all">
+                            <ion-icon name="camera" class="text-white text-2xl"></ion-icon>
+                        </div>
+                    </div>
+                    <div class="text-center md:text-left">
+                        <button type="button" class="text-xs font-bold text-fitpad-gray uppercase tracking-widest border-2 border-gray-200 px-4 py-2 rounded-lg hover:border-brand-yellow transition-colors">Change Photo</button>
+                        <p class="text-[10px] text-gray-400 mt-2">JPG, GIF or PNG. Max size of 2MB.</p>
+                    </div>
+                </div>
+
+                <div class="p-8 space-y-10">
+                    <div>
+                        <h3 class="text-xs font-black text-fitpad-gray uppercase tracking-widest mb-6 border-b border-gray-100 pb-2">Personal Details</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">PT ID (System Generated)</label>
+                                <input type="text" value="PT00842" readonly class="w-full bg-gray-100 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-gray-500 cursor-not-allowed">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">First Name</label>
+                                <input type="text" value="Samantha" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Last Name</label>
+                                <input type="text" value="Collins" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Gender</label>
+                                <select class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                                    <option value="male">Male</option>
+                                    <option value="female" selected>Female</option>
+                                    <option value="other">Other / Prefer not to say</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Birthday</label>
+                                <input type="date" value="1994-10-12" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                                <p class="text-[9px] text-gray-400 mt-1">* Age will be auto-computed based on this date.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-black text-fitpad-gray uppercase tracking-widest mb-6 border-b border-gray-100 pb-2">Schedule Overview</h3>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-4">Click a day to update time</p>
+                        <div class="overflow-x-auto custom-scrollbar pb-2">
+                            <div class="grid grid-cols-7 gap-4 min-w-[800px]">
+                                <div class="flex flex-col gap-3">
+                                    <h4 class="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Monday</h4>
+                                    <div onclick="openEditTimeModal('Monday', '08:00', '09:30')" class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex flex-col items-center justify-center flex-1 min-h-[120px] cursor-pointer hover:border-brand-yellow transition-all text-center group">
+                                        <ion-icon name="time-outline" class="text-gray-300 text-lg mb-2 group-hover:text-brand-yellow transition-colors"></ion-icon>
+                                        <p class="text-xs font-black text-fitpad-gray">08:00 AM</p>
+                                        <p class="text-[10px] font-semibold text-gray-400 mt-1">09:30 AM</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <h4 class="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tuesday</h4>
+                                    <div onclick="openEditTimeModal('Tuesday', '', '')" class="border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center text-gray-300 flex-1 min-h-[120px] bg-white cursor-pointer hover:border-brand-yellow hover:text-brand-yellow transition-all">
+                                        <ion-icon name="add-outline" class="text-2xl"></ion-icon>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <h4 class="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Wednesday</h4>
+                                    <div onclick="openEditTimeModal('Wednesday', '10:30', '11:30')" class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex flex-col items-center justify-center flex-1 min-h-[120px] cursor-pointer hover:border-brand-yellow transition-all text-center group">
+                                        <ion-icon name="time-outline" class="text-gray-300 text-lg mb-2 group-hover:text-brand-yellow transition-colors"></ion-icon>
+                                        <p class="text-xs font-black text-fitpad-gray">10:30 AM</p>
+                                        <p class="text-[10px] font-semibold text-gray-400 mt-1">11:30 AM</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <h4 class="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Thursday</h4>
+                                    <div onclick="openEditTimeModal('Thursday', '', '')" class="border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center text-gray-300 flex-1 min-h-[120px] bg-white cursor-pointer hover:border-brand-yellow hover:text-brand-yellow transition-all">
+                                        <ion-icon name="add-outline" class="text-2xl"></ion-icon>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <h4 class="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Friday</h4>
+                                    <div class="border-2 border-gray-100 bg-gray-50/50 rounded-xl flex-1 min-h-[120px] cursor-not-allowed flex items-center justify-center flex-col text-gray-300">
+                                        <ion-icon name="cafe-outline" class="text-xl mb-1 opacity-50"></ion-icon>
+                                        <span class="text-[9px] font-bold uppercase tracking-widest opacity-50">Rest</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <h4 class="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Saturday</h4>
+                                    <div onclick="openEditTimeModal('Saturday', '', '')" class="border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center text-gray-300 flex-1 min-h-[120px] bg-white cursor-pointer hover:border-brand-yellow hover:text-brand-yellow transition-all">
+                                        <ion-icon name="add-outline" class="text-2xl"></ion-icon>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <h4 class="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sunday</h4>
+                                    <div onclick="openEditTimeModal('Sunday', '', '')" class="border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center text-gray-300 flex-1 min-h-[120px] bg-white cursor-pointer hover:border-brand-yellow hover:text-brand-yellow transition-all">
+                                        <ion-icon name="add-outline" class="text-2xl"></ion-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-black text-fitpad-gray uppercase tracking-widest mb-6 border-b border-gray-100 pb-2">Fitness Profile</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Height (cm)</label>
+                                <input type="number" value="165" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Age</label>
+                                <input type="number" value="31" readonly class="w-full bg-gray-100 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-gray-500 cursor-not-allowed outline-none">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Fitness Goal</label>
+                                <input type="text" value="Weight Loss / HIIT" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                            </div>
+
+                            <div class="md:col-span-3">
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Total Availed Sessions</label>
+                                <div class="flex items-center justify-between bg-gray-50 border border-gray-200 p-2 pl-4 rounded-xl">
+                                    <span id="sessionDisplay" class="text-sm font-bold text-fitpad-gray">24 Sessions</span>
+                                    
+                                    <button type="button" onclick="openModal('addFreeSessionModal')" class="bg-brand-yellow text-fitpad-gray px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-sm flex items-center gap-1">
+                                        <ion-icon name="add-circle-outline" class="text-lg"></ion-icon> Add Free Session
+                                    </button>
+                                </div>
+                                <p class="text-[9px] text-gray-400 mt-1">* Base sessions are fixed. Use the button to append complimentary sessions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-8 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row justify-end gap-4 rounded-b-2xl">
+                    <button type="button" class="px-8 py-3 rounded-xl text-xs font-bold text-gray-500 uppercase tracking-widest hover:bg-gray-200 transition-all text-center">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-brand-yellow text-fitpad-gray px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-lg text-center">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-2 py-4 flex justify-around items-center z-50">
+        <a href="dashboard.html" class="flex flex-col items-center text-gray-400"><ion-icon name="grid-outline" class="text-2xl"></ion-icon></a>
+        <a href="client-list.html" class="flex flex-col items-center brand-yellow"><ion-icon name="people" class="text-2xl"></ion-icon></a>
+        <a href="session.html" class="flex flex-col items-center text-gray-400"><ion-icon name="calendar-outline" class="text-2xl"></ion-icon></a>
+        <a href="profile.html" class="flex flex-col items-center text-gray-400"><ion-icon name="person-outline" class="text-2xl"></ion-icon></a>
+    </nav>
+
+    <div id="addFreeSessionModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-fitpad-gray/95 backdrop-blur-md" onclick="closeModal('addFreeSessionModal')"></div>
+        <div class="relative bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl border border-white/20 text-center">
+            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ion-icon name="gift-outline" class="text-3xl text-brand-yellow"></ion-icon>
+            </div>
+            <h3 class="text-xl font-bold text-fitpad-gray mb-1 uppercase tracking-tight">Add Free Sessions</h3>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-6">Enter number of sessions</p>
+            
+            <div class="mb-6">
+                <input type="number" id="freeSessionInput" min="1" value="1" class="w-2/3 bg-gray-50 border border-gray-200 p-4 rounded-2xl text-2xl font-black text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 text-center mx-auto block transition-all shadow-inner">
+            </div>
+
+            <div class="flex gap-3">
+                <button type="button" onclick="closeModal('addFreeSessionModal')" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase hover:bg-gray-100 rounded-xl transition-all tracking-widest">Cancel</button>
+                <button type="button" onclick="confirmAddFreeSessions()" class="flex-1 py-3 text-xs font-black uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110 transition-all tracking-widest">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editTimeModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-fitpad-gray/95 backdrop-blur-md" onclick="closeModal('editTimeModal')"></div>
+        <div class="relative bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+            <h3 class="text-xl font-bold text-fitpad-gray mb-1 uppercase tracking-tight">Update Time</h3>
+            <p id="editTimeDay" class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-6">Monday Schedule</p>
+            
+            <div class="space-y-4 mb-8">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Start Time</label>
+                        <input type="time" id="editStartTime" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-black text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">End Time</label>
+                        <input type="time" id="editEndTime" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-black text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 transition-all">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="button" onclick="closeModal('editTimeModal')" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase hover:bg-gray-100 rounded-xl transition-all tracking-widest">Cancel</button>
+                <button type="button" onclick="saveTimeUpdate()" class="flex-1 py-3 text-xs font-black uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110 transition-all tracking-widest">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let baseSessions = 24;
+        let freeSessions = 0;
+
+        function openModal(id) { 
+            document.getElementById(id).classList.remove('hidden'); 
+        }
+        
+        function closeModal(id) { 
+            document.getElementById(id).classList.add('hidden'); 
+        }
+
+        // Free Session Logic
+        function confirmAddFreeSessions() {
+            const inputElement = document.getElementById('freeSessionInput');
+            const inputVal = parseInt(inputElement.value);
+
+            if (inputVal > 0) {
+                freeSessions += inputVal;
+                const display = document.getElementById('sessionDisplay');
+                display.innerHTML = `${baseSessions} Sessions <span class="text-green-600 font-black ml-1">(+${freeSessions} free)</span>`;
+                
+                inputElement.value = 1; 
+                closeModal('addFreeSessionModal');
+            } else {
+                alert("Please enter a valid number greater than 0.");
+            }
+        }
+
+        // Schedule Time Update Logic
+        function openEditTimeModal(day, start, end) {
+            document.getElementById('editTimeDay').innerText = day + " Schedule";
+            document.getElementById('editStartTime').value = start;
+            document.getElementById('editEndTime').value = end;
+            openModal('editTimeModal');
+        }
+
+        function saveTimeUpdate() {
+            alert("Schedule time updated successfully!");
+            closeModal('editTimeModal');
+        }
+    </script>
+</body>
+</html>

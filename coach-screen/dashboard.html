@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Coach Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F9FAFB; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+
+        /* Calendar Grid Styling */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 100px repeat(7, 1fr);
+            border: 1px solid #000;
+        }
+        .calendar-cell {
+            border: 1px solid #000;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px;
+            text-align: center;
+        }
+        .slot-btn {
+            width: 100%;
+            height: 100%;
+            padding: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slot-btn:hover { opacity: 0.8; transform: scale(1.01); }
+        .available-slot {
+            background-color: #fff;
+            color: #cbd5e1; /* Light gray text */
+        }
+        .available-slot:hover {
+            background-color: #fefce8;
+            color: #d8f511;
+        }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <aside class="hidden md:flex flex-col w-72 bg-fitpad-gray text-white h-screen sticky top-0">
+        <div class="p-8">
+            <h1 class="brand-yellow text-2xl font-bold tracking-[0.2em] uppercase">Fitpad</h1>
+            <p class="text-[10px] text-gray-400 mt-1 tracking-widest">COACH PORTAL</p>
+        </div>
+        
+        <nav class="flex-1 px-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow">
+                <ion-icon name="grid" class="text-xl brand-yellow"></ion-icon>
+                <span class="text-sm font-bold">Dashboard</span>
+            </a>
+            <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all">
+                <ion-icon name="people-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Client List</span>
+            </a>
+            <a href="session.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all">
+                <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Sessions</span>
+            </a>
+            <a href="profile.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all">
+                <ion-icon name="person-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">My Profile</span>
+            </a>
+        </nav>
+
+        <div class="p-6 border-t border-white/5">
+            <div class="flex items-center gap-3 px-2">
+                <div class="w-10 h-10 rounded-full bg-brand-yellow flex items-center justify-center text-fitpad-gray font-bold">JD</div>
+                <div>
+                    <p class="text-xs font-bold">Coach John Doe</p>
+                    <p class="text-[10px] text-gray-400">ID: CP-9921</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 md:p-10 mb-20 md:mb-0">
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+            <div>
+                <h2 class="text-3xl font-bold text-fitpad-gray uppercase tracking-tight">Dashboard</h2>
+                <p class="text-gray-500 font-medium">Saturday, April 25, 2026</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="bg-white p-3 rounded-full shadow-sm border border-gray-200 text-fitpad-gray flex items-center justify-center hover:bg-gray-50">
+                    <ion-icon name="notifications-outline" class="text-xl"></ion-icon>
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-fitpad-gray p-8 rounded-3xl shadow-xl text-white relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <p class="text-gray-400 font-semibold text-sm uppercase tracking-wider">Active Clients</p>
+                        <h3 class="text-6xl font-bold mt-2 brand-yellow">24</h3>
+                        <p class="text-xs text-gray-400 mt-4 flex items-center gap-1">
+                            <ion-icon name="trending-up-outline" class="text-brand-yellow text-lg"></ion-icon>
+                            +3 since last month
+                        </p>
+                    </div>
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full group-hover:scale-110 transition-transform"></div>
+                </div>
+
+                <div class="bg-white border-2 border-dashed border-gray-300 p-6 rounded-3xl flex flex-col items-center justify-center text-center hover:border-brand-yellow transition-colors cursor-pointer group">
+                    <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3 group-hover:bg-brand-yellow transition-colors">
+                        <ion-icon name="add" class="text-2xl text-gray-500 group-hover:text-fitpad-gray"></ion-icon>
+                    </div>
+                    <p class="text-sm font-bold text-fitpad-gray">Register New Client</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 h-full">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-xl font-bold text-fitpad-gray">Daily Schedule</h3>
+                        <button onclick="openModal('calendarModal')" class="text-sm font-bold brand-yellow bg-fitpad-gray px-4 py-2 rounded-lg hover:brightness-110 transition-all">View Calendar</button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-6 p-4 rounded-2xl hover:bg-gray-50 transition-colors border-l-4 border-brand-yellow bg-gray-50/50">
+                            <div class="text-center min-w-[60px]">
+                                <p class="text-xs font-bold text-gray-400 uppercase">08:00</p>
+                                <p class="text-xs font-bold text-gray-400 uppercase">AM</p>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-fitpad-gray">Mark T. - Weight Loss</h4>
+                                <p class="text-sm text-gray-500">HIIT Circuit Training</p>
+                            </div>
+                            <div class="hidden sm:block">
+                                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold uppercase">Confirmed</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-6 p-4 rounded-2xl hover:bg-gray-50 transition-colors border-l-4 border-gray-200">
+                            <div class="text-center min-w-[60px]">
+                                <p class="text-xs font-bold text-gray-400 uppercase">10:30</p>
+                                <p class="text-xs font-bold text-gray-400 uppercase">AM</p>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-fitpad-gray">Sarah L. - Strength</h4>
+                                <p class="text-sm text-gray-500">Lower Body / Squats</p>
+                            </div>
+                            <div class="hidden sm:block">
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-[10px] font-bold uppercase">Pending</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-6 p-4 rounded-2xl hover:bg-gray-50 transition-colors border-l-4 border-gray-200">
+                            <div class="text-center min-w-[60px]">
+                                <p class="text-xs font-bold text-gray-400 uppercase">02:00</p>
+                                <p class="text-xs font-bold text-gray-400 uppercase">PM</p>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-fitpad-gray">Kevin O. - Recovery</h4>
+                                <p class="text-sm text-gray-500">Mobility & Stretching</p>
+                            </div>
+                            <div class="hidden sm:block">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-[10px] font-bold uppercase">Manual Log</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-fitpad-gray text-white border-t border-white/10 px-2 py-4 flex justify-around items-center z-50">
+        <a href="#" class="flex flex-col items-center brand-yellow">
+            <ion-icon name="grid" class="text-2xl"></ion-icon>
+            <span class="text-[9px] mt-1 font-bold uppercase tracking-tighter">Dash</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-400">
+            <ion-icon name="people-outline" class="text-2xl"></ion-icon>
+            <span class="text-[9px] mt-1 font-bold uppercase tracking-tighter">Clients</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-400">
+            <ion-icon name="calendar-outline" class="text-2xl"></ion-icon>
+            <span class="text-[9px] mt-1 font-bold uppercase tracking-tighter">Schedule</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-400">
+            <ion-icon name="person-outline" class="text-2xl"></ion-icon>
+            <span class="text-[9px] mt-1 font-bold uppercase tracking-tighter">Profile</span>
+        </a>
+    </nav>
+
+    <div id="calendarModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('calendarModal')"></div>
+        <div class="relative bg-white w-full max-w-7xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
+            <div class="bg-green-600 p-4 flex justify-between items-center text-white">
+                <span class="text-xs font-bold uppercase tracking-widest">April 21 - 27</span>
+                <h3 class="font-bold text-lg uppercase">Coach Ramel (07:00 AM - 10:00 PM)</h3>
+                <button onclick="closeModal('calendarModal')" class="text-2xl"><ion-icon name="close"></ion-icon></button>
+            </div>
+            
+            <div class="overflow-auto flex-1 p-4 bg-gray-50">
+                <div class="calendar-grid min-w-[1000px] bg-white">
+                    <div class="calendar-cell bg-gray-100">Time</div>
+                    <div class="calendar-cell bg-gray-100">Monday</div>
+                    <div class="calendar-cell bg-gray-100">Tuesday</div>
+                    <div class="calendar-cell bg-gray-100">Wednesday</div>
+                    <div class="calendar-cell bg-gray-100">Thursday</div>
+                    <div class="calendar-cell bg-green-500 text-white">Friday</div>
+                    <div class="calendar-cell bg-gray-100">Saturday</div>
+                    <div class="calendar-cell bg-gray-100">Sunday</div>
+
+                    <div class="calendar-cell bg-gray-50">07:00 AM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('Imie', 'Mon', '07:00 AM')" class="slot-btn bg-purple-500 text-white">Imie</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Imie', 'Tue', '07:00 AM')" class="slot-btn bg-purple-500 text-white">Imie</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '07:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Imie', 'Thu', '07:00 AM')" class="slot-btn bg-purple-500 text-white">Imie</button></div>
+                    <div class="calendar-cell bg-green-400 text-white">Restday</div>
+                    <div class="calendar-cell"><button onclick="openEdit('Imie', 'Sat', '07:00 AM')" class="slot-btn bg-purple-500 text-white">Imie</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '07:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">08:00 AM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('Joyce', 'Mon', '08:00 AM')" class="slot-btn bg-cyan-600 text-white">Joyce</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Raz', 'Tue', '08:00 AM')" class="slot-btn bg-cyan-400 text-white">Raz</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Joyce', 'Wed', '08:00 AM')" class="slot-btn bg-cyan-600 text-white">Joyce</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Raz', 'Thu', '08:00 AM')" class="slot-btn bg-cyan-400 text-white">Raz</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Joyce', 'Sat', '08:00 AM')" class="slot-btn bg-cyan-600 text-white">Joyce</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Raz', 'Sun', '08:00 AM')" class="slot-btn bg-cyan-400 text-white">Raz</button></div>
+
+                    <div class="calendar-cell bg-gray-50">09:00 AM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('Aldwin', 'Mon', '09:00 AM')" class="slot-btn bg-rose-500 text-white">Aldwin</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Aldwin', 'Tue', '09:00 AM')" class="slot-btn bg-rose-500 text-white">Aldwin</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Wendel', 'Wed', '09:00 AM')" class="slot-btn bg-emerald-800 text-white">Wendel</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Aldwin', 'Thu', '09:00 AM')" class="slot-btn bg-rose-500 text-white">Aldwin</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Kriz', 'Sat', '09:00 AM')" class="slot-btn bg-lime-500 text-white">Kriz</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('Kriz', 'Sun', '09:00 AM')" class="slot-btn bg-lime-500 text-white">Kriz</button></div>
+
+                    <div class="calendar-cell bg-gray-50">10:00 AM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">11:00 AM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">12:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">01:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">02:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">03:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">04:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">05:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">06:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">07:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">08:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+                    <div class="calendar-cell bg-gray-50">09:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 AM')" class="slot-btn available-slot">Available</button></div>
+
+
+                    <div class="calendar-cell bg-gray-50 font-bold">10:00 PM</div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Mon', '10:00 PM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Tue', '10:00 PM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Wed', '10:00 PM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Thu', '10:00 PM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell bg-green-400"></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sat', '10:00 PM')" class="slot-btn available-slot">Available</button></div>
+                    <div class="calendar-cell"><button onclick="openEdit('', 'Sun', '10:00 PM')" class="slot-btn available-slot">Available</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-fitpad-gray/90 backdrop-blur-md" onclick="closeModal('editModal')"></div>
+        <div class="relative bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl">
+            <h3 class="text-xl font-bold text-fitpad-gray mb-6 uppercase tracking-tight">Modify Slot</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Client Name</label>
+                    <input type="text" id="clientNameInput" placeholder="Name (Blank if available)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Day</label>
+                        <input type="text" id="dayInput" readonly class="w-full bg-gray-100 p-3 rounded-xl text-xs font-semibold text-gray-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Time</label>
+                        <input type="text" id="timeInput" readonly class="w-full bg-gray-100 p-3 rounded-xl text-xs font-semibold text-gray-500">
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 grid grid-cols-2 gap-3">
+                <button onclick="closeModal('editModal')" class="py-3 text-xs font-bold uppercase text-gray-400 hover:bg-gray-100 rounded-xl transition-all">Cancel</button>
+                <button onclick="alert('Schedule updated!'); closeModal('editModal');" class="py-3 text-xs font-bold uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function openEdit(name, day, time) {
+            document.getElementById('clientNameInput').value = name;
+            document.getElementById('dayInput').value = day;
+            document.getElementById('timeInput').value = time;
+            openModal('editModal');
+        }
+    </script>
+</body>
+</html>

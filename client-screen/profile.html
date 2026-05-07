@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Client Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- CLIENT SIDEBAR (DESKTOP) -->
+    <aside class="hidden md:flex flex-col w-64 bg-fitpad-gray text-white h-screen sticky top-0 z-40">
+        
+        <!-- Logo Area -->
+        <div class="p-8">
+            <img src="https://storage.googleapis.com/chat-staging-1b91.appspot.com/users/a90333d7-2f34-4b53-bba9-166ed0f7d544/conversations/4ea5cd5f-0eb4-4531-b8ca-c4f4544dcf4d/1ed710de-1011-409e-a89c-9c98baed033a.png" alt="Fitpad Logo" class="h-10 w-auto object-contain">
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 px-4 space-y-2 mt-4">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all group">
+                <ion-icon name="grid-outline" class="text-xl group-hover:text-brand-yellow transition-colors"></ion-icon>
+                <span class="text-sm font-semibold">Dashboard</span>
+            </a>
+            
+            <a href="session-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all group">
+                <ion-icon name="calendar-outline" class="text-xl group-hover:text-brand-yellow transition-colors"></ion-icon>
+                <span class="text-sm font-semibold">Session List</span>
+            </a>
+            
+            <a href="session.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all group">
+                <ion-icon name="fitness-outline" class="text-xl group-hover:text-brand-yellow transition-colors"></ion-icon>
+                <span class="text-sm font-semibold">Session Screen</span>
+            </a>
+            
+            <!-- Client Profile (Active) -->
+            <a href="profile.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow transition-all shadow-sm">
+                <ion-icon name="person" class="text-xl brand-yellow"></ion-icon>
+                <span class="text-sm font-bold">My Profile</span>
+            </a>
+        </nav>
+
+        <div class="p-4 mb-4">
+            <a href="../client-login.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-red-400 rounded-xl transition-all">
+                <ion-icon name="log-out-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Log Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 p-4 md:p-10 mb-20 md:mb-0 overflow-x-hidden">
+        
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Header -->
+            <header class="mb-8">
+                <h2 class="text-3xl md:text-4xl font-black text-fitpad-gray uppercase tracking-tight">My Profile</h2>
+            </header>
+
+            <!-- 10.1 PROFILE COVER & BASIC INFO -->
+            <section class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+                <div class="h-32 bg-fitpad-gray relative">
+                    <div class="absolute inset-0 opacity-10 flex items-center justify-center">
+                        <h1 class="text-white text-6xl font-bold tracking-[1em]">FITPAD</h1>
+                    </div>
+                </div>
+                
+                <div class="px-8 pb-8">
+                    <div class="relative flex flex-col md:flex-row md:items-end gap-6 -mt-12">
+                        <!-- Client Avatar -->
+                        <div class="w-32 h-32 rounded-3xl bg-brand-yellow border-4 border-white shadow-lg flex items-center justify-center text-fitpad-gray text-4xl font-black">
+                            JD
+                        </div>
+                        <div class="flex-1 pb-2">
+                            <h2 class="text-2xl font-bold text-fitpad-gray uppercase tracking-tight">Jane Doe</h2>
+                            <p class="text-gray-400 font-mono text-sm mt-1">jane.doe@example.com</p>
+                        </div>
+                        <div class="flex gap-2 pb-2">
+                            <button onclick="window.location.href='profile-edit.html'" class="bg-fitpad-gray text-white px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:brightness-125 transition-all shadow-md">
+                                Edit Details
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Client Metrics Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-10 border-t border-gray-50 pt-8">
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Birthday</p>
+                            <p class="text-sm font-bold text-fitpad-gray">Oct 12, 1994</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-1 mb-1">
+                                Age <ion-icon name="calculator" class="text-gray-300"></ion-icon>
+                            </p>
+                            <p class="text-sm font-bold text-fitpad-gray">31 <span class="text-[10px] text-gray-400 font-normal">(Auto)</span></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Weight</p>
+                            <p class="text-sm font-bold text-fitpad-gray">65.2 kg</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Height</p>
+                            <p class="text-sm font-bold text-fitpad-gray">165 cm</p>
+                        </div>
+                        <div class="col-span-2 md:col-span-1 border-t md:border-t-0 border-gray-100 pt-3 md:pt-0">
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
+                                <ion-icon name="flag" class="text-brand-yellow"></ion-icon> Fitness Goal
+                            </p>
+                            <p class="text-xs font-bold text-fitpad-gray bg-gray-50 inline-block px-2 py-1 rounded">Weight Loss / HIIT</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 10.2 INBODY ASSESSMENT RESULTS & REMARKS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                
+                <!-- InBody Assessment Uploads -->
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col h-full">
+                    <h3 class="text-fitpad-gray font-bold uppercase text-xs tracking-widest mb-6 flex items-center gap-2">
+                        <ion-icon name="document-text-outline" class="brand-yellow text-lg"></ion-icon>
+                        InBody Assessments
+                    </h3>
+                    
+                    <div class="space-y-4 flex-1">
+                        <!-- Result Row 1 -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-xl group hover:border-gray-200 transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-white border border-gray-100 flex items-center justify-center flex-shrink-0 shadow-sm text-brand-yellow">
+                                    <ion-icon name="document-text"></ion-icon>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-fitpad-gray truncate max-w-[120px] sm:max-w-[150px]" title="InBody_Jane_Apr20.pdf">InBody_Jane_Apr20.pdf</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Apr 20, 2026</p>
+                                </div>
+                            </div>
+                            <button class="bg-fitpad-gray text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:brightness-125 transition-all shadow-sm">
+                                View Result
+                            </button>
+                        </div>
+
+                        <!-- Result Row 2 -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-xl group hover:border-gray-200 transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-white border border-gray-100 flex items-center justify-center flex-shrink-0 shadow-sm text-blue-400">
+                                    <ion-icon name="image"></ion-icon>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-fitpad-gray truncate max-w-[120px] sm:max-w-[150px]" title="Scan_0315.png">Scan_0315.png</p>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Mar 15, 2026</p>
+                                </div>
+                            </div>
+                            <button class="bg-fitpad-gray text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:brightness-125 transition-all shadow-sm">
+                                View Result
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Coach Remarks -->
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col h-full">
+                    <h3 class="text-fitpad-gray font-bold uppercase text-xs tracking-widest mb-6 flex items-center gap-2">
+                        <ion-icon name="chatbubbles-outline" class="text-blue-500 text-lg"></ion-icon>
+                        Coach Remarks
+                    </h3>
+                    <div class="flex-1 bg-blue-50 border border-blue-100 rounded-xl p-5 relative">
+                        <ion-icon name="quote" class="absolute top-4 left-4 text-blue-200 text-4xl opacity-50"></ion-icon>
+                        <p class="text-sm text-gray-600 font-medium leading-relaxed relative z-10 pl-6 pt-2 italic">
+                            "Jane has shown consistent improvement over the last month. We will focus slightly more on resistance training in the upcoming weeks to improve muscle mass as per the latest InBody scan."
+                        </p>
+                        <div class="mt-4 pt-4 border-t border-blue-200/50 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-fitpad-gray text-brand-yellow flex items-center justify-center text-[8px] font-black">
+                                SA
+                            </div>
+                            <span class="text-[10px] font-bold text-blue-800 uppercase tracking-widest">Sarah Adams</span>
+                            <span class="text-[10px] text-blue-400 ml-auto font-medium">Updated: Apr 21, 2026</span>
+                        </div>
+                    </div>
+                </section>
+                
+            </div>
+
+            <!-- Optional: Change Password Section -->
+            <div class="mt-8 bg-gray-200/50 rounded-2xl p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <ion-icon name="shield-checkmark-outline" class="text-gray-500"></ion-icon>
+                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Account Security: Active</span>
+                </div>
+                <button class="text-[10px] font-bold text-fitpad-gray hover:underline uppercase tracking-widest">Change Password</button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- CLIENT MOBILE BOTTOM NAVIGATION -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-2 py-4 flex justify-around items-center z-50 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.3)]">
+        <a href="dashboard.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
+            <ion-icon name="grid-outline" class="text-2xl"></ion-icon>
+            <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">Dash</span>
+        </a>
+        <a href="session-list.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
+            <ion-icon name="calendar-outline" class="text-2xl"></ion-icon>
+            <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">List</span>
+        </a>
+        <a href="session.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
+            <ion-icon name="fitness-outline" class="text-2xl"></ion-icon>
+            <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">Active</span>
+        </a>
+        <a href="profile.html" class="flex flex-col items-center brand-yellow transition-colors">
+            <ion-icon name="person" class="text-2xl"></ion-icon>
+            <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">Profile</span>
+        </a>
+    </nav>
+
+</body>
+</html>

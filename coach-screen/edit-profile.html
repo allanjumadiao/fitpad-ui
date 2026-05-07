@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Edit Coach Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside class="hidden md:flex flex-col w-64 bg-fitpad-gray text-white h-screen sticky top-0 z-40">
+        <div class="p-8"><h1 class="brand-yellow text-2xl font-bold tracking-[0.2em] uppercase">Fitpad</h1></div>
+        <nav class="flex-1 px-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all">
+                <ion-icon name="grid-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Dashboard</span>
+            </a>
+            <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all">
+                <ion-icon name="people-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Client List</span>
+            </a>
+            <a href="session.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all">
+                <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Sessions</span>
+            </a>
+            <a href="profile.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow">
+                <ion-icon name="person" class="text-xl brand-yellow"></ion-icon>
+                <span class="text-sm font-bold">My Profile</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-4 md:p-10 mb-20 md:mb-0 overflow-x-hidden">
+        
+        <div class="max-w-4xl mx-auto">
+            
+            <header class="mb-8">
+                <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+                    <a href="profile.html" class="hover:text-fitpad-gray transition-colors">My Profile</a>
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                    <span class="text-brand-yellow">Edit Mode</span>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-fitpad-gray uppercase tracking-tight">Edit Profile</h2>
+                    <p class="text-gray-500 text-sm">Update your basic information, credentials, and achievements.</p>
+                </div>
+            </header>
+
+            <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Profile updated successfully!');">
+                
+                <!-- COVER & AVATAR SECTION -->
+                <section class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+                    <!-- Cover Photo -->
+                    <div class="h-32 bg-fitpad-gray relative group cursor-pointer transition-all">
+                        <div class="absolute inset-0 opacity-10 flex items-center justify-center">
+                            <h1 class="text-white text-6xl font-bold tracking-[1em]">FITPAD</h1>
+                        </div>
+                        <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center transition-all">
+                            <span class="text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                                <ion-icon name="image-outline" class="text-lg"></ion-icon> Change Cover
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="px-8 pb-8">
+                        <div class="relative flex flex-col md:flex-row md:items-end gap-6 -mt-12">
+                            <!-- Avatar Edit -->
+                            <div class="relative group cursor-pointer">
+                                <div class="w-32 h-32 rounded-3xl bg-brand-yellow border-4 border-white shadow-lg flex items-center justify-center text-fitpad-gray text-4xl font-black transition-all group-hover:brightness-90">
+                                    JD
+                                </div>
+                                <div class="absolute inset-0 bg-black/40 rounded-3xl hidden group-hover:flex items-center justify-center border-4 border-white transition-all">
+                                    <ion-icon name="camera-outline" class="text-white text-3xl"></ion-icon>
+                                </div>
+                            </div>
+                            
+                            <div class="flex-1 pb-2">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">First Name</label>
+                                        <input type="text" value="John" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Last Name</label>
+                                        <input type="text" value="Doe" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Basic Details Form -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 pt-8 border-t border-gray-50">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Coach ID (Read Only)</label>
+                                <input type="text" value="CP-9921" readonly class="w-full bg-gray-100 border border-gray-200 p-3 rounded-xl text-sm font-mono text-gray-500 cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Coach Level / Role</label>
+                                <select class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all cursor-pointer">
+                                    <option value="junior">Junior Coach</option>
+                                    <option value="senior" selected>Senior Coach</option>
+                                    <option value="master">Master Trainer</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Years of Experience</label>
+                                <input type="number" min="0" value="6" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Specialization (Optional)</label>
+                                <input type="text" value="Strength & Conditioning, Weight Loss" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    
+                    <!-- EDIT CREDENTIALS -->
+                    <section class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-fitpad-gray font-bold uppercase text-xs tracking-widest flex items-center gap-2">
+                                <ion-icon name="ribbon-outline" class="brand-yellow text-lg"></ion-icon> Professional Credentials
+                            </h3>
+                            <button type="button" onclick="addCredential()" class="text-brand-yellow hover:text-yellow-600 transition-colors p-1" title="Add New Credential">
+                                <ion-icon name="add-circle" class="text-2xl"></ion-icon>
+                            </button>
+                        </div>
+
+                        <div id="credentialsContainer" class="space-y-4 flex-1">
+                            <!-- Pre-filled Item 1 -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 relative group credential-item">
+                                <button type="button" onclick="removeItem(this)" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
+                                    <ion-icon name="trash" class="text-lg"></ion-icon>
+                                </button>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Certification Name</label>
+                                        <input type="text" value="NASM Certified Personal Trainer" required class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Issue Year</label>
+                                            <input type="text" value="2020" class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Valid Until (Year)</label>
+                                            <input type="text" value="2026" class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pre-filled Item 2 -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 relative group credential-item">
+                                <button type="button" onclick="removeItem(this)" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
+                                    <ion-icon name="trash" class="text-lg"></ion-icon>
+                                </button>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Certification Name</label>
+                                        <input type="text" value="Precision Nutrition Level 1" required class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Details / Body</label>
+                                        <textarea class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 resize-y min-h-[60px]">Nutritional Coaching Specialist</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- EDIT ACHIEVEMENTS -->
+                    <section class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-fitpad-gray font-bold uppercase text-xs tracking-widest flex items-center gap-2">
+                                <ion-icon name="trophy-outline" class="brand-yellow text-lg"></ion-icon> Coach Achievements
+                            </h3>
+                            <button type="button" onclick="addAchievement()" class="text-brand-yellow hover:text-yellow-600 transition-colors p-1" title="Add New Achievement">
+                                <ion-icon name="add-circle" class="text-2xl"></ion-icon>
+                            </button>
+                        </div>
+
+                        <div id="achievementsContainer" class="space-y-4 flex-1">
+                            <!-- Pre-filled Achievement 1 -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 relative group border-l-4 border-l-brand-yellow achievement-item">
+                                <button type="button" onclick="removeItem(this)" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
+                                    <ion-icon name="trash" class="text-lg"></ion-icon>
+                                </button>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Year</label>
+                                        <input type="text" value="2025" required class="w-24 bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-500 outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Title</label>
+                                        <input type="text" value="Coach of the Month (August)" required class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Description</label>
+                                        <textarea class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 resize-y min-h-[60px]">Recognized for maintaining a 98% client retention rate.</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pre-filled Achievement 2 -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 relative group border-l-4 border-l-brand-yellow achievement-item">
+                                <button type="button" onclick="removeItem(this)" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
+                                    <ion-icon name="trash" class="text-lg"></ion-icon>
+                                </button>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Year</label>
+                                        <input type="text" value="2024" required class="w-24 bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-500 outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Title</label>
+                                        <input type="text" value="1,000+ Sessions Completed" required class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Description</label>
+                                        <textarea class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 resize-y min-h-[60px]">Milestone achieved across all registered Fitpad clients.</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-end gap-4 items-center">
+                    <button type="button" onclick="window.history.back();" class="text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-fitpad-gray transition-colors px-4 py-2">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-brand-yellow text-fitpad-gray w-full sm:w-auto px-10 py-4 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-md">
+                        Save Profile Changes
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+
+    <!-- MOBILE NAV -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-2 py-4 flex justify-around items-center z-50">
+        <a href="dashboard.html" class="flex flex-col items-center text-gray-400"><ion-icon name="grid-outline" class="text-2xl"></ion-icon></a>
+        <a href="client-list.html" class="flex flex-col items-center text-gray-400"><ion-icon name="people-outline" class="text-2xl"></ion-icon></a>
+        <a href="session.html" class="flex flex-col items-center text-gray-400"><ion-icon name="calendar-outline" class="text-2xl"></ion-icon></a>
+        <a href="profile.html" class="flex flex-col items-center brand-yellow"><ion-icon name="person" class="text-2xl"></ion-icon></a>
+    </nav>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Removes the parent container of the clicked trash icon
+        function removeItem(btn) {
+            btn.parentElement.remove();
+        }
+
+        // Add New Credential Form
+        function addCredential() {
+            const container = document.getElementById('credentialsContainer');
+            const template = `
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 relative group credential-item">
+                    <button type="button" onclick="removeItem(this)" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
+                        <ion-icon name="trash" class="text-lg"></ion-icon>
+                    </button>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Certification Name</label>
+                            <input type="text" placeholder="e.g. Precision Nutrition Level 1" required class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Details / Body</label>
+                            <textarea placeholder="Write details here..." class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 resize-y min-h-[60px]"></textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', template);
+        }
+
+        // Add New Achievement Form
+        function addAchievement() {
+            const container = document.getElementById('achievementsContainer');
+            const template = `
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 relative group border-l-4 border-l-brand-yellow achievement-item">
+                    <button type="button" onclick="removeItem(this)" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
+                        <ion-icon name="trash" class="text-lg"></ion-icon>
+                    </button>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Year</label>
+                            <input type="text" placeholder="e.g. 2026" required class="w-24 bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-gray-500 outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Title</label>
+                            <input type="text" placeholder="e.g. Coach of the Month" required class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-gray-400 uppercase mb-1">Description</label>
+                            <textarea placeholder="Write achievement description..." class="w-full bg-white border border-gray-200 p-2 rounded-lg text-xs font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 resize-y min-h-[60px]"></textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', template);
+        }
+    </script>
+</body>
+</html>

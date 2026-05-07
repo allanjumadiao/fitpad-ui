@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Admin Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+    </style>
+</head>
+<body class="min-h-screen bg-fitpad-gray flex flex-col items-center justify-center p-4">
+
+    <!-- Login Container -->
+    <main class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden relative">
+        
+        <!-- Top Accent Bar -->
+        <div class="h-2 bg-brand-yellow w-full absolute top-0 left-0"></div>
+
+        <div class="p-8 md:p-10">
+            <!-- Header / Branding -->
+            <div class="text-center mb-10">
+                <div class="bg-fitpad-gray px-6 py-4 rounded-2xl inline-flex items-center justify-center shadow-md mb-6">
+                    <img src="images/fitpad-fitness.png" alt="Fitpad Logo" class="h-10 w-auto object-contain">
+                </div>
+                <h1 class="text-2xl font-black text-fitpad-gray uppercase tracking-tight">Admin Portal</h1>
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">Administration Coaching System</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="adminLoginForm" onsubmit="handleLogin(event)" class="space-y-6">
+                
+                <!-- Admin ID Field -->
+                <div>
+                    <label for="adminId" class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <ion-icon name="person-circle-outline" class="text-lg text-brand-yellow"></ion-icon> Admin ID
+                    </label>
+                    <input type="text" id="adminId" required placeholder="e.g. ADM-001" value="FITPAD-001" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="password" class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                            <ion-icon name="lock-closed-outline" class="text-lg text-brand-yellow"></ion-icon> Password
+                        </label>
+                        <a href="#" class="text-[10px] font-bold text-gray-400 hover:text-fitpad-gray hover:underline uppercase tracking-widest transition-colors">Forgot?</a>
+                    </div>
+                    <div class="relative">
+                        <input type="password" id="password" required minlength="8" placeholder="••••••••" value="password" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all pr-12">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-fitpad-gray transition-colors p-1 flex items-center justify-center">
+                            <ion-icon id="eyeIcon" name="eye-off-outline" class="text-xl"></ion-icon>
+                        </button>
+                    </div>
+                    <!-- Validation Error Message (Hidden by default) -->
+                    <p id="passwordError" class="text-red-500 text-[10px] font-bold mt-2 hidden uppercase tracking-widest flex items-center gap-1">
+                        <ion-icon name="alert-circle"></ion-icon> Minimum 8 characters required.
+                    </p>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-fitpad-gray text-white px-8 py-4 rounded-xl text-sm font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-md flex items-center justify-center gap-2">
+                        Secure Login <ion-icon name="log-in-outline" class="text-lg"></ion-icon>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center">
+        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+            <ion-icon name="shield-checkmark" class="text-gray-300 text-sm"></ion-icon> Authorized Personnel Only
+        </p>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.name = 'eye-outline';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.name = 'eye-off-outline';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const adminId = document.getElementById('adminId').value.trim();
+            const password = document.getElementById('password').value;
+            const errorElement = document.getElementById('passwordError');
+
+            // Client-side minimum length validation fallback
+            if (password.length < 8) {
+                errorElement.classList.remove('hidden');
+                document.getElementById('password').focus();
+                return;
+            } else {
+                errorElement.classList.add('hidden');
+            }
+
+            // Mock Submission
+            // alert(`Authenticating Admin ID: ${adminId}...\n\n(In production, this will verify credentials against the system database).`);
+            
+            // Simulating successful login redirect
+            window.location.href = "admin-screen/dashboard.html";
+        }
+    </script>
+</body>
+</html>

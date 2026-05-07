@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Account Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+    </style>
+</head>
+<body class="min-h-screen bg-fitpad-gray flex flex-col items-center justify-center py-10 px-4 relative">
+
+    <!-- Header with Logo -->
+    <header class="mb-10 text-center">
+        <div class="px-6 py-4 rounded-2xl inline-flex items-center justify-center drop-shadow-sm">
+            <img src="../images/fitpad-fitness.png" alt="Fitpad Logo" class="h-16 md:h-20 w-auto object-contain">
+        </div>
+    </header>
+
+    <!-- STATE 1: SUCCESSFUL VERIFICATION -->
+    <main id="successCard" class="w-full max-w-lg bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden text-center p-8 md:p-12 transition-all">
+        
+        <!-- Animated Success Icon -->
+        <div class="relative w-24 h-24 mx-auto mb-8">
+            <div class="absolute inset-0 bg-brand-yellow rounded-full animate-ping opacity-20"></div>
+            <div class="relative w-full h-full bg-[#fdfce8] border-4 border-brand-yellow rounded-full flex items-center justify-center text-brand-yellow shadow-inner">
+                <ion-icon name="checkmark-done" class="text-5xl text-fitpad-gray"></ion-icon>
+            </div>
+        </div>
+
+        <h2 class="text-3xl font-black text-fitpad-gray uppercase tracking-tight mb-4">Account Verified!</h2>
+        
+        <p class="text-gray-500 font-semibold mb-8 leading-relaxed">
+            Your email has been successfully verified and your account is now <span class="text-fitpad-gray font-bold">Active</span>. You are all set to start your fitness journey.
+        </p>
+
+        <div class="flex flex-col gap-4">
+            <a href="../client-login.html" class="bg-brand-yellow text-fitpad-gray px-8 py-4 rounded-xl text-sm font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-md w-full inline-block">
+                Log In to Your Account
+            </a>
+        </div>
+
+    </main>
+
+    <!-- STATE 2: EXPIRED / INVALID LINK -->
+    <main id="expiredCard" class="hidden w-full max-w-lg bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden text-center p-8 md:p-12 transition-all">
+        
+        <!-- Animated Error Icon -->
+        <div class="relative w-24 h-24 mx-auto mb-8">
+            <div class="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20"></div>
+            <div class="relative w-full h-full bg-red-50 border-4 border-red-500 rounded-full flex items-center justify-center text-red-500 shadow-inner">
+                <ion-icon name="alert-circle" class="text-5xl"></ion-icon>
+            </div>
+        </div>
+
+        <h2 class="text-3xl font-black text-fitpad-gray uppercase tracking-tight mb-4">Link Expired</h2>
+        
+        <p class="text-gray-500 font-semibold mb-6 leading-relaxed">
+            This verification link is invalid or has expired. Verification links are only valid for 24 hours for security purposes.
+        </p>
+
+        <div class="flex flex-col gap-4 mt-8">
+            <button type="button" onclick="alert('A new verification link has been sent to your email.');" class="bg-fitpad-gray text-white px-8 py-4 rounded-xl text-sm font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-md w-full inline-block">
+                Resend Verification Link
+            </button>
+            <a href="../client-login.html" class="text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-fitpad-gray transition-colors mt-2">
+                Return to Login
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="mt-12 text-center">
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">&copy; 2026 Fitpad. All rights reserved.</p>
+    </footer>
+
+    <!-- UI TOGGLE FOR PREVIEW PURPOSES ONLY -->
+    <div class="fixed bottom-4 right-4 bg-white p-3 rounded-xl shadow-lg border border-gray-200 z-50 flex items-center gap-3">
+        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Dev Preview:</span>
+        <button onclick="toggleState('success')" class="text-[10px] font-bold bg-green-100 text-green-700 px-3 py-1.5 rounded uppercase hover:bg-green-200 transition-colors">Success</button>
+        <button onclick="toggleState('expired')" class="text-[10px] font-bold bg-red-100 text-red-700 px-3 py-1.5 rounded uppercase hover:bg-red-200 transition-colors">Expired</button>
+    </div>
+
+    <script>
+        function toggleState(state) {
+            const successCard = document.getElementById('successCard');
+            const expiredCard = document.getElementById('expiredCard');
+
+            if (state === 'success') {
+                successCard.classList.remove('hidden');
+                expiredCard.classList.add('hidden');
+            } else {
+                successCard.classList.add('hidden');
+                expiredCard.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

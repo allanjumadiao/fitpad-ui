@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Coach Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <aside class="hidden md:flex flex-col w-64 bg-fitpad-gray text-white h-screen sticky top-0">
+        <div class="p-8"><h1 class="brand-yellow text-2xl font-bold tracking-[0.2em] uppercase">Fitpad</h1></div>
+        <nav class="flex-1 px-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="grid-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Dashboard</span></a>
+            <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="people-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Client List</span></a>
+            <a href="session.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl"><ion-icon name="calendar-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Sessions</span></a>
+            <a href="profile.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow"><ion-icon name="person" class="text-xl brand-yellow"></ion-icon><span class="text-sm font-bold">My Profile</span></a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-10 mb-20 md:mb-0">
+        
+        <div class="max-w-4xl mx-auto">
+            <section class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+                <div class="h-32 bg-fitpad-gray relative">
+                    <div class="absolute inset-0 opacity-10 flex items-center justify-center">
+                        <h1 class="text-white text-6xl font-bold tracking-[1em]">FITPAD</h1>
+                    </div>
+                </div>
+                <div class="px-8 pb-8">
+                    <div class="relative flex flex-col md:flex-row md:items-end gap-6 -mt-12">
+                        <div class="w-32 h-32 rounded-3xl bg-brand-yellow border-4 border-white shadow-lg flex items-center justify-center text-fitpad-gray text-4xl font-black">
+                            JD
+                        </div>
+                        <div class="flex-1 pb-2">
+                            <div class="flex items-center gap-3">
+                                <h2 class="text-2xl font-bold text-fitpad-gray uppercase tracking-tight">John Doe</h2>
+                                <span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-1 rounded">SENIOR COACH</span>
+                            </div>
+                            <p class="text-gray-400 font-mono text-sm uppercase mt-1">Coach ID: CP-9921</p>
+                        </div>
+                        <div class="flex gap-2 pb-2">
+                            <button class="bg-fitpad-gray text-white px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:brightness-125 transition-all">Edit Profile</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 border-t border-gray-50 pt-8">
+                        <div class="text-center md:text-left">
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Active Clients</p>
+                            <p class="text-2xl font-bold text-fitpad-gray">24</p>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Experience</p>
+                            <p class="text-2xl font-bold text-fitpad-gray">6 Years</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                    <h3 class="text-fitpad-gray font-bold uppercase text-xs tracking-widest mb-6 flex items-center gap-2">
+                        <ion-icon name="ribbon-outline" class="brand-yellow text-lg"></ion-icon>
+                        Professional Credentials
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0">
+                                <ion-icon name="checkmark-circle" class="text-green-500"></ion-icon>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-fitpad-gray">NASM Certified Personal Trainer</p>
+                                <p class="text-xs text-gray-400">Issued: 2020 • Valid until 2026</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0">
+                                <ion-icon name="checkmark-circle" class="text-green-500"></ion-icon>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-fitpad-gray">Precision Nutrition Level 1</p>
+                                <p class="text-xs text-gray-400">Nutritional Coaching Specialist</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0">
+                                <ion-icon name="checkmark-circle" class="text-green-500"></ion-icon>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-fitpad-gray">First Aid & CPR Certified</p>
+                                <p class="text-xs text-gray-400">Red Cross Philippines</p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                    <h3 class="text-fitpad-gray font-bold uppercase text-xs tracking-widest mb-6 flex items-center gap-2">
+                        <ion-icon name="trophy-outline" class="brand-yellow text-lg"></ion-icon>
+                        Coach Achievements
+                    </h3>
+                    <div class="space-y-6">
+                        <div class="relative pl-6 border-l-2 border-brand-yellow">
+                            <p class="text-xs font-bold text-gray-400">2025</p>
+                            <p class="text-sm font-bold text-fitpad-gray mt-1">Coach of the Month (August)</p>
+                            <p class="text-xs text-gray-500 mt-1">Recognized for maintaining a 98% client retention rate.</p>
+                        </div>
+                        <div class="relative pl-6 border-l-2 border-brand-yellow">
+                            <p class="text-xs font-bold text-gray-400">2024</p>
+                            <p class="text-sm font-bold text-fitpad-gray mt-1">1,000+ Sessions Completed</p>
+                            <p class="text-xs text-gray-500 mt-1">Milestone achieved across all registered Fitpad clients.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="mt-8 bg-gray-200/50 rounded-2xl p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <ion-icon name="shield-checkmark-outline" class="text-gray-500"></ion-icon>
+                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Account Security: Active</span>
+                </div>
+                <button class="text-[10px] font-bold text-fitpad-gray hover:underline uppercase tracking-widest">Change Password</button>
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-2 py-4 flex justify-around items-center z-50">
+        <a href="dashboard.html" class="flex flex-col items-center text-gray-400"><ion-icon name="grid-outline" class="text-2xl"></ion-icon></a>
+        <a href="client-list.html" class="flex flex-col items-center text-gray-400"><ion-icon name="people-outline" class="text-2xl"></ion-icon></a>
+        <a href="session.html" class="flex flex-col items-center text-gray-400"><ion-icon name="calendar-outline" class="text-2xl"></ion-icon></a>
+        <a href="profile.html" class="flex flex-col items-center brand-yellow"><ion-icon name="person" class="text-2xl"></ion-icon></a>
+    </nav>
+
+</body>
+</html>

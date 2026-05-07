@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Client List & Scheduling</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+        /* Custom scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <aside class="hidden md:flex flex-col w-64 bg-fitpad-gray text-white h-screen sticky top-0 z-40">
+        <div class="p-8"><h1 class="brand-yellow text-2xl font-bold tracking-[0.2em] uppercase">Fitpad</h1></div>
+        <nav class="flex-1 px-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all">
+                <ion-icon name="grid-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Dashboard</span>
+            </a>
+            <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow">
+                <ion-icon name="people" class="text-xl brand-yellow"></ion-icon>
+                <span class="text-sm font-bold">Client List</span>
+            </a>
+            <a href="session.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl">
+                <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Sessions</span>
+            </a>
+            <a href="profile.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all">
+                <ion-icon name="person-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">My Profile</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-8 mb-20 md:mb-0 overflow-x-hidden">
+        
+        <header class="mb-8">
+            <h2 class="text-3xl font-bold text-fitpad-gray uppercase tracking-tight">Client List</h2>
+            <p class="text-gray-500 text-sm">Manage and track your trainee progress.</p>
+        </header>
+
+        <section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 mb-6">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                <div class="lg:col-span-1 relative">
+                    <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </span>
+                    <input type="text" placeholder="Search Name or PT ID..." 
+                        class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#d8f511]/50">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 lg:col-span-2">
+                    <select class="bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-sm focus:outline-none">
+                        <option value="">Session Balance: All</option>
+                        <option value="zero">Zero Remaining</option>
+                        <option value="low">Low Balance (1-3)</option>
+                        <option value="active">Active (4+)</option>
+                    </select>
+                    <select class="bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-sm focus:outline-none">
+                        <option value="">Schedule Status: All</option>
+                        <option value="upcoming">Has Upcoming</option>
+                        <option value="none">No Upcoming</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-2">
+                    <select class="flex-1 bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-sm focus:outline-none">
+                        <option value="recent">Sort: Recent Activity</option>
+                        <option value="name_az">Name (A-Z)</option>
+                        <option value="bal_low">Sessions (Low-High)</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-fitpad-gray text-white text-[11px] uppercase tracking-wider font-bold">
+                        <tr>
+                            <th class="px-6 py-4">Client Detail</th>
+                            <th class="px-6 py-4">PT ID</th>
+                            <th class="px-6 py-4">Sessions (T/U/R)</th>
+                            <th class="px-6 py-4">Status Summary</th>
+                            <th class="px-6 py-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-gray-100">
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-fitpad-gray">Samantha Collins</p>
+                                <p class="text-[10px] text-gray-400">Recent: HIIT (2 hrs ago)</p>
+                            </td>
+                            <td class="px-6 py-4 font-mono font-semibold text-gray-600 tracking-tighter">PT00842</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold">20</span> / <span class="text-blue-600">18</span> / 
+                                    <span class="text-red-500 font-bold bg-red-50 px-2 rounded">2</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">COMP: 18</span>
+                                    <span class="text-[9px] bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded font-bold">ONG: 1</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="openClientSchedule('Samantha Collins', 'PT00842')" title="View Schedule" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-200 rounded-lg transition-all"><ion-icon name="calendar-outline" class="text-lg"></ion-icon></button>
+                                    <button title="View Details" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-200 rounded-lg transition-all"><ion-icon name="eye-outline" class="text-lg"></ion-icon></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-2 py-4 flex justify-around items-center z-50">
+        <a href="dashboard.html" class="flex flex-col items-center text-gray-400"><ion-icon name="grid-outline" class="text-2xl"></ion-icon></a>
+        <a href="client-list.html" class="flex flex-col items-center brand-yellow"><ion-icon name="people" class="text-2xl"></ion-icon></a>
+        <a href="session.html" class="flex flex-col items-center text-gray-400"><ion-icon name="calendar-outline" class="text-2xl"></ion-icon></a>
+        <a href="profile.html" class="flex flex-col items-center text-gray-400"><ion-icon name="person-outline" class="text-2xl"></ion-icon></a>
+    </nav>
+
+    <div id="clientScheduleModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('clientScheduleModal')"></div>
+        <div class="relative w-full max-w-7xl max-h-[90vh] flex flex-col overflow-hidden">
+            
+            <div class="bg-fitpad-gray rounded-t-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-6 text-white border-b border-gray-600">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-brand-yellow flex items-center justify-center text-fitpad-gray font-black text-xl tracking-tighter">SC</div>
+                    <div>
+                        <h3 id="modalClientName" class="font-bold text-2xl uppercase tracking-tight">Samantha Collins</h3>
+                        <p id="modalClientID" class="text-[10px] text-gray-400 font-mono tracking-widest mt-1">PT00842</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center bg-gray-600/50 rounded-xl px-2 py-1">
+                    <button onclick="changeWeek('prev')" class="w-10 h-10 border-2 border-transparent hover:border-brand-yellow text-gray-300 hover:text-brand-yellow rounded-lg flex items-center justify-center transition-all"><ion-icon name="chevron-back-outline"></ion-icon></button>
+                    <span id="weekDateRange" class="text-sm font-bold uppercase tracking-widest px-6">APRIL 20 - 26, 2026</span>
+                    <button onclick="changeWeek('next')" class="w-10 h-10 border-2 border-transparent hover:border-brand-yellow text-gray-300 hover:text-brand-yellow rounded-lg flex items-center justify-center transition-all"><ion-icon name="chevron-forward-outline"></ion-icon></button>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="openModal('addScheduleModal')" class="bg-brand-yellow text-fitpad-gray px-6 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider hover:brightness-110 transition-all">Add New</button>
+                    <button onclick="alert('Successfully copied previous week.')" class="bg-transparent border border-gray-400 text-gray-300 hover:text-white hover:border-white px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">Copy Last Week</button>
+                    <button onclick="closeModal('clientScheduleModal')" class="text-2xl ml-2 hover:text-red-400 text-gray-400 transition-colors"><ion-icon name="close-outline"></ion-icon></button>
+                </div>
+            </div>
+
+            <div class="overflow-auto flex-1 p-8 bg-white rounded-b-2xl custom-scrollbar">
+                <div id="scheduleGridContent" class="grid grid-cols-7 gap-6 min-w-[1000px]">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addScheduleModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-fitpad-gray/95 backdrop-blur-md" onclick="closeModal('addScheduleModal')"></div>
+        <div class="relative bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl">
+            <h3 id="scheduleModalTitle" class="text-xl font-bold text-fitpad-gray mb-6 uppercase tracking-tight">Add New Schedule</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Date</label>
+                    <input type="date" id="schedDate" class="w-full bg-gray-50 border p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Start Time</label>
+                        <input type="time" id="schedStart" class="w-full bg-gray-50 border p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">End Time</label>
+                        <input type="time" id="schedEnd" class="w-full bg-gray-50 border p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 flex gap-3">
+                <button onclick="closeModal('addScheduleModal')" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase hover:bg-gray-100 rounded-xl transition-all">Cancel</button>
+                <button onclick="saveSchedule()" class="flex-1 py-3 text-xs font-bold uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110">Save Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="workoutHistoryModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-fitpad-gray/95 backdrop-blur-md" onclick="closeModal('workoutHistoryModal')"></div>
+        <div class="relative bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-fitpad-gray uppercase tracking-tight">Workout History</h3>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">View Session Notes</p>
+                </div>
+                <span class="bg-green-100 text-green-700 text-[10px] font-black px-3 py-1 rounded-full uppercase">Approved</span>
+            </div>
+            <textarea id="historyNotes" class="w-full h-64 bg-gray-50 border p-4 rounded-2xl text-sm focus:ring-2 focus:ring-brand-yellow/50 outline-none resize-none leading-relaxed" placeholder="Workout details..."></textarea>
+            <div class="mt-8 flex gap-3">
+                <button onclick="closeModal('workoutHistoryModal')" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase hover:bg-gray-100 rounded-xl transition-all">Close</button>
+                <button onclick="alert('Notes Updated'); closeModal('workoutHistoryModal');" class="flex-1 py-3 text-xs font-bold uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110">Update History</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal Control
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function openClientSchedule(name, id) {
+            document.getElementById('modalClientName').innerText = name;
+            document.getElementById('modalClientID').innerText = id;
+            changeWeek('current'); // Reset to current week when opened
+            openModal('clientScheduleModal');
+        }
+
+        // Sub-Modal Actions
+        function openUpdateSchedule(date, start, end) {
+            document.getElementById('scheduleModalTitle').innerText = "Update Schedule";
+            document.getElementById('schedDate').value = date;
+            document.getElementById('schedStart').value = start;
+            document.getElementById('schedEnd').value = end;
+            openModal('addScheduleModal');
+        }
+
+        function openWorkoutHistory(title, notes) {
+            document.getElementById('historyNotes').value = notes;
+            openModal('workoutHistoryModal');
+        }
+
+        function saveSchedule() {
+            alert('Schedule saved successfully.');
+            closeModal('addScheduleModal');
+        }
+
+        // Dynamic Schedule Generator & Navigation
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const scheduleGridContent = document.getElementById('scheduleGridContent');
+        const weekDateRange = document.getElementById('weekDateRange');
+
+        function changeWeek(weekType) {
+            let html = '';
+            
+            // Set Date Text based on action
+            if (weekType === 'current') weekDateRange.innerText = "APRIL 20 - 26, 2026";
+            else if (weekType === 'prev') weekDateRange.innerText = "APRIL 13 - 19, 2026";
+            else if (weekType === 'next') weekDateRange.innerText = "MAY 4 - 10, 2026";
+
+            days.forEach(day => {
+                // Column Wrapper
+                html += `<div class="flex flex-col gap-4 h-full"><h4 class="text-center text-xs font-bold text-gray-400 uppercase tracking-widest">${day}</h4>`;
+                
+                // Content of the day (Mutually exclusive so they align nicely and don't stack)
+                if (day === 'Friday') {
+                    // FRIDAY IS REST DAY: No '+', Solid outline, Cursor not allowed
+                    html += `
+                    <div class="border-2 border-gray-100 bg-gray-50/50 rounded-xl flex-1 min-h-[140px] cursor-not-allowed">
+                        </div>`;
+                } 
+                else if (weekType === 'current' && day === 'Monday') {
+                    // CURRENT WEEK: Monday completed session
+                    html += `
+                    <div onclick="openWorkoutHistory('HIIT Focus', 'Client showed great stamina. Core focus next time.')" class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm cursor-pointer hover:border-brand-yellow transition-all group flex flex-col justify-center flex-1 min-h-[140px]">
+                        <div><span class="text-[9px] font-bold text-green-600 uppercase tracking-widest bg-green-50 px-2 py-1 rounded">Completed</span></div>
+                        <p class="text-xs font-black text-fitpad-gray mt-3">08:00 AM - 09:30 AM</p>
+                        <p class="text-[10px] text-gray-400 mt-1 group-hover:text-fitpad-gray transition-colors">View Workout Notes</p>
+                    </div>`;
+                } 
+                else if (weekType === 'current' && day === 'Wednesday') {
+                    // CURRENT WEEK: Wednesday upcoming session
+                    html += `
+                    <div onclick="openUpdateSchedule('2026-04-22', '10:30', '11:30')" class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm cursor-pointer hover:border-brand-yellow transition-all flex flex-col justify-center flex-1 min-h-[140px]">
+                        <div><span class="text-[9px] font-bold text-fitpad-gray uppercase tracking-widest bg-brand-yellow px-2 py-1 rounded">Upcoming</span></div>
+                        <p class="text-xs font-black text-fitpad-gray mt-3">10:30 AM - 11:30 AM</p>
+                    </div>`;
+                } 
+                else if (weekType === 'prev' && ['Monday', 'Wednesday'].includes(day)) {
+                    // PREV WEEK: Static historical data
+                    html += `
+                    <div onclick="openWorkoutHistory('Strength', 'Standard routine completed.')" class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm cursor-pointer hover:border-brand-yellow transition-all group flex flex-col justify-center flex-1 min-h-[140px]">
+                        <div><span class="text-[9px] font-bold text-green-600 uppercase tracking-widest bg-green-50 px-2 py-1 rounded">Completed</span></div>
+                        <p class="text-xs font-black text-fitpad-gray mt-3">08:00 AM - 09:00 AM</p>
+                        <p class="text-[10px] text-gray-400 mt-1 group-hover:text-fitpad-gray transition-colors">View Workout Notes</p>
+                    </div>`;
+                } 
+                else {
+                    // ALL OTHER DAYS: Blank dashed "Add" Box
+                    html += `
+                    <button onclick="openModal('addScheduleModal')" class="border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center text-gray-300 hover:border-brand-yellow hover:text-brand-yellow transition-all cursor-pointer flex-1 min-h-[140px] w-full bg-white">
+                        <ion-icon name="add-outline" class="text-3xl"></ion-icon>
+                    </button>`;
+                }
+
+                html += `</div>`; // Close Column Wrapper
+            });
+
+            scheduleGridContent.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

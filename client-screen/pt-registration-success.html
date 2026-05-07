@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Registration Successful</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+    </style>
+</head>
+<body class="min-h-screen bg-fitpad-gray flex flex-col items-center justify-center py-10 px-4">
+
+    <!-- Header with Logo -->
+    <header class="mb-10 text-center">
+        <div class="px-6 py-4 rounded-2xl inline-flex items-center justify-center drop-shadow-sm">
+            <img src="../images/fitpad-fitness.png" alt="Fitpad Logo" class="h-16 md:h-20 w-auto object-contain">
+        </div>
+    </header>
+
+    <!-- Success Message Card -->
+    <main class="w-full max-w-lg bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden text-center p-8 md:p-12">
+        
+        <!-- Animated / Highlighted Icon -->
+        <div class="relative w-24 h-24 mx-auto mb-8">
+            <div class="absolute inset-0 bg-brand-yellow rounded-full animate-ping opacity-20"></div>
+            <div class="relative w-full h-full bg-[#fdfce8] border-4 border-brand-yellow rounded-full flex items-center justify-center text-brand-yellow shadow-inner">
+                <ion-icon name="mail-unread" class="text-5xl text-fitpad-gray"></ion-icon>
+            </div>
+        </div>
+
+        <h2 class="text-3xl font-black text-fitpad-gray uppercase tracking-tight mb-4">You're Almost Done!</h2>
+        
+        <p class="text-gray-500 font-semibold mb-6 leading-relaxed">
+            We've sent a verification link to your inbox. Please check your email to activate your account and confirm your session plan.
+        </p>
+
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-8 text-left flex items-start gap-3">
+            <ion-icon name="information-circle" class="text-brand-yellow text-2xl flex-shrink-0 mt-0.5"></ion-icon>
+            <div>
+                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Important Note</h4>
+                <p class="text-xs text-gray-400 font-medium leading-relaxed">The verification link will expire in 24 hours. If you don't see the email within a few minutes, please check your spam or junk folder.</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <a href="../client-login.html" class="bg-fitpad-gray text-white px-8 py-4 rounded-xl text-sm font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-md w-full inline-block">
+                Return to Login
+            </a>
+            
+            <!-- Resend Action -->
+            <p class="text-xs font-semibold text-gray-400 mt-2">
+                Didn't receive the email? 
+                <button type="button" onclick="alert('A new verification link has been sent to your email.');" class="text-fitpad-gray font-bold hover:underline hover:text-brand-yellow transition-colors ml-1">
+                    Click here to resend
+                </button>
+            </p>
+        </div>
+
+    </main>
+
+    <footer class="mt-12 text-center">
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">&copy; 2026 Fitpad. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
