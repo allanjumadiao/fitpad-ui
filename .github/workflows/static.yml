@@ -37,7 +37,7 @@ jobs:
           # 1. Create a clean staging folder
           mkdir -p staging
 
-          # 2. Copy everything EXCEPT the staging folder to avoid the recursion error
+          # 2. Copy everything EXCEPT the staging folder itself
           for item in *; do
             if [ "$item" != "staging" ]; then
               cp -r "$item" staging/
@@ -47,14 +47,15 @@ jobs:
           # 3. Clean up staging (remove workflow files)
           rm -rf staging/.github
 
-          # 4. RECURSIVELY encrypt every .html file found inside 'staging'
-          # This replaces your original HTML with the encrypted versions
-          find staging -name "*.html" -exec sh -c 'staticrypt "$1" "${{ secrets.PAGE_PASSWORD }}" -o "$1"' _ {} \;
+          # 4. ENCRYPT every .html file recursively
+          # We use '-e' to enable a cookie so you stay logged in while navigating folders
+          find staging -name "*.html" -type f -exec staticrypt {} "${{ secrets.PAGE_PASSWORD }}" -e -o {} \;
 
-      - name: Verify Structure
+      - name: Verify Encryption (Action Logs)
         run: |
-          echo "Listing the files being deployed:"
-          ls -F staging
+          echo "Checking if index.html is encrypted..."
+          # If this shows random characters, it worked. If it shows <html>, it failed.
+          head -n 10 staging/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -62,7 +63,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Tells GitHub to host the contents of the staging folder
           path: './staging'
 
       - name: Deploy to GitHub Pages
