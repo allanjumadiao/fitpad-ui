@@ -32,23 +32,25 @@ jobs:
       - name: Install StatiCrypt
         run: npm install -g staticrypt
 
-      - name: Encrypt and Prepare Folders
+      - name: Encrypt Full Directory Structure
         run: |
-          # 1. Create the deployment directory
-          mkdir encrypted
+          # 1. Create a clean folder for the encrypted site
+          mkdir -p encrypted
 
-          # 2. Copy ALL your sub-folders into the deployment directory
-          # This ensures folders like 'admin-screen' exist in the final site
+          # 2. Copy ALL folders (images, screens, navs) to the encrypted folder first
+          # This ensures .png, .gif, and folder structures are preserved
           cp -r admin-screen client-screen coach-screen images navigator-admin navigator-client navigator-coach encrypted/ 2>/dev/null || true
 
-          # 3. Encrypt every .html file in the root
-          # This covers index.html, admin-login.html, etc.
+          # 3. Encrypt the root HTML files
           for file in *.html; do
             if [ -f "$file" ]; then
-              echo "Encrypting $file..."
               staticrypt "$file" "${{ secrets.PAGE_PASSWORD }}" -o "encrypted/$file"
             fi
           done
+
+          # 4. RECURSIVELY encrypt HTML files inside subdirectories
+          # This finds every .html file in the subfolders we just copied and encrypts them in place
+          find encrypted -name "*.html" -not -path "encrypted/*.html" -exec sh -c 'staticrypt "$1" "${{ secrets.PAGE_PASSWORD }}" -o "$1"' _ {} \;
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -56,7 +58,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # We deploy the 'encrypted' folder which now contains everything
           path: './encrypted'
 
       - name: Deploy to GitHub Pages
