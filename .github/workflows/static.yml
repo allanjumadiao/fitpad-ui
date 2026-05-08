@@ -1,27 +1,20 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy Password Protected Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
-    branches: ["master"]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: ["master"] # Change to "main" if that is your default branch name
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
@@ -31,14 +24,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install StatiCrypt
+        run: npm install -g staticrypt
+
+      - name: Encrypt All HTML Files
+        run: |
+          # 1. Create a clean folder for the final site
+          mkdir encrypted
+          
+          # 2. Copy all your asset folders so images/styles don't break
+          # Add any other folders you have here (e.g., assets, img, lib)
+          cp -r css js images 2>/dev/null || true
+          cp -r css js images encrypted/ 2>/dev/null || true
+          
+          # 3. Encrypt every .html file and put it in the encrypted folder
+          # This uses the PAGE_PASSWORD secret you created in Settings
+          for file in *.html; do
+            if [ -f "$file" ]; then
+              staticrypt "$file" "${{ secrets.PAGE_PASSWORD }}" -o "encrypted/$file"
+            fi
+          done
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository (change to './dist' if using a build tool)
-          path: '.'
+          # We only upload the encrypted version
+          path: './encrypted'
 
       - name: Deploy to GitHub Pages
         id: deployment
