@@ -2,7 +2,7 @@ name: Deploy Password Protected Pages
 
 on:
   push:
-    branches: ["master"] # Change to "main" if that is your default branch name
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -32,20 +32,20 @@ jobs:
       - name: Install StatiCrypt
         run: npm install -g staticrypt
 
-      - name: Encrypt All HTML Files
+      - name: Encrypt and Prepare Folders
         run: |
-          # 1. Create a clean folder for the final site
+          # 1. Create the deployment directory
           mkdir encrypted
-          
-          # 2. Copy all your asset folders so images/styles don't break
-          # Add any other folders you have here (e.g., assets, img, lib)
-          cp -r css js images 2>/dev/null || true
-          cp -r css js images encrypted/ 2>/dev/null || true
-          
-          # 3. Encrypt every .html file and put it in the encrypted folder
-          # This uses the PAGE_PASSWORD secret you created in Settings
+
+          # 2. Copy ALL your sub-folders into the deployment directory
+          # This ensures folders like 'admin-screen' exist in the final site
+          cp -r admin-screen client-screen coach-screen images navigator-admin navigator-client navigator-coach encrypted/ 2>/dev/null || true
+
+          # 3. Encrypt every .html file in the root
+          # This covers index.html, admin-login.html, etc.
           for file in *.html; do
             if [ -f "$file" ]; then
+              echo "Encrypting $file..."
               staticrypt "$file" "${{ secrets.PAGE_PASSWORD }}" -o "encrypted/$file"
             fi
           done
@@ -56,7 +56,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # We only upload the encrypted version
+          # We deploy the 'encrypted' folder which now contains everything
           path: './encrypted'
 
       - name: Deploy to GitHub Pages
