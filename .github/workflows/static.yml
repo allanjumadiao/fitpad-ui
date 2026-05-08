@@ -32,25 +32,26 @@ jobs:
       - name: Install StatiCrypt
         run: npm install -g staticrypt
 
-      - name: Encrypt Full Directory Structure
+      - name: Build Encrypted Site
         run: |
-          # 1. Create a clean folder for the encrypted site
-          mkdir -p encrypted
+          # 1. Create a clean staging folder
+          mkdir -p staging
 
-          # 2. Copy ALL folders (images, screens, navs) to the encrypted folder first
-          # This ensures .png, .gif, and folder structures are preserved
-          cp -r admin-screen client-screen coach-screen images navigator-admin navigator-client navigator-coach encrypted/ 2>/dev/null || true
+          # 2. Copy EVERYTHING from the root into staging
+          # Using '.' copies the current directory content into staging/
+          cp -r . staging/
 
-          # 3. Encrypt the root HTML files
-          for file in *.html; do
-            if [ -f "$file" ]; then
-              staticrypt "$file" "${{ secrets.PAGE_PASSWORD }}" -o "encrypted/$file"
-            fi
-          done
+          # 3. Clean up staging (remove the workflow files and the staging folder itself from inside)
+          rm -rf staging/.github staging/staging
 
-          # 4. RECURSIVELY encrypt HTML files inside subdirectories
-          # This finds every .html file in the subfolders we just copied and encrypts them in place
-          find encrypted -name "*.html" -not -path "encrypted/*.html" -exec sh -c 'staticrypt "$1" "${{ secrets.PAGE_PASSWORD }}" -o "$1"' _ {} \;
+          # 4. RECURSIVELY encrypt every .html file found anywhere inside 'staging'
+          # This replaces your clean HTML with encrypted versions
+          find staging -name "*.html" -exec sh -c 'staticrypt "$1" "${{ secrets.PAGE_PASSWORD }}" -o "$1"' _ {} \;
+
+      - name: Verify Staging Structure (Check your Action Logs!)
+        run: |
+          echo "--- The following files will be live at the root of your URL ---"
+          ls -F staging
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -58,7 +59,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './encrypted'
+          # This tells GitHub: "Everything INSIDE staging is my website"
+          path: './staging'
 
       - name: Deploy to GitHub Pages
         id: deployment
