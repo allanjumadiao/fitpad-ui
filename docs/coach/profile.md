@@ -8,7 +8,7 @@ A read-only display of the coach's profile. This is the view that clients might 
 - **Stat Summary**: Active Clients count and Years of Experience.
 - **Credentials List**: A formatted, read-only list of verified certifications.
 - **Achievements List**: A timeline-style list of coach milestones and awards.
-- **Security Footer**: Quick status indicating account security and a link to "Change Password".
+- **Security Footer**: Quick status indicating account security and a link to "Change PIN".
 
 ## Data Requirements (API)
 - `GET /api/coach/profile` - Fetch structured profile data to populate the view.

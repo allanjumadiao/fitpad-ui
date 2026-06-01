@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Change PIN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- CLIENT SIDEBAR (DESKTOP) -->
+    <aside class="hidden md:flex flex-col w-64 bg-fitpad-gray text-white h-screen sticky top-0 z-40">
+        
+        <!-- Logo Area -->
+        <div class="p-8">
+            <img src="https://storage.googleapis.com/chat-staging-1b91.appspot.com/users/a90333d7-2f34-4b53-bba9-166ed0f7d544/conversations/4ea5cd5f-0eb4-4531-b8ca-c4f4544dcf4d/1ed710de-1011-409e-a89c-9c98baed033a.png" alt="Fitpad Logo" class="h-10 w-auto object-contain">
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 px-4 space-y-2 mt-4">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all group">
+                <ion-icon name="grid-outline" class="text-xl group-hover:text-brand-yellow transition-colors"></ion-icon>
+                <span class="text-sm font-semibold">Dashboard</span>
+            </a>
+            
+            <a href="session-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all group">
+                <ion-icon name="calendar-outline" class="text-xl group-hover:text-brand-yellow transition-colors"></ion-icon>
+                <span class="text-sm font-semibold">Session List</span>
+            </a>
+            
+            <a href="session.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all group">
+                <ion-icon name="fitness-outline" class="text-xl group-hover:text-brand-yellow transition-colors"></ion-icon>
+                <span class="text-sm font-semibold">Session Screen</span>
+            </a>
+            
+            <!-- Client Profile (Active) -->
+            <a href="profile.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow transition-all shadow-sm">
+                <ion-icon name="person" class="text-xl brand-yellow"></ion-icon>
+                <span class="text-sm font-bold">My Profile</span>
+            </a>
+        </nav>
+
+        <div class="p-4 mb-4">
+            <a href="../client-login.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-red-400 rounded-xl transition-all">
+                <ion-icon name="log-out-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Log Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-4 md:p-10 mb-20 md:mb-0 overflow-x-hidden">
+        
+        <div class="max-w-2xl mx-auto">
+            
+            <!-- Breadcrumbs & Header -->
+            <header class="mb-8">
+                <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+                    <a href="profile.html" class="hover:text-fitpad-gray transition-colors">My Profile</a>
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                    <span class="text-brand-yellow">Security</span>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-fitpad-gray uppercase tracking-tight">Change PIN Number</h2>
+                    <p class="text-gray-500 text-sm mt-1">Ensure your account is using a secure 6-digit numeric PIN code to stay secure.</p>
+                </div>
+            </header>
+
+            <form id="changePinForm" action="#" method="POST" onsubmit="handlePinChange(event)" class="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-gray-100 flex flex-col gap-6">
+                
+                <!-- Current PIN -->
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Current PIN Number</label>
+                    <div class="relative">
+                        <input type="password" id="currentPin" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all pr-12">
+                        <button type="button" onclick="togglePassword('currentPin', 'eyeCurrent')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-fitpad-gray transition-colors p-1">
+                            <ion-icon id="eyeCurrent" name="eye-off-outline" class="text-xl"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100 my-2">
+
+                <!-- New PIN -->
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">New PIN Number</label>
+                    <div class="relative">
+                        <input type="password" id="newPin" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all pr-12">
+                        <button type="button" onclick="togglePassword('newPin', 'eyeNew')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-fitpad-gray transition-colors p-1">
+                            <ion-icon id="eyeNew" name="eye-off-outline" class="text-xl"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm PIN -->
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Confirm New PIN Number</label>
+                    <div class="relative">
+                        <input type="password" id="confirmPin" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all pr-12">
+                        <button type="button" onclick="togglePassword('confirmPin', 'eyeConfirm')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-fitpad-gray transition-colors p-1">
+                            <ion-icon id="eyeConfirm" name="eye-off-outline" class="text-xl"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PIN Requirements Info -->
+                <div class="bg-gray-50 border-l-4 border-brand-yellow p-4 rounded-r-xl mt-2">
+                    <p class="text-[10px] font-black text-fitpad-gray mb-2 uppercase tracking-widest flex items-center gap-2">
+                        <ion-icon name="information-circle" class="text-lg text-brand-yellow"></ion-icon> Requirements
+                    </p>
+                    <ul class="text-xs font-semibold text-gray-500 space-y-1 ml-6 list-disc">
+                        <li>Must be exactly 6 digits long</li>
+                        <li>Only numeric characters (0-9) are allowed</li>
+                    </ul>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="mt-6 pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-end gap-4 items-center">
+                    <button type="button" onclick="window.history.back();" class="text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-fitpad-gray transition-colors px-4 py-2">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-fitpad-gray text-white w-full sm:w-auto px-10 py-4 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-md">
+                        Update PIN
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+
+    <!-- CLIENT MOBILE BOTTOM NAVIGATION -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-2 py-4 flex justify-around items-center z-50 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.3)]">
+        <a href="dashboard.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
+            <ion-icon name="grid-outline" class="text-2xl"></ion-icon>
+            <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">Dash</span>
+        </a>
+        <a href="session-list.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
+            <ion-icon name="calendar-outline" class="text-2xl"></ion-icon>
+            <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">List</span>
+        </a>
+        <a href="session.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
+            <ion-icon name="fitness-outline" class="text-2xl"></ion-icon>
+            <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">Active</span>
+        </a>
+        <a href="profile.html" class="flex flex-col items-center brand-yellow transition-colors">
+            <ion-icon name="person" class="text-2xl"></ion-icon>
+            <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">Profile</span>
+        </a>
+    </nav>
+
+    <!-- JavaScript logic -->
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.name = 'eye-outline';
+            } else {
+                input.type = 'password';
+                icon.name = 'eye-off-outline';
+            }
+        }
+
+        function handlePinChange(event) {
+            event.preventDefault();
+            const currentPin = document.getElementById('currentPin').value;
+            const newPin = document.getElementById('newPin').value;
+            const confirmPin = document.getElementById('confirmPin').value;
+
+            if (newPin !== confirmPin) {
+                alert("New PIN and Confirm PIN do not match.");
+                return;
+            }
+
+            if (!/^\d{6}$/.test(newPin) || !/^\d{6}$/.test(currentPin)) {
+                alert("PIN must be exactly 6 numeric digits.");
+                return;
+            }
+
+            alert("PIN successfully updated!");
+            document.getElementById('changePinForm').reset();
+        }
+    </script>
+</body>
+</html>

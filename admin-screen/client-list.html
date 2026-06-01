@@ -554,11 +554,7 @@
         }
 
         function viewClientProfile(ptId) {
-            FitpadAlert.show({
-                type: 'info',
-                title: 'Routing',
-                message: `Redirecting to View Profile for Client PT ID: ${ptId}`
-            });
+            window.location.href = 'client-details.html?id=' + ptId;
         }
 
         function triggerResetPassword(ptId) {

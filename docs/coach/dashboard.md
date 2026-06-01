@@ -5,7 +5,6 @@ The main landing page for a coach, providing a snapshot of their day, active cli
 
 ## Key Features & UI Components
 - **Top Stats**: Displays Active Clients count with a trend indicator (e.g., +3 since last month).
-- **Quick Action**: "Register New Client" button to quickly jump to client creation.
 - **Daily Schedule List**: A chronological, easy-to-read list of today's sessions, showing Time, Client Name, Goal, Session Type, and Status (Confirmed, Pending, Manual Log).
 - **Full Calendar Modal**: 
   - A weekly grid view (Monday-Sunday, time slots from 07:00 AM to 10:00 PM).

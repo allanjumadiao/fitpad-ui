@@ -19,32 +19,24 @@
 </head>
 <body class="flex flex-col md:flex-row min-h-screen">
 
-    <!-- SIDEBAR -->
+    <!-- ADMIN SIDEBAR -->
     <aside class="hidden md:flex flex-col w-64 bg-fitpad-gray text-white h-screen sticky top-0 z-40">
         <div class="p-8">
-            <h1 class="brand-yellow text-2xl font-bold tracking-[0.2em] uppercase">Fitpad</h1>
-            <p class="text-[10px] text-gray-400 mt-1 tracking-widest">COACH PORTAL</p>
+            <img src="../images/fitpad-fitness.png" alt="Fitpad Logo" class="h-10 w-auto object-contain">
+            <div class="mt-2 text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em]">Admin Portal</div>
         </div>
-        <nav class="flex-1 px-4 space-y-2">
-            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all">
-                <ion-icon name="grid-outline" class="text-xl"></ion-icon>
-                <span class="text-sm font-semibold">Dashboard</span>
-            </a>
-            <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow">
-                <ion-icon name="people" class="text-xl brand-yellow"></ion-icon>
-                <span class="text-sm font-bold">Client List</span>
-            </a>
-            <a href="session.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl">
-                <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
-                <span class="text-sm font-semibold">Sessions</span>
-            </a>
-            <a href="profile.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all">
-                <ion-icon name="person-outline" class="text-xl"></ion-icon>
-                <span class="text-sm font-semibold">My Profile</span>
-            </a>
+        <nav class="flex-1 px-4 space-y-2 mt-4 overflow-y-auto">
+            <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="grid-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Admin Dashboard</span></a>
+            <a href="coach-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="id-card-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Coach List</span></a>
+            
+            <!-- Client List (Active) -->
+            <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow shadow-sm"><ion-icon name="people" class="text-xl brand-yellow"></ion-icon><span class="text-sm font-bold">Client List</span></a>
+            
+            <a href="session-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="calendar-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Session List</span></a>
+            <a href="setting.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all mt-6 border-t border-white/5 pt-6"><ion-icon name="settings-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Administration</span></a>
         </nav>
         <div class="p-4 mb-4">
-            <a href="../coach-login.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-red-400 rounded-xl transition-all"><ion-icon name="log-out-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Log Out</span></a>
+            <a href="../admin-login.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-red-400 rounded-xl transition-all"><ion-icon name="log-out-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Log Out</span></a>
         </div>
     </aside>
 
@@ -54,12 +46,12 @@
             <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
                 <a href="client-list.html" class="hover:text-fitpad-gray transition-colors">Client List</a>
                 <ion-icon name="chevron-forward-outline"></ion-icon>
-                <span class="text-brand-yellow" id="headerClientName">Samantha Collins</span>
+                <span class="text-brand-yellow" id="headerClientName">Jane Doe</span>
             </div>
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h2 class="text-3xl font-bold text-fitpad-gray uppercase tracking-tight">Client Details</h2>
-                    <p class="text-gray-500 text-sm">PT00842 • Enrolled: Jan 15, 2026</p>
+                    <p class="text-gray-500 text-sm">PT-1042 • Enrolled: Jan 15, 2026</p>
                 </div>
                 <button onclick="alert('Redirecting to Client Edit details...')" class="bg-fitpad-gray text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:brightness-125 transition-all shadow-md">
                     Edit Client Info
@@ -71,16 +63,16 @@
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 xl:col-span-2 flex flex-col md:flex-row gap-6 items-center md:items-start">
                 <div class="w-32 h-32 rounded-full bg-brand-yellow flex items-center justify-center text-fitpad-gray font-black text-4xl shadow-inner flex-shrink-0">
-                    SC
+                    JD
                 </div>
                 <div class="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-2 w-full">
                     <div class="col-span-2 sm:col-span-3 mb-2 border-b border-gray-100 pb-2 text-center md:text-left">
-                        <h3 class="text-2xl font-black text-fitpad-gray uppercase">Samantha Collins</h3>
+                        <h3 class="text-2xl font-black text-fitpad-gray uppercase">Jane Doe</h3>
                         <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Goal: <span class="text-brand-yellow bg-gray-50 px-2 py-0.5 rounded">Weight Loss / HIIT</span></p>
                     </div>
                     <div>
-                        <p class="text-[10px] text-gray-400 uppercase font-bold">Gender</p>
-                        <p class="text-sm font-semibold text-fitpad-gray">Female</p>
+                        <p class="text-[10px] text-gray-400 uppercase font-bold">Assigned Coach</p>
+                        <p class="text-sm font-semibold text-fitpad-gray">Sarah Adams</p>
                     </div>
                     <div>
                         <p class="text-[10px] text-gray-400 uppercase font-bold">Birthday</p>
@@ -109,11 +101,11 @@
                 <div class="relative z-10">
                     <p class="text-gray-400 font-semibold text-xs uppercase tracking-widest mb-4">Session Balance</p>
                     <div class="flex items-end gap-2 mb-1">
-                        <h3 class="text-5xl font-black brand-yellow">2</h3>
+                        <h3 class="text-5xl font-black brand-yellow">10</h3>
                         <p class="text-sm text-gray-300 font-bold uppercase pb-1 tracking-widest">Remaining</p>
                     </div>
                     <p class="text-xs text-gray-400 font-mono mt-4 pt-4 border-t border-white/10">
-                        Formula: 20 (Total) - 18 (Used)
+                        Formula: 24 (Total) - 14 (Used)
                     </p>
                 </div>
                 <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full"></div>
@@ -155,12 +147,12 @@
                                 <td class="p-4 text-xs font-semibold text-gray-500">Apr 20, 2026</td>
                                 <td class="p-4 text-xs font-bold text-fitpad-gray flex items-center gap-2">
                                     <ion-icon name="document-text" class="text-brand-yellow text-lg"></ion-icon>
-                                    InBody_Samantha_Apr20.pdf
+                                    InBody_Jane_Apr20.pdf
                                 </td>
                                 <td class="p-4 text-xs font-bold text-fitpad-gray">65.2 kg</td>
                                 <td class="p-4 text-xs font-semibold text-gray-500">SMM: 26.1kg / PBF: 25.3%</td>
                                 <td class="p-4 text-right">
-                                    <button onclick="viewAssessmentDetails('Apr 20, 2026', 'InBody_Samantha_Apr20.pdf', '65.2', '26.1', '25.3', '5.6', 'Jane has shown consistent improvement. Muscle mass increased by 1.6kg since last month.')" class="text-[10px] font-bold text-brand-yellow uppercase tracking-widest bg-fitpad-gray px-4 py-2 rounded-lg hover:brightness-110 transition-all shadow-sm">
+                                    <button onclick="viewAssessmentDetails('Apr 20, 2026', 'InBody_Jane_Apr20.pdf', '65.2', '26.1', '25.3', '5.6', 'Jane has shown consistent improvement. Muscle mass increased by 1.6kg since last month.')" class="text-[10px] font-bold text-brand-yellow uppercase tracking-widest bg-fitpad-gray px-4 py-2 rounded-lg hover:brightness-110 transition-all shadow-sm">
                                         View Details
                                     </button>
                                 </td>
@@ -192,7 +184,7 @@
                     <h3 class="text-xl font-bold text-fitpad-gray uppercase tracking-tight flex items-center gap-2">
                         <ion-icon name="fitness" class="text-brand-yellow"></ion-icon> Workout History
                     </h3>
-                    <p class="text-xs text-gray-400 mt-0.5">List and edit trainer workouts & coach session remarks.</p>
+                    <p class="text-xs text-gray-400 mt-0.5">List and edit trainer workouts & coach remarks.</p>
                 </div>
                 
                 <div class="relative w-full md:w-72">
@@ -270,12 +262,13 @@
         </div>
     </main>
 
-    <!-- MOBILE NAVIGATION -->
-    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-2 py-4 flex justify-around items-center z-50">
-        <a href="dashboard.html" class="flex flex-col items-center text-gray-400"><ion-icon name="grid-outline" class="text-2xl"></ion-icon></a>
-        <a href="client-list.html" class="flex flex-col items-center brand-yellow"><ion-icon name="people" class="text-2xl"></ion-icon></a>
-        <a href="session.html" class="flex flex-col items-center text-gray-400"><ion-icon name="calendar-outline" class="text-2xl"></ion-icon></a>
-        <a href="profile.html" class="flex flex-col items-center text-gray-400"><ion-icon name="person-outline" class="text-2xl"></ion-icon></a>
+    <!-- ADMIN MOBILE BOTTOM NAV -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-1 py-4 flex justify-around items-center z-40 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.3)]">
+        <a href="dashboard.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors w-1/5"><ion-icon name="grid-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Dash</span></a>
+        <a href="coach-list.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors w-1/5"><ion-icon name="id-card-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Coaches</span></a>
+        <a href="client-list.html" class="flex flex-col items-center brand-yellow transition-colors w-1/5"><ion-icon name="people" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Clients</span></a>
+        <a href="session-list.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors w-1/5"><ion-icon name="calendar-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Sessions</span></a>
+        <a href="setting.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors w-1/5"><ion-icon name="settings-outline" class="text-2xl"></ion-icon><span class="text-[8px] font-bold mt-1 uppercase">Settings</span></a>
     </nav>
 
     <!-- 1. UPLOAD INBODY ASSESSMENT MODAL -->
@@ -472,7 +465,7 @@
 
         // Mock databases
         let assessmentList = [
-            { date: 'Apr 20, 2026', file: 'InBody_Samantha_Apr20.pdf', weight: '65.2', smm: '26.1', pbf: '25.3', visceral: '5', remarks: 'Jane has shown consistent improvement. Muscle mass increased by 1.6kg since last month.' },
+            { date: 'Apr 20, 2026', file: 'InBody_Jane_Apr20.pdf', weight: '65.2', smm: '26.1', pbf: '25.3', visceral: '5', remarks: 'Jane has shown consistent improvement. Muscle mass increased by 1.6kg since last month.' },
             { date: 'Mar 15, 2026', file: 'Scan_Result_0315.png', weight: '68.5', smm: '24.5', pbf: '29.3', visceral: '6', remarks: 'Baseline scan. High body fat and moderate strength. Focus on core stability and strength development.' }
         ];
 
