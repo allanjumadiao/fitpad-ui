@@ -34,6 +34,11 @@
                 <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
                 <span class="text-sm font-semibold">Sessions</span>
             </a>
+            <a href="session-requests.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all relative shadow-sm">
+                <ion-icon name="notifications-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Session Requests</span>
+                <span class="absolute right-4 bg-brand-yellow text-fitpad-gray text-[9px] font-black px-2 py-0.5 rounded-full">2</span>
+            </a>
             <a href="profile.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all">
                 <ion-icon name="person-outline" class="text-xl"></ion-icon>
                 <span class="text-sm font-semibold">My Profile</span>
@@ -215,6 +220,10 @@
         <a href="dashboard.html" class="flex flex-col items-center text-gray-400"><ion-icon name="grid-outline" class="text-2xl"></ion-icon></a>
         <a href="client-list.html" class="flex flex-col items-center brand-yellow"><ion-icon name="people" class="text-2xl"></ion-icon></a>
         <a href="session.html" class="flex flex-col items-center text-gray-400"><ion-icon name="calendar-outline" class="text-2xl"></ion-icon></a>
+        <a href="session-requests.html" class="flex flex-col items-center text-gray-400 relative">
+            <ion-icon name="notifications-outline" class="text-2xl"></ion-icon>
+            <span class="absolute top-0 right-0 -mt-1 -mr-2 bg-brand-yellow text-fitpad-gray text-[8px] font-black px-1.5 rounded-full">2</span>
+        </a>
         <a href="profile.html" class="flex flex-col items-center text-gray-400"><ion-icon name="person-outline" class="text-2xl"></ion-icon></a>
     </nav>
 
@@ -306,5 +315,7 @@
             closeModal('editTimeModal');
         }
     </script>
+    <!-- Global Alert Modal -->
+    <script src="../js/custom-alert.js"></script>
 </body>
 </html>

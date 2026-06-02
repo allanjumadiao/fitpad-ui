@@ -33,6 +33,11 @@
             <a href="dashboard.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white transition-all"><ion-icon name="grid-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Dashboard</span></a>
             <a href="client-list.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-white rounded-xl transition-all"><ion-icon name="people-outline" class="text-xl"></ion-icon><span class="text-sm font-semibold">Client List</span></a>
             <a href="session.html" class="flex items-center gap-4 px-4 py-4 bg-white/10 text-white rounded-xl border-l-4 border-brand-yellow"><ion-icon name="calendar" class="text-xl brand-yellow"></ion-icon><span class="text-sm font-bold">Sessions</span></a>
+            <a href="session-requests.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all relative shadow-sm">
+                <ion-icon name="notifications-outline" class="text-xl"></ion-icon>
+                <span class="text-sm font-semibold">Session Requests</span>
+                <span class="absolute right-4 bg-brand-yellow text-fitpad-gray text-[9px] font-black px-2 py-0.5 rounded-full">2</span>
+            </a>
             <a href="profile.html" class="flex items-center gap-4 px-4 py-4 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-all">
                 <ion-icon name="person-outline" class="text-xl"></ion-icon>
                 <span class="text-sm font-semibold">My Profile</span>
@@ -179,6 +184,10 @@
             <ion-icon name="calendar" class="text-2xl"></ion-icon>
             <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">Sessions</span>
         </a>
+        <a href="session-requests.html" class="flex flex-col items-center text-gray-400 relative">
+            <ion-icon name="notifications-outline" class="text-2xl"></ion-icon>
+            <span class="absolute top-0 right-0 -mt-1 -mr-2 bg-brand-yellow text-fitpad-gray text-[8px] font-black px-1.5 rounded-full">2</span>
+        </a>
         <a href="profile.html" class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
             <ion-icon name="person-outline" class="text-2xl"></ion-icon>
             <span class="text-[9px] font-bold mt-1 tracking-widest uppercase">Profile</span>
@@ -269,5 +278,7 @@
         }
     </script>
 
+    <!-- Global Alert Modal -->
+    <script src="../js/custom-alert.js"></script>
 </body>
 </html>
