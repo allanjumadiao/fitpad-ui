@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitpad API & Database Specification Hub</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Swagger UI CSS CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+  
+  <style>
+    /* =========================================================================
+       CORE VARIABLES & RESET
+       ========================================================================= */
+    :root {
+      --bg-base: #0b0a0f;
+      --bg-surface: #121118;
+      --bg-surface-hover: #1b1924;
+      --border-color: #242232;
+      --border-color-focus: #3d3954;
+      
+      --color-text: #e2e1e9;
+      --color-text-muted: #8e8c9f;
+      
+      --color-primary: #8b5cf6;
+      --color-primary-light: #a78bfa;
+      --color-primary-glow: rgba(139, 92, 246, 0.15);
+      
+      --color-success: #10b981;
+      --color-info: #0ea5e9;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--color-text);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-base);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-color-focus);
+    }
+
+    /* =========================================================================
+       LAYOUT & HEADER
+       ========================================================================= */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 2rem;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-info));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-size: 1.25rem;
+      box-shadow: 0 0 15px var(--color-primary-glow);
+    }
+
+    .brand-name {
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.025em;
+      background: linear-gradient(to right, #fff, #c8c6d7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: #161520;
+      padding: 0.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      padding: 0.5rem 1.25rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Views */
+    .view-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .view-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================================================
+       SCHEMA VIEW STYLING
+       ========================================================================= */
+    .schema-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .schema-title-desc h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.25rem;
+    }
+
+    .schema-title-desc p {
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+    }
+
+    .search-wrapper {
+      position: relative;
+    }
+
+    .search-input {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      width: 320px;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--border-color-focus);
+      box-shadow: 0 0 0 3px var(--color-primary-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-muted);
+      pointer-events: none;
+    }
+
+    .schema-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 968px) {
+      .schema-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .schema-sidebar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      align-self: start;
+      position: sticky;
+      top: 94px;
+      max-height: calc(100vh - 130px);
+      overflow-y: auto;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      padding-left: 0.5rem;
+    }
+
+    .table-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .table-nav-item a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .table-nav-item a:hover {
+      background: var(--bg-surface-hover);
+      color: #fff;
+    }
+
+    .table-nav-item.active a {
+      background: var(--color-primary-glow);
+      color: var(--color-primary-light);
+      font-weight: 600;
+    }
+
+    .table-badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      background: var(--border-color);
+      color: var(--color-text-muted);
+    }
+
+    .table-nav-item.active .table-badge {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .schema-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .table-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      scroll-margin-top: 94px;
+      transition: border-color 0.2s;
+    }
+
+    .table-card:hover {
+      border-color: var(--border-color-focus);
+    }
+
+    .table-card-header {
+      padding: 1.5rem 2rem;
+      background: rgba(255,255,255,0.01);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .table-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .table-title-group h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: #fff;
+    }
+
+    .table-title-badge {
+      background: var(--color-primary-glow);
+      color: var(--color-primary-light);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .table-card-desc {
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      max-width: 800px;
+    }
+
+    .table-relations {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .relation-tag {
+      font-size: 0.75rem;
+      background: #1c1a27;
+      border: 1px solid var(--border-color);
+      color: var(--color-text-muted);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .relation-tag strong {
+      color: var(--color-info);
+      font-family: var(--font-mono);
+    }
+
+    .table-card-body {
+      padding: 1.5rem 2rem;
+      overflow-x: auto;
+    }
+
+    .schema-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .schema-table th, .schema-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .schema-table th {
+      color: var(--color-text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      background: rgba(255,255,255,0.005);
+    }
+
+    .schema-table tbody tr:hover td {
+      background: rgba(255,255,255,0.005);
+    }
+
+    .column-name {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .column-type {
+      font-family: var(--font-mono);
+      color: var(--color-primary-light);
+      font-size: 0.8rem;
+    }
+
+    .constraint-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      margin-right: 0.25rem;
+      text-transform: uppercase;
+    }
+
+    .constraint-pk {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--color-success);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .constraint-fk {
+      background: rgba(14, 165, 233, 0.15);
+      color: var(--color-info);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+    }
+
+    .constraint-unique {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--color-warning);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .column-nullable {
+      color: var(--color-text-muted);
+      font-size: 0.8rem;
+    }
+
+    .column-default {
+      font-family: var(--font-mono);
+      color: var(--color-text-muted);
+      font-size: 0.8rem;
+    }
+
+    .column-desc {
+      color: var(--color-text);
+    }
+
+    /* =========================================================================
+       SWAGGER UI PREMIUM OVERRIDES
+       ========================================================================= */
+    #swagger-ui-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1rem 1.5rem;
+    }
+
+    /* Override Swagger UI Styles to dark mode theme */
+    .swagger-ui {
+      font-family: var(--font-sans) !important;
+      color: var(--color-text) !important;
+    }
+
+    .swagger-ui .info, .swagger-ui .scheme-container {
+      background: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+      padding: 1.5rem 0 !important;
+      color: var(--color-text) !important;
+    }
+
+    .swagger-ui .info .title {
+      font-family: var(--font-sans) !important;
+      color: #fff !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.03em !important;
+    }
+
+    .swagger-ui .info p, .swagger-ui .info li, .swagger-ui .info td, .swagger-ui .info a {
+      color: var(--color-text-muted) !important;
+      font-size: 0.95rem !important;
+    }
+
+    .swagger-ui .info a:hover {
+      color: var(--color-primary-light) !important;
+    }
+
+    .swagger-ui .opblock {
+      background: var(--bg-surface-hover) !important;
+      border: 1px solid var(--border-color) !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+      border-radius: 8px !important;
+    }
+
+    .swagger-ui .opblock .opblock-summary {
+      border-bottom: 1px solid var(--border-color) !important;
+      padding: 0.75rem 1.25rem !important;
+    }
+
+    .swagger-ui .opblock .opblock-summary-path {
+      color: #fff !important;
+      font-family: var(--font-mono) !important;
+      font-weight: 600 !important;
+      font-size: 0.95rem !important;
+    }
+
+    .swagger-ui .opblock .opblock-summary-description {
+      color: var(--color-text-muted) !important;
+      font-family: var(--font-sans) !important;
+      font-size: 0.875rem !important;
+    }
+
+    .swagger-ui .opblock.opblock-get { background: rgba(16, 185, 129, 0.03) !important; border-color: rgba(16, 185, 129, 0.15) !important; }
+    .swagger-ui .opblock.opblock-get .opblock-summary-method { background: var(--color-success) !important; color: #fff !important; font-weight: 700 !important; border-radius: 4px !important; }
+    .swagger-ui .opblock.opblock-get .opblock-summary { border-color: rgba(16, 185, 129, 0.15) !important; }
+
+    .swagger-ui .opblock.opblock-post { background: rgba(139, 92, 246, 0.03) !important; border-color: rgba(139, 92, 246, 0.15) !important; }
+    .swagger-ui .opblock.opblock-post .opblock-summary-method { background: var(--color-primary) !important; color: #fff !important; font-weight: 700 !important; border-radius: 4px !important; }
+    .swagger-ui .opblock.opblock-post .opblock-summary { border-color: rgba(139, 92, 246, 0.15) !important; }
+
+    .swagger-ui .opblock.opblock-put { background: rgba(14, 165, 233, 0.03) !important; border-color: rgba(14, 165, 233, 0.15) !important; }
+    .swagger-ui .opblock.opblock-put .opblock-summary-method { background: var(--color-info) !important; color: #fff !important; font-weight: 700 !important; border-radius: 4px !important; }
+    .swagger-ui .opblock.opblock-put .opblock-summary { border-color: rgba(14, 165, 233, 0.15) !important; }
+
+    .swagger-ui .opblock.opblock-delete { background: rgba(239, 68, 68, 0.03) !important; border-color: rgba(239, 68, 68, 0.15) !important; }
+    .swagger-ui .opblock.opblock-delete .opblock-summary-method { background: var(--color-danger) !important; color: #fff !important; font-weight: 700 !important; border-radius: 4px !important; }
+    .swagger-ui .opblock.opblock-delete .opblock-summary { border-color: rgba(239, 68, 68, 0.15) !important; }
+
+    .swagger-ui .opblock-body {
+      background: var(--bg-surface) !important;
+      padding: 1.5rem !important;
+    }
+
+    .swagger-ui .tabli button {
+      color: var(--color-text-muted) !important;
+      font-family: var(--font-sans) !important;
+      font-weight: 600 !important;
+    }
+
+    .swagger-ui .tabli.active button {
+      color: #fff !important;
+    }
+
+    .swagger-ui .opblock-section-header {
+      background: var(--bg-surface-hover) !important;
+      border: 1px solid var(--border-color) !important;
+      padding: 0.5rem 1rem !important;
+    }
+
+    .swagger-ui .opblock-section-header h4 {
+      color: #fff !important;
+      font-weight: 600 !important;
+    }
+
+    .swagger-ui table thead tr td, .swagger-ui table thead tr th {
+      border-bottom: 1px solid var(--border-color) !important;
+      color: var(--color-text-muted) !important;
+    }
+
+    .swagger-ui .parameter__name {
+      color: #fff !important;
+      font-family: var(--font-mono) !important;
+      font-weight: 700 !important;
+    }
+
+    .swagger-ui .parameter__type {
+      color: var(--color-primary-light) !important;
+      font-family: var(--font-mono) !important;
+    }
+
+    .swagger-ui input[type=text], .swagger-ui select, .swagger-ui textarea {
+      background: var(--bg-surface-hover) !important;
+      border: 1px solid var(--border-color) !important;
+      color: #fff !important;
+      border-radius: 6px !important;
+      padding: 0.4rem 0.8rem !important;
+    }
+
+    .swagger-ui input[type=text]:focus, .swagger-ui select:focus, .swagger-ui textarea:focus {
+      outline: none !important;
+      border-color: var(--border-color-focus) !important;
+      box-shadow: 0 0 0 2px var(--color-primary-glow) !important;
+    }
+
+    .swagger-ui .btn {
+      border: 1px solid var(--border-color) !important;
+      border-radius: 6px !important;
+      background: var(--bg-surface-hover) !important;
+      color: var(--color-text) !important;
+      font-weight: 600 !important;
+      transition: all 0.2s !important;
+    }
+
+    .swagger-ui .btn:hover {
+      background: var(--border-color) !important;
+      color: #fff !important;
+    }
+
+    .swagger-ui .btn.execute {
+      background: var(--color-primary) !important;
+      border-color: var(--color-primary) !important;
+      color: #fff !important;
+    }
+
+    .swagger-ui .btn.execute:hover {
+      background: var(--color-primary-light) !important;
+    }
+
+    .swagger-ui .responses-inner h4, .swagger-ui .responses-inner h5 {
+      color: #fff !important;
+    }
+
+    .swagger-ui .response-col_status {
+      font-family: var(--font-mono) !important;
+      color: #fff !important;
+      font-weight: 700 !important;
+    }
+
+    .swagger-ui .microlight {
+      background: #09080d !important;
+      border-radius: 8px !important;
+      border: 1px solid var(--border-color) !important;
+      font-family: var(--font-mono) !important;
+    }
+
+    .swagger-ui code {
+      font-family: var(--font-mono) !important;
+      background: transparent !important;
+      color: var(--color-text) !important;
+    }
+
+    .swagger-ui section.models {
+      border: 1px solid var(--border-color) !important;
+      background: var(--bg-surface) !important;
+      border-radius: 12px !important;
+    }
+
+    .swagger-ui section.models.is-open {
+      padding: 1.5rem !important;
+    }
+
+    .swagger-ui section.models.is-open h4 {
+      border-bottom: 1px solid var(--border-color) !important;
+      color: #fff !important;
+      font-weight: 700 !important;
+      margin-bottom: 1rem !important;
+      padding-bottom: 0.5rem !important;
+    }
+
+    .swagger-ui .model-container {
+      background: var(--bg-surface-hover) !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: 6px !important;
+      margin: 0.5rem 0 !important;
+      padding: 0.5rem 1rem !important;
+    }
+
+    .swagger-ui .model-box {
+      background: transparent !important;
+    }
+
+    .swagger-ui .model-title {
+      font-family: var(--font-mono) !important;
+      font-weight: 700 !important;
+      color: #fff !important;
+    }
+
+    .swagger-ui .model {
+      font-family: var(--font-mono) !important;
+    }
+
+    .swagger-ui .prop-name {
+      color: var(--color-primary-light) !important;
+    }
+
+    .swagger-ui .prop-type {
+      color: var(--color-info) !important;
+    }
+
+    .swagger-ui .auth-wrapper .btn-authorize {
+      background: var(--color-primary-glow) !important;
+      border-color: var(--color-primary) !important;
+      color: var(--color-primary-light) !important;
+    }
+
+    .swagger-ui .auth-container input[type=text] {
+      background: var(--bg-base) !important;
+    }
+
+    .swagger-ui .modal-ux {
+      background-color: var(--bg-surface) !important;
+      border: 1px solid var(--border-color) !important;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3) !important;
+      border-radius: 16px !important;
+    }
+
+    .swagger-ui .modal-ux-header h3 {
+      color: #fff !important;
+      font-weight: 700 !important;
+    }
+
+    .swagger-ui .modal-ux-content h4 {
+      color: #fff !important;
+    }
+
+    /* Hide Topbar of Swagger default layout */
+    .swagger-ui .topbar {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">F</div>
+      <div class="brand-name">Fitpad Specification Hub</div>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('api-explorer')">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm.5 11.5a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 1 0v4zm0-6a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
+        </svg>
+        API Explorer (Swagger)
+      </button>
+      <button class="tab-btn" onclick="switchTab('db-schema')">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M1 2.5A2.5 2.5 0 0 1 3.5 0h8.75a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-.75.75H3.5a1 1 0 0 0-1 1v1.5a1 1 0 0 0 1 1h8.75a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-.75.75H3.5A2.5 2.5 0 0 1 1 11.5v-9zM12 9H3.5A2.5 2.5 0 0 1 1 6.5v1.8c0 .248.146.473.372.569l1.456.624c.4.172.672.566.672 1.007v1.854a.75.75 0 0 0 1.28.53l1.83-1.83a.75.75 0 0 1 .53-.22h5.862a.75.75 0 0 0 .75-.75V9z"/>
+        </svg>
+        Database Schema
+      </button>
+    </div>
+
+    <div class="nav-links">
+      <a href="https://github.com/allanjumadiao/fitpad-app" target="_blank" class="nav-link">Repository</a>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- Tab 1: API Explorer -->
+    <div id="api-explorer" class="view-content active">
+      <div id="swagger-ui-container">
+        <div id="swagger-ui"></div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Database Schema -->
+    <div id="db-schema" class="view-content">
+      <div class="schema-header">
+        <div class="schema-title-desc">
+          <h1>Database Schema Reference</h1>
+          <p>Complete dictionary of MySQL database tables, field types, indexes, and primary/foreign key relations.</p>
+        </div>
+        <div class="search-wrapper">
+          <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <input type="text" id="schemaSearch" class="search-input" placeholder="Search tables or columns..." onkeyup="filterSchema()">
+        </div>
+      </div>
+
+      <div class="schema-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="schema-sidebar">
+          <div class="sidebar-section-title">Database Tables</div>
+          <ul class="table-nav-list" id="tableNavList">
+            <!-- Dynamically Rendered -->
+          </ul>
+        </aside>
+
+        <!-- Cards -->
+        <div class="schema-cards" id="schemaCards">
+          <!-- Dynamically Rendered -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Swagger UI Scripts CDN -->
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+
+  <script>
+    // =========================================================================
+    // DATABASE SCHEMA DATA
+    // =========================================================================
+    const schemaData = [
+      {
+        name: "users",
+        category: "Identity",
+        description: "Stores authentication credentials and roles for all platform users (admins, coaches, and clients).",
+        relations: [
+          { type: "Has One", table: "profiles", field: "user_id" },
+          { type: "Has One", table: "client_details", field: "user_id" },
+          { type: "Has One", table: "coach_details", field: "user_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary auto-incrementing ID." },
+          { name: "name", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Display name of the user." },
+          { name: "email", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Email address (non-unique to allow client renewals)." },
+          { name: "email_verified_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp when email verification succeeded." },
+          { name: "password", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Blowfish/Bcrypt hashed password (Admins only)." },
+          { name: "pin", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Hashed 6-digit login PIN (Coaches & Clients only)." },
+          { name: "role", type: "ENUM('admin','coach','client')", constraints: [], nullable: "No", default: "None", description: "Access control role for dashboard authorization." },
+          { name: "status", type: "ENUM('pending','active','inactive','finished')", constraints: [], nullable: "No", default: "'active'", description: "State of account access ('finished' signals an expired renewal)." },
+          { name: "remember_token", type: "VARCHAR(100)", constraints: [], nullable: "Yes", default: "NULL", description: "Laravel remember-me token." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Record creation timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Record modification timestamp." }
+        ]
+      },
+      {
+        name: "profiles",
+        category: "Identity",
+        description: "Shared profile/demographic details associated with a user account.",
+        relations: [
+          { type: "Belongs To", table: "users", field: "user_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "user_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to users.id. Cascade on delete." },
+          { name: "first_name", type: "VARCHAR(100)", constraints: [], nullable: "No", default: "None", description: "Given first name." },
+          { name: "last_name", type: "VARCHAR(100)", constraints: [], nullable: "No", default: "None", description: "Given last name." },
+          { name: "gender", type: "ENUM('male','female','other')", constraints: [], nullable: "Yes", default: "NULL", description: "Gender identifier." },
+          { name: "dob", type: "DATE", constraints: [], nullable: "Yes", default: "NULL", description: "Date of birth." },
+          { name: "phone", type: "VARCHAR(20)", constraints: [], nullable: "Yes", default: "NULL", description: "Contact phone number (for SMS)." },
+          { name: "avatar_path", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Path to uploaded profile avatar." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." }
+        ]
+      },
+      {
+        name: "coach_details",
+        category: "Coaching",
+        description: "Specific settings, ratings, levels, and biological metrics for instructors.",
+        relations: [
+          { type: "Belongs To", table: "users", field: "user_id" },
+          { type: "Has Many", table: "coach_credentials", field: "coach_detail_id" },
+          { type: "Has Many", table: "coach_achievements", field: "coach_detail_id" },
+          { type: "Has Many", table: "client_details", field: "coach_detail_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "user_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to users.id. Cascade on delete." },
+          { name: "coach_id", type: "VARCHAR(50)", constraints: ["UNIQUE"], nullable: "No", default: "None", description: "Public Coach Identifier (e.g. CP-9921)." },
+          { name: "role_level", type: "ENUM('coach','head_coach')", constraints: [], nullable: "No", default: "'coach'", description: "Certification tier level." },
+          { name: "experience_years", type: "INT", constraints: [], nullable: "No", default: "0", description: "Years of active coaching." },
+          { name: "specializations", type: "JSON", constraints: [], nullable: "Yes", default: "NULL", description: "Array of focus areas, e.g. ['HIIT', 'Rehab']." },
+          { name: "bio", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "Bio statement displayed to clients." },
+          { name: "rating", type: "DECIMAL(3,2)", constraints: [], nullable: "No", default: "5.00", description: "Average rating score from trainees." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." }
+        ]
+      },
+      {
+        name: "coach_credentials",
+        category: "Coaching",
+        description: "Professional certifications and licenses obtained by coaches.",
+        relations: [
+          { type: "Belongs To", table: "coach_details", field: "coach_detail_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "coach_detail_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to coach_details.id." },
+          { name: "name", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Credential name (e.g. NASM CPT)." },
+          { name: "issue_year", type: "INT", constraints: [], nullable: "No", default: "None", description: "Year credential was issued." },
+          { name: "valid_until", type: "DATE", constraints: [], nullable: "Yes", default: "NULL", description: "Date of credential expiration." },
+          { name: "details", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Issuing organization or notes." }
+        ]
+      },
+      {
+        name: "coach_achievements",
+        category: "Coaching",
+        description: "Special accolades, awards, and career highlights achieved by coaches.",
+        relations: [
+          { type: "Belongs To", table: "coach_details", field: "coach_detail_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "coach_detail_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to coach_details.id." },
+          { name: "year", type: "INT", constraints: [], nullable: "No", default: "None", description: "Year of achievement." },
+          { name: "title", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Title of accomplishment." },
+          { name: "description", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "Detail/context narrative." }
+        ]
+      },
+      {
+        name: "client_details",
+        category: "Clients",
+        description: "Trainee-specific data, including PT tags, physical heights, and purchased session counts.",
+        relations: [
+          { type: "Belongs To", table: "users", field: "user_id" },
+          { type: "Belongs To", table: "coach_details", field: "coach_detail_id" },
+          { type: "Has Many", table: "client_schedules", field: "client_detail_id" },
+          { type: "Has Many", table: "client_assessments", field: "client_detail_id" },
+          { type: "Has Many", table: "training_sessions", field: "client_detail_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "user_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to users.id." },
+          { name: "pt_id", type: "VARCHAR(50)", constraints: ["UNIQUE"], nullable: "No", default: "None", description: "Public Trainee Client ID (e.g. PT00842)." },
+          { name: "coach_detail_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "Yes", default: "NULL", description: "Refers to coach_details.id of assigned coach." },
+          { name: "height", type: "DECIMAL(5,2)", constraints: [], nullable: "Yes", default: "NULL", description: "Trainee height in cm." },
+          { name: "fitness_goal", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Fitness goal text (e.g. HIIT, Muscle Build)." },
+          { name: "base_sessions", type: "INT", constraints: [], nullable: "No", default: "0", description: "Standard paid plan sessions (12, 24, 30, 50)." },
+          { name: "free_sessions", type: "INT", constraints: [], nullable: "No", default: "0", description: "Complimentary sessions given." },
+          { name: "used_sessions", type: "INT", constraints: [], nullable: "No", default: "0", description: "Deducted count of completed and approved workouts." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." }
+        ]
+      },
+      {
+        name: "client_schedules",
+        category: "Clients",
+        description: "Trainee's weekly repeating timeslots for their training sessions.",
+        relations: [
+          { type: "Belongs To", table: "client_details", field: "client_detail_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "client_detail_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to client_details.id." },
+          { name: "day_of_week", type: "TINYINT", constraints: [], nullable: "No", default: "None", description: "1 (Monday) through 7 (Sunday)." },
+          { name: "start_time", type: "TIME", constraints: [], nullable: "No", default: "None", description: "Start time (HH:MM:SS)." },
+          { name: "end_time", type: "TIME", constraints: [], nullable: "No", default: "None", description: "End time (HH:MM:SS), typically start_time + 1 hour." }
+        ]
+      },
+      {
+        name: "client_assessments",
+        category: "Clients",
+        description: "InBody assessment scan records including muscle, fat mass, and file upload pathways.",
+        relations: [
+          { type: "Belongs To", table: "client_details", field: "client_detail_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "client_detail_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to client_details.id." },
+          { name: "weight", type: "DECIMAL(5,2)", constraints: [], nullable: "No", default: "None", description: "Weight in kilograms." },
+          { name: "skeletal_muscle_mass", type: "DECIMAL(5,2)", constraints: [], nullable: "No", default: "None", description: "Skeletal Muscle Mass in kg." },
+          { name: "body_fat_mass", type: "DECIMAL(5,2)", constraints: [], nullable: "No", default: "None", description: "Body Fat Mass in kg." },
+          { name: "visceral_fat_level", type: "INT", constraints: [], nullable: "No", default: "None", description: "Visceral Fat index value (1-20)." },
+          { name: "file_path", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "S3 or storage directory file pathway to PDF/image scan." },
+          { name: "coach_remarks", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "Overall feedback remarks." },
+          { name: "upload_date", type: "DATE", constraints: [], nullable: "No", default: "None", description: "Date assessment was administered." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Record upload timestamp." }
+        ]
+      },
+      {
+        name: "training_sessions",
+        category: "Workouts",
+        description: "Scheduled calendar workouts connecting clients to coaches. Status defines progression.",
+        relations: [
+          { type: "Belongs To", table: "client_details", field: "client_detail_id" },
+          { type: "Belongs To", table: "coach_details", field: "coach_detail_id" },
+          { type: "Has One", table: "session_workout_logs", field: "training_session_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "client_detail_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to client_details.id." },
+          { name: "coach_detail_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to coach_details.id." },
+          { name: "scheduled_date", type: "DATE", constraints: [], nullable: "No", default: "None", description: "Scheduled session date." },
+          { name: "start_time", type: "TIME", constraints: [], nullable: "No", default: "None", description: "Scheduled start time." },
+          { name: "end_time", type: "TIME", constraints: [], nullable: "No", default: "None", description: "Scheduled end time." },
+          { name: "status", type: "ENUM('pending','upcoming','ongoing','completed','approved','declined','rescheduled')", constraints: [], nullable: "No", default: "'pending'", description: "Session life-cycle status." },
+          { name: "reschedule_requested_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp when reschedule was requested." },
+          { name: "rescheduled_date", type: "DATE", constraints: [], nullable: "Yes", default: "NULL", description: "Requested new date." },
+          { name: "rescheduled_start_time", type: "TIME", constraints: [], nullable: "Yes", default: "NULL", description: "Requested new start time." },
+          { name: "rescheduled_end_time", type: "TIME", constraints: [], nullable: "Yes", default: "NULL", description: "Requested new end time." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." }
+        ]
+      },
+      {
+        name: "session_workout_logs",
+        category: "Workouts",
+        description: "The header of workout logs logged during a session, covering warmups and remarks.",
+        relations: [
+          { type: "Belongs To", table: "training_sessions", field: "training_session_id" },
+          { type: "Has Many", table: "session_exercises", field: "workout_log_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "training_session_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to training_sessions.id." },
+          { name: "warm_up", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "Text description of the warmup exercises." },
+          { name: "coach_remarks", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "Overall coaching comments." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." }
+        ]
+      },
+      {
+        name: "session_exercises",
+        category: "Workouts",
+        description: "Individual sets, reps, and weights performed during a workout log.",
+        relations: [
+          { type: "Belongs To", table: "session_workout_logs", field: "workout_log_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "workout_log_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to session_workout_logs.id." },
+          { name: "exercise_name", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Name of the exercise performed." },
+          { name: "sets", type: "INT", constraints: [], nullable: "No", default: "1", description: "Total set count." },
+          { name: "reps_details", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Formatted set details: '10 reps @ 20kg, 8 reps @ 25kg'." }
+        ]
+      },
+      {
+        name: "session_plans",
+        category: "System Masters",
+        description: "Admin configured training packages available for purchase.",
+        relations: [],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "name", type: "VARCHAR(100)", constraints: [], nullable: "No", default: "None", description: "Name (e.g. 12 Sessions (1 Month))." },
+          { name: "session_count", type: "INT", constraints: [], nullable: "No", default: "None", description: "Number of standard sessions." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." }
+        ]
+      },
+      {
+        name: "exercises",
+        category: "System Masters",
+        description: "Master list library of exercises available in the builder.",
+        relations: [],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "name", type: "VARCHAR(255)", constraints: ["UNIQUE"], nullable: "No", default: "None", description: "Unique name of the exercise." },
+          { name: "category", type: "ENUM('Strength','Cardio','Core','Mobility','Plyometrics')", constraints: [], nullable: "No", default: "None", description: "Movement group type." },
+          { name: "preview_path", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Relative file URL to animation preview (GIF/MP4)." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." }
+        ]
+      },
+      {
+        name: "security_audit_logs",
+        category: "Administration",
+        description: "Immutable log entries recording administrative changes, overrides, or reset triggers.",
+        relations: [
+          { type: "Belongs To", table: "users", field: "actor_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "actor_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "Yes", default: "NULL", description: "Refers to users.id of admin. Null represents system action." },
+          { name: "action", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Name/code of actions, e.g. 'Session Approved'." },
+          { name: "ip_address", type: "VARCHAR(45)", constraints: [], nullable: "No", default: "None", description: "IPv4 or IPv6 of requester." },
+          { name: "user_agent", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "Browser user-agent string." },
+          { name: "details", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "Context details in text/JSON form." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Creation/log timestamp." }
+        ]
+      },
+      {
+        name: "sms_logs",
+        category: "Administration",
+        description: "Logs of SMS transactions delivered via integrated gateway.",
+        relations: [
+          { type: "Belongs To", table: "client_details", field: "client_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "client_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "Yes", default: "NULL", description: "Trainee client_details.id or NULL if system/broadcast." },
+          { name: "phone_number", type: "VARCHAR(30)", constraints: [], nullable: "No", default: "None", description: "Recipient mobile number." },
+          { name: "message", type: "TEXT", constraints: [], nullable: "No", default: "None", description: "Sent message body." },
+          { name: "status", type: "VARCHAR(50)", constraints: [], nullable: "No", default: "'pending'", description: "State: 'pending', 'sent', 'failed'." },
+          { name: "gateway_message_id", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Transaction message ID from Android gateway." },
+          { name: "error_message", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "Log reason for failed attempts." },
+          { name: "sent_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Actual dispatch time." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Created timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Updated timestamp." }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // RENDER DATABASE SCHEMA VIEWER
+    // =========================================================================
+    function initSchemaViewer() {
+      const navList = document.getElementById('tableNavList');
+      const cardsContainer = document.getElementById('schemaCards');
+      
+      navList.innerHTML = '';
+      cardsContainer.innerHTML = '';
+      
+      schemaData.forEach((table, index) => {
+        // Sidebar item
+        const li = document.createElement('li');
+        li.className = `table-nav-item ${index === 0 ? 'active' : ''}`;
+        li.id = `nav-${table.name}`;
+        li.innerHTML = `
+          <a href="#table-${table.name}" onclick="highlightNav('${table.name}')">
+            <span>${table.name}</span>
+            <span class="table-badge">${table.columns.length}</span>
+          </a>
+        `;
+        navList.appendChild(li);
+        
+        // Card
+        const card = document.createElement('div');
+        card.className = 'table-card';
+        card.id = `table-${table.name}`;
+        
+        // Relations tags
+        let relationsHtml = '';
+        if (table.relations && table.relations.length > 0) {
+          relationsHtml = `
+            <div class="table-relations">
+              ${table.relations.map(r => `
+                <span class="relation-tag">
+                  ${r.type} <strong>${r.table}</strong> via <code>${r.field}</code>
+                </span>
+              `).join('')}
+            </div>
+          `;
+        }
+        
+        // Columns rows
+        const columnsRows = table.columns.map(col => {
+          let badges = '';
+          col.constraints.forEach(c => {
+            let cls = '';
+            if (c === 'PK' || c === 'AI') cls = 'constraint-pk';
+            if (c === 'FK') cls = 'constraint-fk';
+            if (c === 'UNIQUE') cls = 'constraint-unique';
+            badges += `<span class="constraint-badge ${cls}">${c}</span>`;
+          });
+          
+          return `
+            <tr>
+              <td>
+                <span class="column-name">${col.name}</span>
+                <div style="margin-top: 0.15rem;">${badges}</div>
+              </td>
+              <td><span class="column-type">${col.type}</span></td>
+              <td><span class="column-nullable">${col.nullable}</span></td>
+              <td><span class="column-default">${col.default}</span></td>
+              <td><span class="column-desc">${col.description}</span></td>
+            </tr>
+          `;
+        }).join('');
+        
+        card.innerHTML = `
+          <div class="table-card-header">
+            <div>
+              <div class="table-title-group">
+                <h2>${table.name}</h2>
+                <span class="table-title-badge">${table.category}</span>
+              </div>
+              <p class="table-card-desc">${table.description}</p>
+            </div>
+            ${relationsHtml}
+          </div>
+          <div class="table-card-body">
+            <table class="schema-table">
+              <thead>
+                <tr>
+                  <th style="width: 20%">Column</th>
+                  <th style="width: 15%">Type</th>
+                  <th style="width: 10%">Nullable</th>
+                  <th style="width: 10%">Default</th>
+                  <th style="width: 45%">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${columnsRows}
+              </tbody>
+            </table>
+          </div>
+        `;
+        cardsContainer.appendChild(card);
+      });
+      
+      // Setup Scroll spying for sidebar
+      setupScrollSpy();
+    }
+
+    function highlightNav(tableName) {
+      document.querySelectorAll('.table-nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      const targetNav = document.getElementById(`nav-${tableName}`);
+      if (targetNav) targetNav.classList.add('active');
+    }
+
+    function setupScrollSpy() {
+      const cards = document.querySelectorAll('.table-card');
+      const navItems = document.querySelectorAll('.table-nav-item');
+      
+      window.addEventListener('scroll', () => {
+        let current = '';
+        const scrollPosition = window.scrollY + 120;
+        
+        cards.forEach(card => {
+          const cardTop = card.offsetTop;
+          if (scrollPosition >= cardTop) {
+            current = card.getAttribute('id').replace('table-', '');
+          }
+        });
+        
+        if (current) {
+          navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('id') === `nav-${current}`) {
+              item.classList.add('active');
+            }
+          });
+        }
+      });
+    }
+
+    // Search and Filter Tables
+    function filterSchema() {
+      const query = document.getElementById('schemaSearch').value.toLowerCase();
+      const cards = document.querySelectorAll('.table-card');
+      const navItems = document.querySelectorAll('.table-nav-item');
+      
+      cards.forEach(card => {
+        const tableName = card.id.replace('table-', '').toLowerCase();
+        const cardText = card.innerText.toLowerCase();
+        
+        if (tableName.includes(query) || cardText.includes(query)) {
+          card.style.display = 'block';
+          const navItem = document.getElementById(`nav-${tableName.replace('table-', '')}`);
+          if (navItem) navItem.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+          const navItem = document.getElementById(`nav-${tableName.replace('table-', '')}`);
+          if (navItem) navItem.style.display = 'none';
+        }
+      });
+    }
+
+    // =========================================================================
+    // TAB NAVIGATION
+    // =========================================================================
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelectorAll('.view-content').forEach(view => {
+        view.classList.remove('active');
+      });
+      
+      // Activate
+      const activeBtn = event.currentTarget;
+      activeBtn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+      
+      if (tabId === 'db-schema') {
+        // Trigger resize to fix scroll spies
+        window.dispatchEvent(new Event('resize'));
+      }
+    }
+
+    // =========================================================================
+    // INITIALIZATION
+    // =========================================================================
+    window.onload = function() {
+      // 1. Initialize Swagger UI
+      const ui = SwaggerUIBundle({
+        url: "./openapi.yaml",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIBundle.presets.swaggerUiStandalonePreset
+        ],
+        layout: "BaseLayout"
+      });
+      window.ui = ui;
+      
+      // 2. Initialize Database Schema
+      initSchemaViewer();
+    };
+  </script>
+</body>
+</html>

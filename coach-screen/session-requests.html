@@ -126,6 +126,9 @@
                                 <button onclick="acceptRequest('req-1')" class="bg-green-100 text-green-600 p-2 rounded-lg hover:bg-green-200 transition-colors" title="Accept Booking">
                                     <ion-icon name="checkmark-outline" class="text-lg"></ion-icon>
                                 </button>
+                                <button onclick="rescheduleRequest('req-1')" class="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors" title="Suggest Reschedule">
+                                    <ion-icon name="calendar-outline" class="text-lg"></ion-icon>
+                                </button>
                                 <button onclick="declineRequest('req-1')" class="bg-red-100 text-red-600 p-2 rounded-lg hover:bg-red-200 transition-colors" title="Decline Booking">
                                     <ion-icon name="close-outline" class="text-lg"></ion-icon>
                                 </button>
@@ -154,6 +157,9 @@
                             <td class="p-5 text-center space-x-2">
                                 <button onclick="acceptRequest('req-2')" class="bg-green-100 text-green-600 p-2 rounded-lg hover:bg-green-200 transition-colors" title="Accept Reschedule">
                                     <ion-icon name="checkmark-outline" class="text-lg"></ion-icon>
+                                </button>
+                                <button onclick="rescheduleRequest('req-2')" class="bg-blue-100 text-blue-600 p-2 rounded-lg hover:bg-blue-200 transition-colors" title="Suggest Reschedule">
+                                    <ion-icon name="calendar-outline" class="text-lg"></ion-icon>
                                 </button>
                                 <button onclick="declineRequest('req-2')" class="bg-red-100 text-red-600 p-2 rounded-lg hover:bg-red-200 transition-colors" title="Decline Reschedule">
                                     <ion-icon name="close-outline" class="text-lg"></ion-icon>
@@ -213,6 +219,8 @@
         }
 
         function declineRequest(rowId) {
+            // Because confirm() is native and blocks UI, we keep it or replace with custom logic later.
+            // For now, let's stick to the native confirm or our global alert if they click ok.
             if(confirm("Are you sure you want to decline this session request? The client will be notified.")) {
                 const row = document.getElementById(rowId);
                 if(row) {
@@ -220,6 +228,55 @@
                     checkEmptyState();
                 }
             }
+        }
+
+        let activeRescheduleRowId = null;
+
+        function rescheduleRequest(rowId) {
+            activeRescheduleRowId = rowId;
+            document.getElementById('rescheduleModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Clear inputs
+            document.getElementById('reschedDate').value = '';
+            document.getElementById('reschedStartTime').value = '';
+            document.getElementById('reschedEndTime').value = '';
+        }
+
+        function closeRescheduleModal() {
+            document.getElementById('rescheduleModal').classList.add('hidden');
+            document.body.style.overflow = '';
+            activeRescheduleRowId = null;
+        }
+
+        function submitReschedule() {
+            const date = document.getElementById('reschedDate').value;
+            const start = document.getElementById('reschedStartTime').value;
+            const end = document.getElementById('reschedEndTime').value;
+            
+            if (!date || !start || !end) {
+                alert("Please fill in all date and time fields.");
+                return;
+            }
+            
+            alert("New time proposal sent to client successfully!");
+            
+            // Update row UI to show that a proposal was sent
+            if(activeRescheduleRowId) {
+                const row = document.getElementById(activeRescheduleRowId);
+                if(row) {
+                    const statusCell = row.cells[3];
+                    statusCell.innerHTML = '<span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest">Awaiting Client</span>';
+                    
+                    const actionsCell = row.cells[4];
+                    actionsCell.innerHTML = '<span class="text-[10px] font-bold text-gray-400 uppercase">Proposed</span>';
+                    
+                    row.classList.remove('hover:bg-gray-50/50');
+                    row.classList.add('bg-purple-50/30');
+                }
+            }
+            
+            closeRescheduleModal();
         }
 
         function checkEmptyState() {
@@ -230,6 +287,49 @@
             }
         }
     </script>
+
+    <!-- Reschedule Modal -->
+    <div id="rescheduleModal" class="fixed inset-0 z-[100] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm transform scale-100 transition-transform overflow-hidden relative">
+            
+            <!-- Header -->
+            <div class="bg-fitpad-gray px-6 py-5 border-b border-gray-100 flex justify-between items-center text-white">
+                <h3 class="text-lg font-black uppercase tracking-tight flex items-center gap-2">
+                    <ion-icon name="calendar-outline" class="text-brand-yellow"></ion-icon> Propose New Time
+                </h3>
+                <button type="button" onclick="closeRescheduleModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <ion-icon name="close" class="text-2xl"></ion-icon>
+                </button>
+            </div>
+            
+            <!-- Body -->
+            <form onsubmit="event.preventDefault(); submitReschedule();" class="p-6">
+                <p class="text-xs text-gray-500 font-medium mb-5">Suggest a new date and time for this session request back to the client.</p>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">New Date</label>
+                        <input type="date" id="reschedDate" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Start Time</label>
+                            <input type="time" id="reschedStartTime" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">End Time</label>
+                            <input type="time" id="reschedEndTime" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full bg-brand-yellow text-fitpad-gray mt-6 px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-md">
+                    Send Proposal
+                </button>
+            </form>
+        </div>
+    </div>
     <!-- Global Alert Modal -->
     <script src="../js/custom-alert.js"></script>
 </body>

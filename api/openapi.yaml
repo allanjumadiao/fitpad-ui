@@ -1,0 +1,2184 @@
+openapi: 3.0.0
+info:
+  title: Fitpad Backend API Specification
+  description: |
+    This document details the endpoints, authentication mechanisms, parameters, schemas, and responses for the `fitpad-app` backend, serving the `fitpad-ui` panels.
+
+    ### API Authentication & Security Guidelines
+
+    1. **Bearer Token Authentication**:
+       - Authenticated endpoints require a standard Bearer JWT token in the `Authorization: Bearer <TOKEN>` header.
+       - Token management is handled dynamically via Laravel Sanctum.
+       - Tokens must be revoked immediately upon logout using `/api/auth/logout`.
+
+    2. **Secure Communication (TLS/HTTPS)**:
+       - In staging and production environments, all API routes must be served strictly over HTTPS (TLS 1.2+).
+       - Response headers should enforce HSTS (HTTP Strict Transport Security).
+
+    3. **Request Throttling (Rate Limiting)**:
+       - The `/api/auth/login` endpoint enforces a rate limit of **5 attempts per minute**.
+       - Exceeded limits trigger an HTTP `429 Too Many Requests` status code with a `Retry-After` header.
+
+    4. **Client App Verification (X-API-KEY)**:
+       - The `/api/auth/login` route requires an `X-API-KEY` header containing a static secret key to verify that the request originates from the authorized client application (e.g., `fitpad-ui`).
+       - *Security Advisory*: Since static client-side keys can be extracted via browser inspector tools, this header must be combined with strict CORS domain restrictions and IP-based rate limits to prevent targeted script impersonation.
+
+    5. **Credential and PIN Validation**:
+       - Client and coach access relies on unique `pt_id`/`coach_id` credentials and 6-digit numeric PINs.
+       - Hashed PIN storage (e.g., Bcrypt) is mandatory. Clear-text PINs are never stored.
+
+    5. **Client-Side Storage & XSS Prevention**:
+       - To protect Bearer tokens from Cross-Site Scripting (XSS) theft, we recommend utilizing `HttpOnly`, `Secure` cookies with `SameSite=Strict` settings.
+       - If the frontend stores tokens in `sessionStorage` or `localStorage`, it must strictly sanitize all dynamic API outputs before rendering.
+
+    6. **Zero Hardcoded Secrets**:
+       - Decouple all server secrets, database credentials, and SMS gateway tokens via the `.env` file, loaded through Laravel `config()`.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local development server (artisan serve)
+  - url: http://localhost
+    description: Local Docker development environment
+paths:
+  # =========================================================================
+  # AUTHENTICATION & PUBLIC
+  # =========================================================================
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication & Public
+      summary: Authenticate User
+      description: Logs in an admin using Admin ID & Password, or a coach/client using Coach/PT ID & 6-digit PIN.
+      parameters:
+        - name: X-API-KEY
+          in: header
+          required: true
+          schema:
+            type: string
+          description: |
+            Static client application API key verifying request source integrity.
+            *Security Note*: Because this header is readable in client-side code, it must be paired with backend IP rate limiting and CORS domain rules to prevent target abuse.
+          example: "fitpad_client_secret_xyz123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  title: Admin Login Credentials
+                  required:
+                    - admin_id
+                    - password
+                  properties:
+                    admin_id:
+                      type: string
+                      description: Admin identity tag (e.g. FITPAD-001)
+                      example: FITPAD-001
+                    password:
+                      type: string
+                      format: password
+                      description: Admin secret password (min 8 chars)
+                      example: password
+                - type: object
+                  title: Coach Login Credentials
+                  required:
+                    - coach_id
+                    - pin
+                  properties:
+                    coach_id:
+                      type: string
+                      description: Coach identity tag (e.g. CO-001)
+                      example: CO-001
+                    pin:
+                      type: string
+                      pattern: '^[0-9]{6}$'
+                      description: 6-digit coach login PIN
+                      example: "123456"
+                - type: object
+                  title: Client Login Credentials
+                  required:
+                    - pt_id
+                    - pin
+                  properties:
+                    pt_id:
+                      type: string
+                      description: Client trainee identity tag (e.g. PT0001)
+                      example: PT0001
+                    pin:
+                      type: string
+                      pattern: '^[0-9]{6}$'
+                      description: 6-digit client login PIN
+                      example: "123456"
+      responses:
+        '200':
+          description: Successful authentication. Returns Bearer token and user context.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 3|aF83jDkxK28Lksldka923...
+                  user:
+                    $ref: '#/components/schemas/User'
+                  profile:
+                    $ref: '#/components/schemas/Profile'
+        '422':
+          description: Validation error or invalid credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '429':
+          description: Too Many Requests (Rate limit exceeded after 5 failed login attempts).
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+              description: Number of seconds to wait before trying again.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Too many login attempts. Please try again in 60 seconds."
+
+
+  /api/register/check-email:
+    post:
+      tags:
+        - Authentication & Public
+      summary: Check Active Subscription by Email
+      description: Validates if the email has an active or pending account. Non-unique emails are allowed for client renewals once old accounts transition to 'finished' or 'inactive'.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: trainee@example.com
+      responses:
+        '200':
+          description: Validation successful. Returns if an active subscription exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  has_active_account:
+                    type: boolean
+                    description: True if an active/pending trainee account already exists under this email.
+                    example: false
+        '422':
+          description: Validation failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/register:
+    post:
+      tags:
+        - Authentication & Public
+      summary: Register Client (Onboarding)
+      description: Public multi-step registration flow. Creates User, Profile, Client Details, Client Schedules, and matches with selected Coach.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - email
+                - dob
+                - pin
+                - plan_id
+                - coach_detail_id
+                - schedules
+              properties:
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                email:
+                  type: string
+                  format: email
+                  example: john.doe@example.com
+                dob:
+                  type: string
+                  format: date
+                  example: "1995-04-12"
+                pin:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+                  description: 6-digit numeric PIN code
+                  example: "123456"
+                phone:
+                  type: string
+                  example: "+639171234567"
+                plan_id:
+                  type: integer
+                  description: ID of selected session plan
+                  example: 1
+                coach_detail_id:
+                  type: integer
+                  description: ID of selected coach
+                  example: 2
+                schedules:
+                  type: array
+                  description: Chosen schedule slots
+                  items:
+                    type: object
+                    required:
+                      - day_of_week
+                      - start_time
+                    properties:
+                      day_of_week:
+                        type: integer
+                        minimum: 1
+                        maximum: 7
+                        description: 1 (Mon) - 7 (Sun)
+                        example: 1
+                      start_time:
+                        type: string
+                        pattern: '^\d{2}:\d{2}$'
+                        example: "08:00"
+      responses:
+        '201':
+          description: Registration completed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Registration successful.
+                  user_id:
+                    type: integer
+                    example: 5
+                  pt_id:
+                    type: string
+                    example: PT00842
+        '422':
+          description: Registration validation failed.
+
+  /api/coaches:
+    get:
+      tags:
+        - Authentication & Public
+      summary: Get Coach List
+      description: Returns all available coaches for onboarding directory or matching.
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CoachDetailCard'
+
+  /api/coaches/{id}/availability:
+    get:
+      tags:
+        - Authentication & Public
+      summary: Get Coach Availability Slots
+      description: Fetches availability calendar data for rendering schedule picker in UI.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Coach Details primary ID
+      responses:
+        '200':
+          description: Calendar slots successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  coach_id:
+                    type: integer
+                    example: 2
+                  available_days:
+                    type: array
+                    items:
+                      type: integer
+                    example: [1, 3, 5]
+                  busy_slots:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                          example: "2026-06-05"
+                        start_time:
+                          type: string
+                          example: "09:00"
+                        end_time:
+                          type: string
+                          example: "10:00"
+
+  # =========================================================================
+  # ADMIN PORTAL
+  # =========================================================================
+  /api/admin/dashboard:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Admin Dashboard Metrics
+      description: Retrieves high-level metrics for main admin panel view.
+      responses:
+        '200':
+          description: Metrics payload.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_active_clients:
+                    type: integer
+                    example: 48
+                  total_coaches:
+                    type: integer
+                    example: 6
+                  completed_sessions_month:
+                    type: integer
+                    example: 182
+                  recent_logs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SecurityAuditLog'
+
+  /api/admin/clients:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: List Clients
+      description: Retrieves all trainee client profiles. Support filters and search.
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search term matching first name, last name, email, or PT ID
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pending, active, inactive]
+      responses:
+        '200':
+          description: List of clients.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClientDetailsRow'
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Register Client Manually
+      description: Direct administrator registration of client.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - email
+                - pin
+                - plan_id
+                - coach_detail_id
+              properties:
+                first_name:
+                  type: string
+                  example: Jane
+                last_name:
+                  type: string
+                  example: Smith
+                email:
+                  type: string
+                  format: email
+                  example: jane.smith@example.com
+                pin:
+                  type: string
+                  example: "123456"
+                phone:
+                  type: string
+                  example: "+639178888888"
+                plan_id:
+                  type: integer
+                  example: 2
+                coach_detail_id:
+                  type: integer
+                  example: 1
+                schedules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      day_of_week:
+                        type: integer
+                        example: 2
+                      start_time:
+                        type: string
+                        example: "14:00"
+      responses:
+        '201':
+          description: Created.
+
+  /api/admin/clients/{id}:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Get Client Profile details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Trainee full details, metrics history, and coach info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProfile'
+
+  /api/admin/clients/{id}/pin-reset:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Reset Trainee PIN
+      description: Overwrites client PIN with a temporary system PIN.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                temp_pin:
+                  type: string
+                  example: "000000"
+      responses:
+        '200':
+          description: PIN reset successful.
+
+  /api/admin/clients/{id}/status:
+    put:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Toggle Client Account Status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [pending, active, inactive]
+      responses:
+        '200':
+          description: Account status changed.
+
+  /api/admin/clients/{id}/assessments:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Fetch InBody Assessments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of assessments.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Assessment'
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Upload Assessment Report
+      description: Multipart upload of assessment scans.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - weight
+                - skeletal_muscle_mass
+                - body_fat_mass
+                - visceral_fat_level
+                - upload_date
+              properties:
+                weight:
+                  type: number
+                  example: 72.5
+                skeletal_muscle_mass:
+                  type: number
+                  example: 33.1
+                body_fat_mass:
+                  type: number
+                  example: 15.2
+                visceral_fat_level:
+                  type: integer
+                  example: 6
+                coach_remarks:
+                  type: string
+                  example: "Keep core tight. Scan looks solid."
+                upload_date:
+                  type: string
+                  format: date
+                  example: "2026-06-03"
+                file:
+                  type: string
+                  format: binary
+                  description: InBody scan PDF/Image
+      responses:
+        '201':
+          description: Assessment uploaded.
+
+  /api/admin/clients/{id}/workouts:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Get Client Workout History
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Session workouts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkoutHistory'
+
+  /api/admin/clients/{id}/workouts/{workoutId}:
+    put:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Update Session Workout Details
+      description: Edit a workout session's warm-ups, exercises, and general remarks.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: workoutId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - warm_up
+                - exercises
+              properties:
+                warm_up:
+                  type: string
+                  example: "Thread the needle, dynamic stretching"
+                coach_remarks:
+                  type: string
+                  example: "Good control today. Focus on speed next session."
+                scheduled_date:
+                  type: string
+                  format: date
+                  example: "2026-06-03"
+                start_time:
+                  type: string
+                  example: "10:00"
+                end_time:
+                  type: string
+                  example: "11:00"
+                exercises:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - exercise_name
+                      - sets
+                      - reps_details
+                    properties:
+                      exercise_name:
+                        type: string
+                        example: "Goblet Squats"
+                      sets:
+                        type: integer
+                        example: 3
+                      reps_details:
+                        type: string
+                        example: "10 reps @ 20kg"
+      responses:
+        '200':
+          description: Workout log updated successfully.
+
+  /api/admin/coaches:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: List Coaches
+      responses:
+        '200':
+          description: List of coaches.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CoachDetailCard'
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Register Coach Profile
+      description: Admin manually registers a coach and inputs profile details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - email
+                - temp_password
+                - role_level
+              properties:
+                first_name:
+                  type: string
+                  example: Marcus
+                last_name:
+                  type: string
+                  example: Reed
+                email:
+                  type: string
+                  format: email
+                  example: marcus.reed@fitpad.com
+                temp_password:
+                  type: string
+                  example: "FitpadTemp2026!"
+                role_level:
+                  type: string
+                  enum: [coach, head_coach]
+                  example: head_coach
+                experience_years:
+                  type: integer
+                  example: 5
+                specializations:
+                  type: array
+                  items:
+                    type: string
+                  example: ["HIIT", "Strength training", "Injury Rehab"]
+      responses:
+        '201':
+          description: Coach account created.
+
+  /api/admin/sessions:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Audit Completed Sessions
+      description: Audit page showing sessions logged by coaches pending admin approval.
+      responses:
+        '200':
+          description: List of completed training sessions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompletedSessionAuditRow'
+
+  /api/admin/sessions/{id}/approve:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Approve Completed Session
+      description: Approves session, transitioning status to 'approved' and deducting 1 session from client's balance.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Session approved. Client balance updated.
+
+  /api/admin/plans:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Get Session Packages
+      responses:
+        '200':
+          description: List of session plans.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SessionPlan'
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Create Session Package
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - session_count
+              properties:
+                name:
+                  type: string
+                  example: "24 Sessions (2 Months)"
+                session_count:
+                  type: integer
+                  example: 24
+      responses:
+        '201':
+          description: Plan registered.
+
+  /api/admin/plans/{id}:
+    delete:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Delete Session Package
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Plan deleted.
+
+  /api/admin/exercises:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: List Master Exercises
+      responses:
+        '200':
+          description: List of exercises.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Exercise'
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Register Master Exercise
+      description: Registers an exercise into library. Media must be multipart upload.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - name
+                - category
+              properties:
+                name:
+                  type: string
+                  example: "Russian Twist"
+                category:
+                  type: string
+                  enum: [Strength, Cardio, Core, Mobility, Plyometrics]
+                  example: Core
+                preview:
+                  type: string
+                  format: binary
+                  description: Preview image or GIF (max 5MB)
+      responses:
+        '201':
+          description: Exercise created.
+
+  /api/admin/exercises/{id}:
+    delete:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Delete Exercise
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Exercise deleted.
+
+  /api/admin/users:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Admin Staff List
+      responses:
+        '200':
+          description: List of administrators.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminUserRow'
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Add New Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - email
+                - role_type
+                - temp_password
+              properties:
+                first_name:
+                  type: string
+                  example: Albert
+                last_name:
+                  type: string
+                  example: Wesker
+                email:
+                  type: string
+                  format: email
+                  example: albert.wesker@fitpad.com
+                role_type:
+                  type: string
+                  enum: [standard, super]
+                  example: standard
+                temp_password:
+                  type: string
+                  example: "Password99!"
+      responses:
+        '201':
+          description: Admin created.
+
+  /api/admin/audit-logs:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Get Security Audit Logs
+      responses:
+        '200':
+          description: List of audit logs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SecurityAuditLog'
+
+  # =========================================================================
+  # TRAINEE PORTAL
+  # =========================================================================
+  /api/client/dashboard:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Trainee Dashboard Stats
+      responses:
+        '200':
+          description: Client metrics.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  remaining_sessions:
+                    type: integer
+                    example: 22
+                  total_sessions:
+                    type: integer
+                    example: 24
+                  next_session:
+                    $ref: '#/components/schemas/TrainingSessionShort'
+                  coach:
+                    $ref: '#/components/schemas/CoachDetailCard'
+
+  /api/client/profile:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: View Personal Profile
+      responses:
+        '200':
+          description: Trainee profile details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProfile'
+    put:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Update Personal Details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                  example: "+639171112222"
+                avatar_path:
+                  type: string
+                  description: Uploaded avatar path
+                  example: "/avatars/avatar-5.png"
+      responses:
+        '200':
+          description: Profile updated.
+
+  /api/client/change-pin:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Change Access PIN
+      description: Update client 6-digit PIN code.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - old_pin
+                - pin
+              properties:
+                old_pin:
+                  type: string
+                  example: "123456"
+                pin:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+                  example: "654321"
+      responses:
+        '200':
+          description: PIN updated successfully.
+        '422':
+          description: Invalid old PIN.
+
+  /api/client/sessions:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Trainee Workout History
+      description: Fetch paginated training session logs.
+      responses:
+        '200':
+          description: Workout list.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkoutHistory'
+
+  /api/client/sessions/{id}/workout:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Get Session Workout Details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detailed workout data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkoutDetail'
+
+  /api/client/requests/reschedule:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Submit Reschedule Request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+                - date
+                - start_time
+              properties:
+                session_id:
+                  type: integer
+                  example: 12
+                date:
+                  type: string
+                  format: date
+                  example: "2026-06-10"
+                start_time:
+                  type: string
+                  example: "16:00"
+      responses:
+        '200':
+          description: Reschedule requested.
+
+  /api/client/session/current:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Query Live Session State
+      description: Polls status of today's session (Upcoming, Pending, Ongoing).
+      responses:
+        '200':
+          description: Active session state.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session_id:
+                    type: integer
+                    nullable: true
+                    example: 10
+                  status:
+                    type: string
+                    enum: [none, pending, upcoming, ongoing]
+                    example: ongoing
+
+  /api/client/session/request:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Request Instant Session Start
+      description: Changes session state to 'Pending' (waiting for coach start).
+      responses:
+        '200':
+          description: Client is waiting for coach to start session.
+
+  # =========================================================================
+  # COACH PORTAL
+  # =========================================================================
+  /api/coach/dashboard:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Coach Dashboard Info
+      responses:
+        '200':
+          description: Active trainees count and daily scheduled list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  active_trainees:
+                    type: integer
+                    example: 12
+                  trainees_trend:
+                    type: string
+                    example: "+3 since last month"
+                  today_schedule:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DailyScheduleRow'
+
+  /api/coach/calendar:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Fetch Calendar Schedule Grid
+      parameters:
+        - name: week
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: First date of target week (Monday). Defaults to current week.
+      responses:
+        '200':
+          description: Weekly calendar items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalendarItem'
+
+  /api/coach/calendar/slot:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Assign or Modify Calendar Slot
+      description: Setup coach availability or assign a slot directly to a client.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - day_of_week
+                - start_time
+                - end_time
+                - action
+              properties:
+                day_of_week:
+                  type: integer
+                  minimum: 1
+                  maximum: 7
+                  example: 1
+                start_time:
+                  type: string
+                  example: "08:00"
+                end_time:
+                  type: string
+                  example: "09:00"
+                action:
+                  type: string
+                  enum: [open, close, assign]
+                  example: assign
+                client_id:
+                  type: integer
+                  nullable: true
+                  description: Mandatory if action is 'assign'
+                  example: 4
+      responses:
+        '200':
+          description: Availability slots successfully modified.
+
+  /api/coach/profile:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: View Profile
+      responses:
+        '200':
+          description: Personal coach stats, bio, credentials, achievements.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoachDetailCard'
+    put:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Update Personal Details
+      description: Update bio, avatar, specialties, credentials, achievements list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+                  example: "Certified specialist with 6+ years in functional biomechanics."
+                specializations:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Strength & Conditioning", "Kettlebell training"]
+                credentials:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      issue_year:
+                        type: integer
+                achievements:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      year:
+                        type: integer
+                      title:
+                        type: string
+      responses:
+        '200':
+          description: Profile updated.
+
+  /api/coach/change-pin:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Change Access PIN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - old_pin
+                - pin
+              properties:
+                old_pin:
+                  type: string
+                  example: "111111"
+                pin:
+                  type: string
+                  example: "222222"
+      responses:
+        '200':
+          description: PIN updated.
+
+  /api/coach/clients:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: List Assigned Trainees
+      responses:
+        '200':
+          description: Active clients.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDetailsRow'
+
+  /api/coach/clients/{id}:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Get Trainee Profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Trainee info & progress statistics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProfile'
+
+  /api/coach/clients/{id}/assessments:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Upload InBody Scan Report
+      description: Coach upload of scan.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - weight
+                - skeletal_muscle_mass
+                - body_fat_mass
+                - visceral_fat_level
+                - upload_date
+              properties:
+                weight:
+                  type: number
+                  example: 68.0
+                skeletal_muscle_mass:
+                  type: number
+                  example: 28.5
+                body_fat_mass:
+                  type: number
+                  example: 18.2
+                visceral_fat_level:
+                  type: integer
+                  example: 7
+                coach_remarks:
+                  type: string
+                  example: "Fat percentage dropped. Muscle mass is up."
+                upload_date:
+                  type: string
+                  format: date
+                  example: "2026-06-03"
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Scan uploaded successfully.
+
+  /api/coach/clients/{id}/schedule:
+    put:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Update Client's Weekly Schedule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - schedules
+              properties:
+                schedules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      day_of_week:
+                        type: integer
+                      start_time:
+                        type: string
+      responses:
+        '200':
+          description: Schedule updated.
+
+  /api/coach/clients/{id}/free-sessions:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Append Complimentary Sessions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - count
+              properties:
+                count:
+                  type: integer
+                  minimum: 1
+                  example: 2
+      responses:
+        '200':
+          description: Sessions balance successfully updated.
+
+  /api/coach/session/current:
+    get:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Get Live Ongoing Session State
+      responses:
+        '200':
+          description: Session info.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session_id:
+                    type: integer
+                    nullable: true
+                    example: 10
+                  status:
+                    type: string
+                    example: ongoing
+                  client_name:
+                    type: string
+                    example: "John Doe"
+
+  /api/coach/session/notes:
+    put:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Auto-save Session Notes
+      description: Auto-saves active session warm-ups, remarks, and exercise logs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+                - warm_up
+                - exercises
+              properties:
+                session_id:
+                  type: integer
+                  example: 10
+                warm_up:
+                  type: string
+                  example: "Leg swings, lunges"
+                coach_remarks:
+                  type: string
+                  example: "Completed 3 core circuits. Solid form."
+                exercises:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      exercise_name:
+                        type: string
+                        example: "Romanian Deadlift"
+                      sets:
+                        type: integer
+                        example: 4
+                      reps_details:
+                        type: string
+                        example: "12 reps @ 40kg, 10 reps @ 50kg"
+      responses:
+        '200':
+          description: Saved successfully.
+
+  /api/coach/session/complete:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Finalize Workout Session
+      description: Marks training session as 'completed' and triggers system audit log. Ready for Admin approval.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+              properties:
+                session_id:
+                  type: integer
+                  example: 10
+      responses:
+        '200':
+          description: Session completed successfully.
+
+  # =========================================================================
+  # SMS GATEWAY ROUTING
+  # =========================================================================
+  /api/sms/send:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - SMS Utilities
+      summary: Send Notification SMS
+      description: Dispatches SMS notification using integrated Android SMS Gateway.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone_number
+                - message
+              properties:
+                client_id:
+                  type: integer
+                  nullable: true
+                  description: Trainee client ID
+                  example: 3
+                phone_number:
+                  type: string
+                  example: "+639170000000"
+                message:
+                  type: string
+                  example: "Your fitpad workout session has been scheduled for tomorrow at 9:00 AM."
+      responses:
+        '200':
+          description: SMS queued for sending.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "pending"
+                  sms_log_id:
+                    type: integer
+                    example: 22
+
+components:
+  securitySchemes:
+    BearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # -------------------------------------------------------------
+    # Shared Data Definitions
+    # -------------------------------------------------------------
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Admin User"
+        email:
+          type: string
+          example: "admin@fitpad.com"
+        role:
+          type: string
+          enum: [admin, coach, client]
+          example: "admin"
+        status:
+          type: string
+          enum: [pending, active, inactive, finished]
+          example: "active"
+
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        first_name:
+          type: string
+          example: "Albert"
+        last_name:
+          type: string
+          example: "Wesker"
+        gender:
+          type: string
+          enum: [male, female, other]
+          example: "male"
+        dob:
+          type: string
+          format: date
+          example: "1978-05-15"
+        phone:
+          type: string
+          example: "+639170000000"
+        avatar_path:
+          type: string
+          nullable: true
+          example: "/avatars/avatar-1.png"
+
+    # -------------------------------------------------------------
+    # Entities / Schema Definitions
+    # -------------------------------------------------------------
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "The given data was invalid."
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            email: ["The email has already been taken."]
+
+    CoachDetailCard:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+        coach_id:
+          type: string
+          example: "CP-9921"
+        first_name:
+          type: string
+          example: "Sarah"
+        last_name:
+          type: string
+          example: "Adams"
+        role_level:
+          type: string
+          example: "head_coach"
+        experience_years:
+          type: integer
+          example: 8
+        specializations:
+          type: array
+          items:
+            type: string
+          example: ["HIIT", "Strength", "Fat Loss"]
+        bio:
+          type: string
+          example: "Passion for helping clients hit long-term goals."
+        rating:
+          type: number
+          example: 4.95
+        credentials:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "NASM CPT"
+              issue_year:
+                type: integer
+                example: 2018
+        achievements:
+          type: array
+          items:
+            type: object
+            properties:
+              year:
+                type: integer
+                example: 2022
+              title:
+                type: string
+                example: "Coach of the Year"
+
+    ClientDetailsRow:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        pt_id:
+          type: string
+          example: "PT00842"
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          example: "john.doe@example.com"
+        coach_name:
+          type: string
+          example: "Sarah Adams"
+        used_sessions:
+          type: integer
+          example: 8
+        total_sessions:
+          type: integer
+          example: 24
+        status:
+          type: string
+          example: "active"
+
+    ClientProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        pt_id:
+          type: string
+          example: "PT00842"
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          example: "john.doe@example.com"
+        dob:
+          type: string
+          format: date
+          example: "1995-04-12"
+        phone:
+          type: string
+          example: "+639171234567"
+        height:
+          type: number
+          example: 178.5
+        fitness_goal:
+          type: string
+          example: "Weight Loss / HIIT"
+        avatar_path:
+          type: string
+          example: "/avatars/avatar-5.png"
+        assigned_coach:
+          $ref: '#/components/schemas/CoachDetailCard'
+        schedules:
+          type: array
+          items:
+            type: object
+            properties:
+              day_of_week:
+                type: integer
+                example: 1
+              start_time:
+                type: string
+                example: "08:00"
+              end_time:
+                type: string
+                example: "09:00"
+        sessions_balance:
+          type: object
+          properties:
+            base:
+              type: integer
+              example: 24
+            free:
+              type: integer
+              example: 2
+            used:
+              type: integer
+              example: 8
+            remaining:
+              type: integer
+              example: 18
+
+    Assessment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        weight:
+          type: number
+          example: 72.5
+        skeletal_muscle_mass:
+          type: number
+          example: 33.1
+        body_fat_mass:
+          type: number
+          example: 15.2
+        visceral_fat_level:
+          type: integer
+          example: 6
+        file_path:
+          type: string
+          example: "/storage/assessments/scan_492.pdf"
+        coach_remarks:
+          type: string
+          example: "Solid progression. Lean mass increased."
+        upload_date:
+          type: string
+          format: date
+          example: "2026-06-03"
+
+    WorkoutHistory:
+      type: object
+      properties:
+        session_id:
+          type: integer
+          example: 10
+        scheduled_date:
+          type: string
+          format: date
+          example: "2026-06-03"
+        start_time:
+          type: string
+          example: "10:00"
+        end_time:
+          type: string
+          example: "11:00"
+        workout_name:
+          type: string
+          example: "Lower Body Focus"
+        workout_type:
+          type: string
+          example: "Strength"
+        status:
+          type: string
+          example: "approved"
+        coach_name:
+          type: string
+          example: "Sarah Adams"
+
+    WorkoutDetail:
+      type: object
+      properties:
+        session_id:
+          type: integer
+          example: 10
+        coach_name:
+          type: string
+          example: "Sarah Adams"
+        scheduled_date:
+          type: string
+          format: date
+          example: "2026-06-03"
+        warm_up:
+          type: string
+          example: "Dynamic leg swings, 5 min light jog"
+        coach_remarks:
+          type: string
+          example: "Trainee is demonstrating excellent progression on squats."
+        exercises:
+          type: array
+          items:
+            type: object
+            properties:
+              exercise_name:
+                type: string
+                example: "Goblet Squat"
+              sets:
+                type: integer
+                example: 4
+              reps_details:
+                type: string
+                example: "12 reps @ 20kg"
+
+    TrainingSessionShort:
+      type: object
+      properties:
+        session_id:
+          type: integer
+          example: 14
+        date:
+          type: string
+          format: date
+          example: "2026-06-04"
+        start_time:
+          type: string
+          example: "08:00"
+        end_time:
+          type: string
+          example: "09:00"
+
+    DailyScheduleRow:
+      type: object
+      properties:
+        session_id:
+          type: integer
+          example: 10
+        client_name:
+          type: string
+          example: "John Doe"
+        start_time:
+          type: string
+          example: "08:00"
+        end_time:
+          type: string
+          example: "09:00"
+        fitness_goal:
+          type: string
+          example: "Weight Loss"
+        session_type:
+          type: string
+          example: "PT Session"
+        status:
+          type: string
+          enum: [pending, upcoming, ongoing, completed]
+          example: upcoming
+
+    CalendarItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        client_name:
+          type: string
+          nullable: true
+          example: "John Doe"
+        date:
+          type: string
+          format: date
+          example: "2026-06-03"
+        start_time:
+          type: string
+          example: "08:00"
+        end_time:
+          type: string
+          example: "09:00"
+        status:
+          type: string
+          enum: [available, assigned]
+          example: assigned
+
+    CompletedSessionAuditRow:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        client_name:
+          type: string
+          example: "John Doe"
+        coach_name:
+          type: string
+          example: "Sarah Adams"
+        date:
+          type: string
+          format: date
+          example: "2026-06-03"
+        time:
+          type: string
+          example: "08:00 - 09:00"
+        status:
+          type: string
+          example: "completed"
+
+    AdminUserRow:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        admin_id:
+          type: string
+          example: "FITPAD-001"
+        name:
+          type: string
+          example: "Albert Wesker"
+        email:
+          type: string
+          example: "albert.wesker@fitpad.com"
+        role_type:
+          type: string
+          example: "super"
+        status:
+          type: string
+          example: "active"
+
+    SecurityAuditLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 412
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-03T14:22:18Z"
+        actor_id:
+          type: string
+          example: "FITPAD-001"
+        action:
+          type: string
+          example: "Session Approved"
+        details:
+          type: string
+          example: "Approved training session ID 10 for John Doe"
+        ip_address:
+          type: string
+          example: "192.168.1.15"
+
+    SessionPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "12 Sessions (1 Month)"
+        session_count:
+          type: integer
+          example: 12
+
+    Exercise:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        name:
+          type: string
+          example: "Goblet Squats"
+        category:
+          type: string
+          enum: [Strength, Cardio, Core, Mobility, Plyometrics]
+          example: "Strength"
+        preview_path:
+          type: string
+          nullable: true
+          example: "/storage/exercises/goblet_squats.gif"
