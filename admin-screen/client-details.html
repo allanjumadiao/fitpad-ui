@@ -15,6 +15,16 @@
         .text-fitpad-gray { color: #535353; }
         .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* Custom Radio for Coach Selection */
+        .coach-radio:checked + div {
+            border-color: #d8f511;
+            background-color: #fdfce8;
+        }
+        .coach-radio:checked + div .check-icon {
+            color: #d8f511;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="flex flex-col md:flex-row min-h-screen">
@@ -53,9 +63,16 @@
                     <h2 class="text-3xl font-bold text-fitpad-gray uppercase tracking-tight">Client Details</h2>
                     <p class="text-gray-500 text-sm">PT-1042 • Enrolled: Jan 15, 2026</p>
                 </div>
-                <button onclick="alert('Redirecting to Client Edit details...')" class="bg-fitpad-gray text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:brightness-125 transition-all shadow-md">
-                    Edit Client Info
-                </button>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="openModal('addFreeSessionModal')" class="bg-brand-yellow text-fitpad-gray px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-all shadow-md flex items-center gap-2">
+                        <ion-icon name="gift-outline" class="text-lg"></ion-icon>
+                        Add Free Session
+                    </button>
+                    <button onclick="openCoachTransferModal()" class="bg-fitpad-gray text-white border border-gray-600 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-700 transition-all shadow-md flex items-center gap-2">
+                        <ion-icon name="swap-horizontal-outline" class="text-lg brand-yellow"></ion-icon>
+                        Coach Transfer
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -72,7 +89,7 @@
                     </div>
                     <div>
                         <p class="text-[10px] text-gray-400 uppercase font-bold">Assigned Coach</p>
-                        <p class="text-sm font-semibold text-fitpad-gray">Sarah Adams</p>
+                        <p class="text-sm font-semibold text-fitpad-gray" id="assignedCoachName">Sarah Adams</p>
                     </div>
                     <div>
                         <p class="text-[10px] text-gray-400 uppercase font-bold">Birthday</p>
@@ -101,12 +118,21 @@
                 <div class="relative z-10">
                     <p class="text-gray-400 font-semibold text-xs uppercase tracking-widest mb-4">Session Balance</p>
                     <div class="flex items-end gap-2 mb-1">
-                        <h3 class="text-5xl font-black brand-yellow">10</h3>
+                        <h3 id="remainingSessions" class="text-5xl font-black brand-yellow">10</h3>
                         <p class="text-sm text-gray-300 font-bold uppercase pb-1 tracking-widest">Remaining</p>
                     </div>
-                    <p class="text-xs text-gray-400 font-mono mt-4 pt-4 border-t border-white/10">
+                    <p id="sessionFormula" class="text-xs text-gray-400 font-mono mt-4 pt-4 border-t border-white/10">
                         Formula: 24 (Total) - 14 (Used)
                     </p>
+                    <div class="mt-4 pt-4 border-t border-white/10 flex flex-col gap-1">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Validity Period</p>
+                        <p class="text-sm font-bold text-white flex items-center gap-1.5">
+                            2 Months 
+                            <span class="text-xs font-semibold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-md inline-flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> 14 Days Left
+                            </span>
+                        </p>
+                    </div>
                 </div>
                 <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full"></div>
             </div>
@@ -216,7 +242,6 @@
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-2">
                                     <button onclick="viewWorkout(1)" title="View Workout" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="eye" class="text-lg"></ion-icon></button>
-                                    <button onclick="openEditWorkout(1)" title="Edit Workout" class="p-2 text-gray-400 hover:text-brand-yellow hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="create" class="text-lg"></ion-icon></button>
                                 </div>
                             </td>
                         </tr>
@@ -228,7 +253,6 @@
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-2">
                                     <button onclick="viewWorkout(2)" title="View Workout" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="eye" class="text-lg"></ion-icon></button>
-                                    <button onclick="openEditWorkout(2)" title="Edit Workout" class="p-2 text-gray-400 hover:text-brand-yellow hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="create" class="text-lg"></ion-icon></button>
                                 </div>
                             </td>
                         </tr>
@@ -240,7 +264,6 @@
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-2">
                                     <button onclick="viewWorkout(3)" title="View Workout" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="eye" class="text-lg"></ion-icon></button>
-                                    <button onclick="openEditWorkout(3)" title="Edit Workout" class="p-2 text-gray-400 hover:text-brand-yellow hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="create" class="text-lg"></ion-icon></button>
                                 </div>
                             </td>
                         </tr>
@@ -252,7 +275,6 @@
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-2">
                                     <button onclick="viewWorkout(4)" title="View Workout" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="eye" class="text-lg"></ion-icon></button>
-                                    <button onclick="openEditWorkout(4)" title="Edit Workout" class="p-2 text-gray-400 hover:text-brand-yellow hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="create" class="text-lg"></ion-icon></button>
                                 </div>
                             </td>
                         </tr>
@@ -401,58 +423,156 @@
         </div>
     </div>
 
-    <!-- 4. EDIT WORKOUT MODAL -->
-    <div id="editWorkoutModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
-            <div class="px-6 py-6 border-b border-gray-100 flex justify-between items-start bg-gray-50">
+    <!-- 5. ADD FREE SESSION MODAL -->
+    <div id="addFreeSessionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="relative bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[90vh] custom-scrollbar">
+            <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h3 class="text-xl font-black text-fitpad-gray uppercase tracking-tight">Edit Session Workout Notes</h3>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase" id="editWorkoutHeader">Session Name</p>
+                    <h3 class="text-xl font-bold text-fitpad-gray uppercase tracking-tight">Add Free Session</h3>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">PT-1042 • Jane Doe</p>
                 </div>
-                <button onclick="closeModal('editWorkoutModal')" class="text-gray-400 hover:text-red-500 text-2xl"><ion-icon name="close"></ion-icon></button>
+                <button onclick="closeModal('addFreeSessionModal')" class="text-gray-400 hover:text-red-500 text-2xl"><ion-icon name="close"></ion-icon></button>
             </div>
             
-            <form onsubmit="handleWorkoutSave(event)" class="p-6 flex-1 overflow-y-auto custom-scrollbar space-y-4">
-                <input type="hidden" id="editWorkoutId">
+            <form onsubmit="handleAddFreeSession(event)" class="space-y-4">
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Workout Type / Goal</label>
-                    <input type="text" id="editWorkoutType" required class="w-full bg-gray-50 border p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Number of Free Sessions</label>
+                    <input type="number" min="1" required id="freeSessionCount" value="1" class="w-full bg-gray-50 border p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Session Date & Time Info</label>
-                    <input type="datetime-local" id="editWorkoutDateTime" required class="w-full bg-gray-50 border p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Reason for Credit</label>
+                    <select id="freeSessionReason" required class="w-full bg-gray-50 border p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                        <option value="Loyalty Reward">Loyalty Reward</option>
+                        <option value="Promo Campaign">Promo Campaign</option>
+                        <option value="Referral Bonus">Referral Bonus</option>
+                        <option value="Service Recovery">Service Recovery</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Warm Up Routine</label>
-                    <textarea id="editWorkoutWarmup" required class="w-full h-20 bg-gray-50 border p-3 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-yellow/50 resize-y" placeholder="e.g. 5 mins light jogging&#10;Dynamic stretches"></textarea>
-                </div>
-                <div>
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                            <ion-icon name="barbell" class="text-brand-yellow text-sm"></ion-icon> Main Set (Strength & Conditioning)
-                        </label>
-                        <button type="button" onclick="addEditExercise()" class="text-[9px] font-bold bg-brand-yellow text-fitpad-gray px-3 py-1.5 rounded-lg uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-1 shadow-sm">
-                            <ion-icon name="add" class="text-xs"></ion-icon> Add Exercise
-                        </button>
-                    </div>
-                    <div id="editExercisesContainer" class="space-y-3 max-h-72 overflow-y-auto pr-1">
-                        <!-- Dynamic Exercise blocks will be injected here -->
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Coach Remarks & Suggestions</label>
-                    <textarea id="editWorkoutRemarks" required class="w-full h-24 bg-gray-50 border p-3 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-yellow/50 resize-y" placeholder="Focus for next session..."></textarea>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Remarks / Notes</label>
+                    <textarea id="freeSessionRemarks" placeholder="Optional remarks..." class="w-full bg-gray-50 border p-3 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-yellow/50 h-24 resize-none"></textarea>
                 </div>
                 
-                <div class="pt-4 flex gap-3">
-                    <button type="button" onclick="closeModal('editWorkoutModal')" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase hover:bg-gray-100 rounded-xl transition-all">Cancel</button>
-                    <button type="submit" class="flex-1 py-3 text-xs font-bold uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110">Save Changes</button>
+                <div class="mt-8 flex gap-3">
+                    <button type="button" onclick="closeModal('addFreeSessionModal')" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase hover:bg-gray-100 rounded-xl transition-all">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 text-xs font-bold uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110">Add Session</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 6. COACH TRANSFER MODAL -->
+    <div id="coachTransferModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="relative bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[90vh] custom-scrollbar">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-fitpad-gray uppercase tracking-tight">Coach Transfer</h3>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">PT-1042 • Jane Doe</p>
+                </div>
+                <button onclick="closeModal('coachTransferModal')" class="text-gray-400 hover:text-red-500 text-2xl"><ion-icon name="close"></ion-icon></button>
+            </div>
+            
+            <form onsubmit="handleCoachTransfer(event)" class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Select New Coach *</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Coach Marcus Reed -->
+                        <label class="relative cursor-pointer group">
+                            <input type="radio" name="newCoachSelection" value="Marcus Reed" class="sr-only coach-radio" required>
+                            <div class="border-2 border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-all flex items-center gap-4 relative">
+                                <div class="w-10 h-10 rounded-full bg-fitpad-gray flex items-center justify-center text-brand-yellow font-black text-xs">MR</div>
+                                <div class="flex-1">
+                                    <h4 class="text-xs font-black text-fitpad-gray uppercase">Marcus Reed</h4>
+                                    <p class="text-[9px] text-gray-500 font-bold">CP-7192</p>
+                                </div>
+                                <ion-icon name="checkmark-circle" class="check-icon text-gray-200 text-xl transition-colors"></ion-icon>
+                            </div>
+                        </label>
+
+                        <!-- Coach Emily Lawson -->
+                        <label class="relative cursor-pointer group">
+                            <input type="radio" name="newCoachSelection" value="Emily Lawson" class="sr-only coach-radio">
+                            <div class="border-2 border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-all flex items-center gap-4 relative">
+                                <div class="w-10 h-10 rounded-full bg-fitpad-gray flex items-center justify-center text-brand-yellow font-black text-xs">EL</div>
+                                <div class="flex-1">
+                                    <h4 class="text-xs font-black text-fitpad-gray uppercase">Emily Lawson</h4>
+                                    <p class="text-[9px] text-gray-500 font-bold">CP-5501</p>
+                                </div>
+                                <ion-icon name="checkmark-circle" class="check-icon text-gray-200 text-xl transition-colors"></ion-icon>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Reason Category *</label>
+                    <select id="transferReasonCategory" required class="w-full bg-gray-50 border p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                        <option value="" disabled selected>Select a reason...</option>
+                        <option value="Scheduling Conflict">Scheduling Conflict</option>
+                        <option value="Client Preference">Client Preference</option>
+                        <option value="Coach Request">Coach Request</option>
+                        <option value="Skillset Match">Skillset Match</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Remarks / Detailed Reason *</label>
+                    <textarea id="transferRemarks" required placeholder="Provide details regarding the coach transfer request..." class="w-full bg-gray-50 border p-3 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-yellow/50 h-24 resize-none"></textarea>
+                </div>
+                
+                <div class="mt-8 flex gap-3">
+                    <button type="button" onclick="closeModal('coachTransferModal')" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase hover:bg-gray-100 rounded-xl transition-all">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 text-xs font-bold uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110">Transfer Coach</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
+        // Session Total & Used state
+        let sessionTotal = 24;
+        let sessionUsed = 14;
+
+        function openCoachTransferModal() {
+            openModal('coachTransferModal');
+        }
+
+        function handleCoachTransfer(event) {
+            event.preventDefault();
+            const selectedRadio = document.querySelector('input[name="newCoachSelection"]:checked');
+            if (!selectedRadio) return;
+            
+            const newCoach = selectedRadio.value;
+            const category = document.getElementById('transferReasonCategory').value;
+            const remarks = document.getElementById('transferRemarks').value.trim();
+            
+            // Update assigned coach in UI
+            document.getElementById('assignedCoachName').innerText = newCoach;
+            
+            closeModal('coachTransferModal');
+            alert(`Coach successfully transferred to ${newCoach}.\nReason Category: ${category}\nRemarks: ${remarks}`);
+            event.target.reset();
+        }
+
+        function handleAddFreeSession(e) {
+            e.preventDefault();
+            const countInput = document.getElementById('freeSessionCount');
+            const count = parseInt(countInput.value) || 0;
+            if (count <= 0) return;
+            
+            sessionTotal += count;
+            const remaining = sessionTotal - sessionUsed;
+            
+            document.getElementById('remainingSessions').innerText = remaining;
+            document.getElementById('sessionFormula').innerText = `Formula: ${sessionTotal} (Total) - ${sessionUsed} (Used)`;
+            
+            closeModal('addFreeSessionModal');
+            alert(`Successfully added ${count} free session(s) to Jane Doe's account.`);
+            e.target.reset();
+        }
+
         // Modal helpers
         function openModal(id) { 
             document.getElementById(id).classList.remove('hidden'); 
@@ -594,7 +714,6 @@
                         <td class="px-6 py-4 text-center">
                             <div class="flex justify-center gap-2">
                                 <button onclick="viewWorkout(${w.id})" title="View Workout" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="eye" class="text-lg"></ion-icon></button>
-                                <button onclick="openEditWorkout(${w.id})" title="Edit Workout" class="p-2 text-gray-400 hover:text-brand-yellow hover:bg-gray-100 rounded-lg transition-all"><ion-icon name="create" class="text-lg"></ion-icon></button>
                             </div>
                         </td>
                     </tr>
@@ -689,172 +808,7 @@
             openModal('workoutModal');
         }
 
-        function addEditExercise(name = '', sets = '', details = '') {
-            const container = document.getElementById('editExercisesContainer');
-            const template = `
-                <div class="bg-gray-50 border border-gray-200 p-4 rounded-2xl shadow-sm relative group edit-exercise-block mt-3">
-                    <button type="button" onclick="removeEditExercise(this)" class="absolute top-3 right-3 text-gray-300 hover:text-red-500 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all p-1">
-                        <ion-icon name="trash" class="text-lg"></ion-icon>
-                    </button>
-                    
-                    <div class="grid grid-cols-12 gap-3 mb-2 pr-6">
-                        <div class="col-span-12 sm:col-span-8">
-                            <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Exercise Name</label>
-                            <input type="text" value="${name.replace(/"/g, '&quot;')}" placeholder="e.g. A1. Goblet Squats" class="edit-ex-name w-full bg-white border border-gray-200 p-2.5 rounded-lg text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 transition-all">
-                        </div>
-                        <div class="col-span-12 sm:col-span-4">
-                            <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Sets</label>
-                            <input type="text" value="${sets.replace(/"/g, '&quot;')}" placeholder="e.g. 4 Sets" class="edit-ex-sets w-full bg-white border border-gray-200 p-2.5 rounded-lg text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50 transition-all">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Details / Reps / Weight</label>
-                        <input type="text" value="${details.replace(/"/g, '&quot;')}" placeholder="e.g. 12 reps @ 15kg dumbbell. Keep chest up." class="edit-ex-details w-full bg-white border border-gray-200 p-2.5 rounded-lg text-sm font-medium text-gray-600 outline-none focus:ring-2 focus:ring-brand-yellow/50 transition-all">
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', template);
-        }
 
-        function removeEditExercise(btn) {
-            btn.closest('.edit-exercise-block').remove();
-        }
-
-        function parseDateTimeToISO(str) {
-            if (!str) return '';
-            // Match format: 'May 02, 2026 (08:00 AM)'
-            const match = str.match(/([A-Za-z]+)\s+(\d+),\s+(\d+)\s*\((\d+):(\d+)\s*([APap][Mm])\)/);
-            if (!match) {
-                try {
-                    const d = new Date(str.replace(/\(|\)/g, ''));
-                    if (!isNaN(d.getTime())) {
-                        // Offset conversion to local ISO
-                        const tzoffset = d.getTimezoneOffset() * 60000;
-                        const localISOTime = (new Date(d.getTime() - tzoffset)).toISOString().slice(0, 16);
-                        return localISOTime;
-                    }
-                } catch(e) {}
-                return '';
-            }
-            const [, monthStr, dayStr, yearStr, hourStr, minStr, period] = match;
-            const months = {
-                jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
-                jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12'
-            };
-            const month = months[monthStr.toLowerCase()] || '01';
-            const day = dayStr.padStart(2, '0');
-            const year = yearStr;
-            let hour = parseInt(hourStr);
-            if (period.toLowerCase() === 'pm' && hour < 12) hour += 12;
-            if (period.toLowerCase() === 'am' && hour === 12) hour = 0;
-            const hourFormatted = String(hour).padStart(2, '0');
-            const minFormatted = minStr.padStart(2, '0');
-            return `${year}-${month}-${day}T${hourFormatted}:${minFormatted}`;
-        }
-
-        function formatISOToDateTimeStr(isoStr) {
-            if (!isoStr) return '';
-            const date = new Date(isoStr);
-            if (isNaN(date.getTime())) return isoStr;
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const month = months[date.getMonth()];
-            const day = String(date.getDate()).padStart(2, '0');
-            const year = date.getFullYear();
-            let hour = date.getHours();
-            const period = hour >= 12 ? 'PM' : 'AM';
-            hour = hour % 12;
-            if (hour === 0) hour = 12;
-            const hourStr = String(hour).padStart(2, '0');
-            const minStr = String(date.getMinutes()).padStart(2, '0');
-            return `${month} ${day}, ${year} (${hourStr}:${minStr} ${period})`;
-        }
-
-        function openEditWorkout(id) {
-            const w = workouts.find(x => x.id === id);
-            if(!w) return;
-            document.getElementById('editWorkoutId').value = w.id;
-            document.getElementById('editWorkoutHeader').innerText = w.name;
-            document.getElementById('editWorkoutType').value = w.type;
-            document.getElementById('editWorkoutDateTime').value = parseDateTimeToISO(w.datetime);
-            document.getElementById('editWorkoutWarmup').value = w.warmup;
-            document.getElementById('editWorkoutRemarks').value = w.remarks;
-
-            // Load and parse mainset exercises
-            const container = document.getElementById('editExercisesContainer');
-            container.innerHTML = '';
-            if (w.mainset && w.mainset.trim()) {
-                w.mainset.split('\n\n').forEach(cardText => {
-                    const cleanCard = cardText.trim();
-                    if (!cleanCard) return;
-                    const lines = cleanCard.split('\n');
-                    const titleLine = lines[0] || '';
-                    const details = lines.slice(1).join('\n') || '';
-                    
-                    let name = titleLine;
-                    let sets = '';
-                    
-                    if (titleLine.includes(' - ')) {
-                        const parts = titleLine.split(' - ');
-                        name = parts[0];
-                        sets = parts[1];
-                    } else if (titleLine.includes(' (')) {
-                        const idx = titleLine.indexOf(' (');
-                        name = titleLine.substring(0, idx);
-                        sets = titleLine.substring(idx + 2, titleLine.length - 1);
-                    }
-                    addEditExercise(name, sets, details);
-                });
-            } else {
-                addEditExercise();
-            }
-
-            openModal('editWorkoutModal');
-        }
-
-        function handleWorkoutSave(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('editWorkoutId').value);
-            const wType = document.getElementById('editWorkoutType').value;
-            const rawDateTime = document.getElementById('editWorkoutDateTime').value;
-            const wDateTime = formatISOToDateTimeStr(rawDateTime);
-            const wWarmup = document.getElementById('editWorkoutWarmup').value;
-            const wRemarks = document.getElementById('editWorkoutRemarks').value;
-
-            // Serialize exercise blocks back to the multi-line string format
-            const exerciseBlocks = document.querySelectorAll('.edit-exercise-block');
-            const mainsetLines = Array.from(exerciseBlocks).map(block => {
-                const name = block.querySelector('.edit-ex-name').value.trim();
-                const sets = block.querySelector('.edit-ex-sets').value.trim();
-                const details = block.querySelector('.edit-ex-details').value.trim();
-                
-                if (!name && !sets && !details) return '';
-                
-                let titleLine = name;
-                if (sets) {
-                    titleLine += ` - ${sets}`;
-                }
-                
-                if (details) {
-                    return `${titleLine}\n${details}`;
-                }
-                return titleLine;
-            }).filter(Boolean);
-            
-            const wMainset = mainsetLines.join('\n\n');
-
-            const wIndex = workouts.findIndex(x => x.id === id);
-            if (wIndex !== -1) {
-                workouts[wIndex].type = wType;
-                workouts[wIndex].datetime = wDateTime;
-                workouts[wIndex].warmup = wWarmup;
-                workouts[wIndex].mainset = wMainset;
-                workouts[wIndex].remarks = wRemarks;
-
-                renderWorkoutTable();
-                closeModal('editWorkoutModal');
-                alert('Workout notes updated successfully!');
-            }
-        }
     </script>
     <!-- Global Alert Modal -->
     <script src="../js/custom-alert.js"></script>

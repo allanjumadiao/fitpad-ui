@@ -4,7 +4,7 @@
 The Client List screen under Directory Management provides the administrator with a comprehensive view of all clients registered in the Fitpad system.
 
 ## Key Features
-- **Search & Filter**: Search clients by Name, PT ID, or Email. Filter by Status (Pending, Active, Inactive).
+- **Search & Filter**: Search clients by Name, PT ID, or Email. Filter by Status (Pending, Active, Freezed, Finished).
 - **Client Registration**: A robust modal to manually register a client, select a session plan package, define their preferred schedule, and instantly match/assign them to an available coach.
 - **Client Management**: Quick actions to view a client's profile details screen ([client-details.html](file:///wsl.localhost/Ubuntu/home/allanjumadiao/fitpad-project/fitpad-ui/admin-screen/client-details.html)), reset their account PIN number, or activate/deactivate an account.
 
@@ -12,7 +12,7 @@ The Client List screen under Directory Management provides the administrator wit
 - **Top Actions**: "Register Client" Button.
 - **Filter Bar**: Search input and Status dropdown.
 - **Data Table**:
-  - Columns: PT ID, Client Name, Assigned Coach (Name & ID), Remaining Sessions (Used/Total), Status, Actions.
+  - Columns: PT ID, Client Name, Assigned Coach (Name & ID), Remaining Sessions (Used/Total), Status, Validity Period, Actions.
 - **Direct Client Registration Modal**:
   - Step 1: Client Details (First Name, Last Name, Email, Temp PIN).
   - Step 2: Session Plan selection (12, 24, 30, 50 sessions).

@@ -5,12 +5,12 @@ A comprehensive dashboard for a coach to view the progress, metrics, and session
 
 ## Key Features & UI Components
 - **Client Header**: Name, Goal (e.g., Weight Loss), Gender, Birthday, Age, Height, and general schedule.
-- **Session Balance Widget**: Displays the number of remaining sessions left in the client's package (Total - Used).
+- **Session Balance Widget**: Displays the number of remaining sessions left in the client's package (Total - Used), and a **Validity Period** section displaying the plan's duration and days remaining.
 - **InBody Assessments Section**:
   - Upload Action: Upload Image/PDF scans.
   - File List: Table of previously uploaded InBody assessments with "View Result" buttons.
   - Coach Remarks: A large text area for the coach to write notes or evaluations regarding the client's latest results.
-- **Actions**: "Edit Client Info" button routing to the Edit screen, "Save Assessment Data".
+- **Actions**: "Add Free Session" button that opens a modal to credit complimentary sessions to the client, "Save Assessment Data".
 - **Workout History Section**:
   - Search bar to filter sessions by name, workout type, or comments in real-time.
   - Interactive table displaying session date, name, type, and remarks summary.
@@ -19,6 +19,7 @@ A comprehensive dashboard for a coach to view the progress, metrics, and session
 
 ## Data Requirements (API)
 - `GET /api/coach/clients/{id}` - Fetch client details, biometrics, and session balance.
+- `POST /api/coach/clients/{id}/free-sessions` - Append complimentary sessions (with optional reason and remarks).
 - `GET /api/coach/clients/{id}/assessments` - Fetch uploaded InBody files.
 - `POST /api/coach/clients/{id}/assessments` - Upload a new assessment.
 - `PUT /api/coach/clients/{id}/remarks` - Save coach notes.

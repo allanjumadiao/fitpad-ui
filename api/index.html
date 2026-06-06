@@ -853,7 +853,7 @@
           { name: "password", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Blowfish/Bcrypt hashed password (Admins only)." },
           { name: "pin", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Hashed 6-digit login PIN (Coaches & Clients only)." },
           { name: "role", type: "ENUM('admin','coach','client')", constraints: [], nullable: "No", default: "None", description: "Access control role for dashboard authorization." },
-          { name: "status", type: "ENUM('pending','active','inactive','finished')", constraints: [], nullable: "No", default: "'active'", description: "State of account access ('finished' signals an expired renewal)." },
+          { name: "status", type: "ENUM('pending','active','inactive','finished','freezed')", constraints: [], nullable: "No", default: "'active'", description: "State of account access ('finished' signals an expired renewal, 'freezed' represents a frozen account)." },
           { name: "remember_token", type: "VARCHAR(100)", constraints: [], nullable: "Yes", default: "NULL", description: "Laravel remember-me token." },
           { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Record creation timestamp." },
           { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Record modification timestamp." }
@@ -954,6 +954,8 @@
           { name: "base_sessions", type: "INT", constraints: [], nullable: "No", default: "0", description: "Standard paid plan sessions (12, 24, 30, 50)." },
           { name: "free_sessions", type: "INT", constraints: [], nullable: "No", default: "0", description: "Complimentary sessions given." },
           { name: "used_sessions", type: "INT", constraints: [], nullable: "No", default: "0", description: "Deducted count of completed and approved workouts." },
+          { name: "validation_period_days", type: "INT", constraints: [], nullable: "Yes", default: "NULL", description: "Total validity period in days based on the session package." },
+          { name: "first_session_date", type: "DATE", constraints: [], nullable: "Yes", default: "NULL", description: "Date of the first session to start validation countdown." },
           { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
           { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." }
         ]
@@ -1009,7 +1011,7 @@
           { name: "scheduled_date", type: "DATE", constraints: [], nullable: "No", default: "None", description: "Scheduled session date." },
           { name: "start_time", type: "TIME", constraints: [], nullable: "No", default: "None", description: "Scheduled start time." },
           { name: "end_time", type: "TIME", constraints: [], nullable: "No", default: "None", description: "Scheduled end time." },
-          { name: "status", type: "ENUM('pending','upcoming','ongoing','completed','approved','declined','rescheduled')", constraints: [], nullable: "No", default: "'pending'", description: "Session life-cycle status." },
+          { name: "status", type: "ENUM('pending','upcoming','ongoing','completed','approved','declined','rescheduled','no_show','cancelled','pending_for_cancellation')", constraints: [], nullable: "No", default: "'pending'", description: "Session life-cycle status ('no_show' indicates client missed the session, 'cancelled' indicates cancellation, 'pending_for_cancellation' indicates cancellation request pending client approval)." },
           { name: "reschedule_requested_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp when reschedule was requested." },
           { name: "rescheduled_date", type: "DATE", constraints: [], nullable: "Yes", default: "NULL", description: "Requested new date." },
           { name: "rescheduled_start_time", type: "TIME", constraints: [], nullable: "Yes", default: "NULL", description: "Requested new start time." },

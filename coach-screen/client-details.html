@@ -66,8 +66,9 @@
                     <h2 class="text-3xl font-bold text-fitpad-gray uppercase tracking-tight">Client Details</h2>
                     <p class="text-gray-500 text-sm">PT00842 • Enrolled: Jan 15, 2026</p>
                 </div>
-                <button onclick="alert('Redirecting to Client Edit details...')" class="bg-fitpad-gray text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:brightness-125 transition-all shadow-md">
-                    Edit Client Info
+                <button onclick="openModal('addFreeSessionModal')" class="bg-brand-yellow text-fitpad-gray px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-all shadow-md flex items-center gap-2">
+                    <ion-icon name="gift-outline" class="text-lg"></ion-icon>
+                    Add Free Session
                 </button>
             </div>
         </header>
@@ -114,12 +115,21 @@
                 <div class="relative z-10">
                     <p class="text-gray-400 font-semibold text-xs uppercase tracking-widest mb-4">Session Balance</p>
                     <div class="flex items-end gap-2 mb-1">
-                        <h3 class="text-5xl font-black brand-yellow">2</h3>
+                        <h3 id="remainingSessions" class="text-5xl font-black brand-yellow">2</h3>
                         <p class="text-sm text-gray-300 font-bold uppercase pb-1 tracking-widest">Remaining</p>
                     </div>
-                    <p class="text-xs text-gray-400 font-mono mt-4 pt-4 border-t border-white/10">
+                    <p id="sessionFormula" class="text-xs text-gray-400 font-mono mt-4 pt-4 border-t border-white/10">
                         Formula: 20 (Total) - 18 (Used)
                     </p>
+                    <div class="mt-4 pt-4 border-t border-white/10 flex flex-col gap-1">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Validity Period</p>
+                        <p class="text-sm font-bold text-white flex items-center gap-1.5">
+                            1 Month 
+                            <span class="text-xs font-semibold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-md inline-flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> 28 Days Left
+                            </span>
+                        </p>
+                    </div>
                 </div>
                 <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full"></div>
             </div>
@@ -468,7 +478,67 @@
         </div>
     </div>
 
+    <!-- 5. ADD FREE SESSION MODAL -->
+    <div id="addFreeSessionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="relative bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl overflow-y-auto max-h-[90vh] custom-scrollbar">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-fitpad-gray uppercase tracking-tight">Add Free Session</h3>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">PT00842 • Samantha Collins</p>
+                </div>
+                <button onclick="closeModal('addFreeSessionModal')" class="text-gray-400 hover:text-red-500 text-2xl"><ion-icon name="close"></ion-icon></button>
+            </div>
+            
+            <form onsubmit="handleAddFreeSession(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Number of Free Sessions</label>
+                    <input type="number" min="1" required id="freeSessionCount" value="1" class="w-full bg-gray-50 border p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Reason for Credit</label>
+                    <select id="freeSessionReason" required class="w-full bg-gray-50 border p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-brand-yellow/50">
+                        <option value="Loyalty Reward">Loyalty Reward</option>
+                        <option value="Promo Campaign">Promo Campaign</option>
+                        <option value="Referral Bonus">Referral Bonus</option>
+                        <option value="Service Recovery">Service Recovery</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Remarks / Notes</label>
+                    <textarea id="freeSessionRemarks" placeholder="Optional remarks..." class="w-full bg-gray-50 border p-3 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-yellow/50 h-24 resize-none"></textarea>
+                </div>
+                
+                <div class="mt-8 flex gap-3">
+                    <button type="button" onclick="closeModal('addFreeSessionModal')" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase hover:bg-gray-100 rounded-xl transition-all">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 text-xs font-bold uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110">Add Session</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        // Session Total & Used state
+        let sessionTotal = 20;
+        let sessionUsed = 18;
+
+        function handleAddFreeSession(e) {
+            e.preventDefault();
+            const countInput = document.getElementById('freeSessionCount');
+            const count = parseInt(countInput.value) || 0;
+            if (count <= 0) return;
+            
+            sessionTotal += count;
+            const remaining = sessionTotal - sessionUsed;
+            
+            document.getElementById('remainingSessions').innerText = remaining;
+            document.getElementById('sessionFormula').innerText = `Formula: ${sessionTotal} (Total) - ${sessionUsed} (Used)`;
+            
+            closeModal('addFreeSessionModal');
+            alert(`Successfully added ${count} free session(s) to Samantha Collins' account.`);
+            e.target.reset();
+        }
+
         // Modal helpers
         function openModal(id) { 
             document.getElementById(id).classList.remove('hidden'); 

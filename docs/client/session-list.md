@@ -24,9 +24,12 @@ Located below the Training History list, this section allows clients to view and
   - `Accepted`: Coach approved and added to schedule.
   - `Declined`: Coach declined the request.
   - `Rescheduled`: A previously scheduled session that has been requested to be moved.
+  - `Pending for Cancellation`: A scheduled session that the coach has requested to cancel.
 - **Reschedule Modal**: Clicking "Request Reschedule" opens an in-page modal allowing the client to directly select a new Date, Start Time, and End Time to submit a modification without navigating away.
+- **Coach Cancellation Request Approval**: For requests in `Pending for Cancellation` status, the client has an "Approve" action. Clicking this opens a confirmation modal displaying the coach's reason for cancellation, allowing the client to approve/confirm the cancellation to mark the session as `Cancelled`.
 
 ## Data Requirements (API)
 - `GET /api/client/sessions` - Fetch the paginated history of client sessions.
 - `GET /api/client/sessions/{id}/workout` - Fetch detailed workout data and coach remarks to populate the modal.
 - `POST /api/client/requests/reschedule` - Submit a modification for an active request via the Reschedule Modal.
+- `POST /api/client/requests/{id}/cancel/approve` - Approve a coach's session cancellation request.

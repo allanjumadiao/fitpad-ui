@@ -80,27 +80,31 @@
 
                 <div class="flex gap-2">
                     <select class="flex-1 bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-3 text-sm focus:outline-none">
-                        <option value="recent">Sort: Recent Activity</option>
-                        <option value="name_az">Name (A-Z)</option>
-                        <option value="bal_low">Sessions (Low-High)</option>
+                        <option value="">Account Status: All</option>
+                        <option value="active">Active</option>
+                        <option value="freezed">Freezed</option>
+                        <option value="finished">Finished</option>
+                        <option value="pending">Pending</option>
                     </select>
                 </div>
             </div>
         </section>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-6">
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-fitpad-gray text-white text-[11px] uppercase tracking-wider font-bold">
                         <tr>
                             <th class="px-6 py-4">Client Detail</th>
                             <th class="px-6 py-4">PT ID</th>
-                            <th class="px-6 py-4">Sessions (T/U/R)</th>
                             <th class="px-6 py-4">Status Summary</th>
+                            <th class="px-6 py-4">Account Status</th>
+                            <th class="px-6 py-4">Validity Period</th>
                             <th class="px-6 py-4 text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm divide-y divide-gray-100">
+                        <!-- Samantha Collins (Active) -->
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4">
                                 <p class="font-bold text-fitpad-gray">Samantha Collins</p>
@@ -108,16 +112,20 @@
                             </td>
                             <td class="px-6 py-4 font-mono font-semibold text-gray-600 tracking-tighter">PT00842</td>
                             <td class="px-6 py-4">
-                                <div class="flex items-center gap-2">
-                                    <span class="font-bold">20</span> / <span class="text-blue-600">18</span> / 
-                                    <span class="text-red-500 font-bold bg-red-50 px-2 rounded">2</span>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-[9px] bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded font-bold">T: 20</span>
+                                    <span class="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">U: 18</span>
+                                    <span class="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">R: 2</span>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex flex-wrap gap-1">
-                                    <span class="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">COMP: 18</span>
-                                    <span class="text-[9px] bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded font-bold">ONG: 1</span>
-                                </div>
+                                <span class="text-[9px] bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-full font-black uppercase tracking-wider inline-flex items-center gap-1 shadow-sm">
+                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Active
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-xs font-bold text-fitpad-gray">1 Month</div>
+                                <div class="text-[10px] text-green-600 font-semibold mt-0.5">28 Days Left</div>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-center gap-2">
@@ -126,10 +134,196 @@
                                 </div>
                             </td>
                         </tr>
+
+                        <!-- John Doe (Freezed) -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-fitpad-gray">John Doe</p>
+                                <p class="text-[10px] text-gray-400">Recent: Strength (Yesterday)</p>
+                            </td>
+                            <td class="px-6 py-4 font-mono font-semibold text-gray-600 tracking-tighter">PT00912</td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-[9px] bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded font-bold">T: 24</span>
+                                    <span class="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">U: 10</span>
+                                    <span class="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">R: 0</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-[9px] bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full font-black uppercase tracking-wider inline-flex items-center gap-1 shadow-sm">
+                                    <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Freezed
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-xs font-bold text-gray-400">2 Months</div>
+                                <div class="text-[10px] text-blue-500 font-semibold mt-0.5 flex items-center gap-1">
+                                    <ion-icon name="pause-circle"></ion-icon> Paused (34 Days Left)
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="openClientSchedule('John Doe', 'PT00912')" title="View Schedule" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-200 rounded-lg transition-all"><ion-icon name="calendar-outline" class="text-lg"></ion-icon></button>
+                                    <button onclick="window.location.href='client-details.html'" title="View Details" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-200 rounded-lg transition-all"><ion-icon name="eye-outline" class="text-lg"></ion-icon></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Jane Smith (Finished) -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-fitpad-gray">Jane Smith</p>
+                                <p class="text-[10px] text-gray-400">Recent: Cardio (3 days ago)</p>
+                            </td>
+                            <td class="px-6 py-4 font-mono font-semibold text-gray-600 tracking-tighter">PT00754</td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-[9px] bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded font-bold">T: 12</span>
+                                    <span class="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">U: 12</span>
+                                    <span class="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">R: 0</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-[9px] bg-gray-50 text-gray-600 border border-gray-200 px-2.5 py-1 rounded-full font-black uppercase tracking-wider inline-flex items-center gap-1 shadow-sm">
+                                    <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span> Finished
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-xs font-bold text-gray-400">1 Month</div>
+                                <div class="text-[10px] text-red-500 font-semibold mt-0.5">0 Days Left (Expired)</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="openClientSchedule('Jane Smith', 'PT00754')" title="View Schedule" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-200 rounded-lg transition-all"><ion-icon name="calendar-outline" class="text-lg"></ion-icon></button>
+                                    <button onclick="window.location.href='client-details.html'" title="View Details" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-200 rounded-lg transition-all"><ion-icon name="eye-outline" class="text-lg"></ion-icon></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Mark Davis (Pending) -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-fitpad-gray">Mark Davis</p>
+                                <p class="text-[10px] text-gray-400">Recent: Registered (5 days ago)</p>
+                            </td>
+                            <td class="px-6 py-4 font-mono font-semibold text-gray-600 tracking-tighter">PT00631</td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="text-[9px] bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded font-bold">T: 10</span>
+                                    <span class="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">U: 0</span>
+                                    <span class="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">R: 0</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-[9px] bg-orange-50 text-orange-700 border border-orange-200 px-2.5 py-1 rounded-full font-black uppercase tracking-wider inline-flex items-center gap-1 shadow-sm">
+                                    <span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span> Pending
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-xs font-bold text-gray-400">1 Month</div>
+                                <div class="text-[10px] text-amber-500 font-semibold mt-0.5 flex items-center gap-1">
+                                    <ion-icon name="play-outline" class="text-gray-300"></ion-icon> Not Started (30 Days Left)
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="openClientSchedule('Mark Davis', 'PT00631')" title="View Schedule" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-200 rounded-lg transition-all"><ion-icon name="calendar-outline" class="text-lg"></ion-icon></button>
+                                    <button onclick="window.location.href='client-details.html'" title="View Details" class="p-2 text-gray-400 hover:text-fitpad-gray hover:bg-gray-200 rounded-lg transition-all"><ion-icon name="eye-outline" class="text-lg"></ion-icon></button>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- INCOMING SESSIONS SECTION -->
+        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+            <div class="flex items-center gap-2 mb-4">
+                <ion-icon name="time-outline" class="text-xl text-fitpad-gray"></ion-icon>
+                <h3 class="text-lg font-bold text-fitpad-gray uppercase tracking-tight">Today's Incoming Sessions</h3>
+            </div>
+            
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50 text-fitpad-gray text-[10px] uppercase tracking-wider font-bold">
+                        <tr>
+                            <th class="px-6 py-3 border-b border-gray-100 text-center">Trainee</th>
+                            <th class="px-6 py-3 border-b border-gray-100 text-center">Scheduled Time</th>
+                            <th class="px-6 py-3 border-b border-gray-100 text-center">Session Goal</th>
+                            <th class="px-6 py-3 border-b border-gray-100 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-gray-100">
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-fitpad-gray">Samantha Collins</div>
+                                <div class="text-[10px] text-gray-400 font-mono">PT00842</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="font-black text-fitpad-gray">03:30 PM - 04:30 PM</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="bg-gray-100 text-fitpad-gray text-xs font-semibold px-2.5 py-1 rounded-lg">HIIT Focus</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="confirmAction('no_show', 'Samantha Collins')" class="flex items-center gap-1.5 text-rose-600 border border-rose-200 hover:bg-rose-50 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                        <ion-icon name="person-remove-outline" class="text-sm"></ion-icon> No Show
+                                    </button>
+                                    <button onclick="confirmAction('cancel', 'Samantha Collins')" class="flex items-center gap-1.5 text-amber-600 border border-amber-200 hover:bg-amber-50 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                        <ion-icon name="close-circle-outline" class="text-sm"></ion-icon> Cancel Session
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-fitpad-gray">John Doe</div>
+                                <div class="text-[10px] text-gray-400 font-mono">PT00912</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="font-black text-fitpad-gray">05:00 PM - 06:00 PM</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="bg-gray-100 text-fitpad-gray text-xs font-semibold px-2.5 py-1 rounded-lg">Strength & Conditioning</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="confirmAction('no_show', 'John Doe')" class="flex items-center gap-1.5 text-rose-600 border border-rose-200 hover:bg-rose-50 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                        <ion-icon name="person-remove-outline" class="text-sm"></ion-icon> No Show
+                                    </button>
+                                    <button onclick="confirmAction('cancel', 'John Doe')" class="flex items-center gap-1.5 text-amber-600 border border-amber-200 hover:bg-amber-50 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm">
+                                        <ion-icon name="close-circle-outline" class="text-sm"></ion-icon> Cancel Session
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-fitpad-gray flex items-center gap-2">
+                                    Alice Cooper
+                                    <span class="text-[9px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-black uppercase tracking-wider">Cancellation Requested</span>
+                                </div>
+                                <div class="text-[10px] text-gray-400 font-mono">PT00773</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="font-black text-fitpad-gray">07:00 PM - 08:00 PM</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="bg-gray-100 text-fitpad-gray text-xs font-semibold px-2.5 py-1 rounded-lg">Mobility Focus</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="confirmAction('accept_cancellation', 'Alice Cooper')" class="flex items-center gap-1.5 text-amber-600 border border-amber-200 bg-amber-50 hover:bg-amber-100 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer">
+                                        <ion-icon name="checkmark-done-circle-outline" class="text-sm"></ion-icon> Accept Cancellation
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
 
     <nav class="md:hidden fixed bottom-0 inset-x-0 bg-fitpad-gray text-white px-2 py-4 flex justify-around items-center z-50">
@@ -221,6 +415,30 @@
         </div>
     </div>
 
+    <!-- CONFIRMATION MODAL FOR NO SHOW / CANCEL -->
+    <div id="actionConfirmModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-fitpad-gray/60 backdrop-blur-sm" onclick="closeModal('actionConfirmModal')"></div>
+        <div class="relative bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl z-10">
+            <h3 id="confirmModalTitle" class="text-xl font-bold text-fitpad-gray mb-4 uppercase tracking-tight">Confirm Action</h3>
+            <p id="confirmModalMessage" class="text-sm text-gray-500 mb-6 font-medium leading-relaxed"></p>
+            
+            <form id="confirmActionForm" onsubmit="handleConfirmAction(event)">
+                <input type="hidden" id="actionType">
+                <input type="hidden" id="actionClientName">
+                
+                <div class="mb-6">
+                    <label id="remarksLabel" class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Remarks / Reason *</label>
+                    <textarea id="actionRemarks" required class="w-full h-32 bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm focus:ring-2 focus:ring-brand-yellow/50 outline-none resize-none leading-relaxed" placeholder="Please enter the details..."></textarea>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeModal('actionConfirmModal')" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase hover:bg-gray-100 rounded-xl transition-all">Cancel</button>
+                    <button type="submit" id="confirmSubmitBtn" class="flex-1 py-3 text-xs font-bold uppercase bg-brand-yellow text-fitpad-gray rounded-xl shadow-lg hover:brightness-110 transition-all">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Modal Control
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
@@ -250,6 +468,78 @@
         function saveSchedule() {
             alert('Schedule saved successfully.');
             closeModal('addScheduleModal');
+        }
+
+        // Action confirmation for No Show / Cancel Session
+        let currentConfirmAction = '';
+        let currentConfirmClient = '';
+
+        function confirmAction(action, clientName) {
+            currentConfirmAction = action;
+            currentConfirmClient = clientName;
+            
+            document.getElementById('actionType').value = action;
+            document.getElementById('actionClientName').value = clientName;
+            
+            const titleEl = document.getElementById('confirmModalTitle');
+            const msgEl = document.getElementById('confirmModalMessage');
+            const labelEl = document.getElementById('remarksLabel');
+            const textareaEl = document.getElementById('actionRemarks');
+            const submitBtn = document.getElementById('confirmSubmitBtn');
+            
+            textareaEl.value = '';
+            textareaEl.readOnly = false;
+            textareaEl.required = true;
+            
+            if (action === 'no_show') {
+                titleEl.innerText = "Confirm No Show";
+                msgEl.innerText = `Are you sure you want to mark ${clientName} as a "No Show" for today's session? This action will log a session deduction.`;
+                labelEl.innerText = "Remarks / No Show Details *";
+                textareaEl.placeholder = "Explain why the client was a no-show (e.g. did not respond to calls/SMS)...";
+                submitBtn.className = "flex-1 py-3 text-xs font-bold uppercase bg-rose-600 text-white rounded-xl shadow-lg hover:bg-rose-700 transition-all cursor-pointer";
+            } else if (action === 'cancel') {
+                titleEl.innerText = "Confirm Cancellation";
+                msgEl.innerText = `Are you sure you want to cancel the scheduled session for ${clientName} today?`;
+                labelEl.innerText = "Reason for Cancellation *";
+                textareaEl.placeholder = "Provide a valid reason for cancellation...";
+                submitBtn.className = "flex-1 py-3 text-xs font-bold uppercase bg-amber-500 text-white rounded-xl shadow-lg hover:bg-amber-600 transition-all cursor-pointer";
+            } else if (action === 'accept_cancellation') {
+                titleEl.innerText = "Accept Cancellation Request";
+                msgEl.innerText = `${clientName} has requested to cancel their session for today. Please review the reason below and click confirm to approve the cancellation.`;
+                labelEl.innerText = "Client's Reason for Cancellation";
+                textareaEl.value = "Feeling unwell / sudden fever and unable to attend the session today.";
+                textareaEl.readOnly = true;
+                textareaEl.required = false;
+                submitBtn.className = "flex-1 py-3 text-xs font-bold uppercase bg-amber-500 text-white rounded-xl shadow-lg hover:bg-amber-600 transition-all cursor-pointer";
+            }
+            
+            openModal('actionConfirmModal');
+        }
+
+        function handleConfirmAction(event) {
+            event.preventDefault();
+            const action = document.getElementById('actionType').value;
+            const clientName = document.getElementById('actionClientName').value;
+            const remarks = document.getElementById('actionRemarks').value.trim();
+            
+            if (action !== 'accept_cancellation' && !remarks) {
+                alert('Remarks/Reason is required.');
+                return;
+            }
+            
+            closeModal('actionConfirmModal');
+            
+            let actionLabel = '';
+            if (action === 'no_show') {
+                actionLabel = 'marked as No Show';
+                alert(`Session for ${clientName} has been successfully ${actionLabel}.\nReason: "${remarks}"`);
+            } else if (action === 'cancel') {
+                actionLabel = 'cancelled';
+                alert(`Session for ${clientName} has been successfully ${actionLabel}.\nReason: "${remarks}"`);
+            } else if (action === 'accept_cancellation') {
+                actionLabel = 'approved for cancellation';
+                alert(`Cancellation request from ${clientName} has been successfully accepted.\nClient Reason: "${remarks}"`);
+            }
         }
 
         // Dynamic Schedule Generator & Navigation

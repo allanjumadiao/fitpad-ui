@@ -394,7 +394,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [pending, active, inactive]
+            enum: [pending, active, inactive, finished, freezed]
       responses:
         '200':
           description: List of clients.
@@ -538,10 +538,49 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: [pending, active, inactive]
+                  enum: [pending, active, inactive, finished, freezed]
       responses:
         '200':
           description: Account status changed.
+
+  /api/admin/clients/{id}/transfer:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Admin Portal
+      summary: Transfer Client to a New Coach
+      description: Reassigns the client to a different coach, logs the reason, automatically cancels all future scheduled sessions, and requires plotting a new schedule.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - coach_id
+                - reason_category
+                - remarks
+              properties:
+                coach_id:
+                  type: string
+                  example: "CP-7192"
+                reason_category:
+                  type: string
+                  enum: [Scheduling Conflict, Client Preference, Coach Request, Skillset Match, Other]
+                  example: "Scheduling Conflict"
+                remarks:
+                  type: string
+                  example: "Client requested a shift to morning sessions which the current coach cannot accommodate."
+      responses:
+        '200':
+          description: Coach transfer successful.
 
   /api/admin/clients/{id}/assessments:
     get:
@@ -1030,6 +1069,19 @@ paths:
                   total_sessions:
                     type: integer
                     example: 24
+                  validation_period:
+                    type: object
+                    properties:
+                      total_days:
+                        type: integer
+                        example: 30
+                      days_remaining:
+                        type: integer
+                        example: 28
+                      start_date:
+                        type: string
+                        format: date
+                        example: "2026-05-13"
                   next_session:
                     $ref: '#/components/schemas/TrainingSessionShort'
                   coach:
@@ -1174,6 +1226,25 @@ paths:
       responses:
         '200':
           description: Reschedule requested.
+
+  /api/client/requests/{id}/cancel/approve:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Approve Coach Cancellation Request
+      description: Approves a session cancellation request initiated by the coach.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the session.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Session cancellation request approved. Session status updated to cancelled.
 
   /api/client/session/current:
     get:
@@ -1547,6 +1618,13 @@ paths:
                   type: integer
                   minimum: 1
                   example: 2
+                reason:
+                  type: string
+                  enum: [Loyalty Reward, Promo Campaign, Referral Bonus, Service Recovery, Other]
+                  example: Referral Bonus
+                remarks:
+                  type: string
+                  example: Referred a family member.
       responses:
         '200':
           description: Sessions balance successfully updated.
@@ -1647,6 +1725,86 @@ paths:
         '200':
           description: Session completed successfully.
 
+  /api/coach/session/no-show:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Log Client No Show
+      description: Marks a training session as 'no_show'. Requires coach remarks.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+                - remarks
+              properties:
+                session_id:
+                  type: integer
+                  example: 10
+                remarks:
+                  type: string
+                  example: "Client did not attend or answer phone calls/SMS."
+      responses:
+        '200':
+          description: Session successfully marked as no-show.
+
+  /api/coach/session/cancel:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Cancel Scheduled Session
+      description: Cancels a scheduled training session. Requires coach reason.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+                - reason
+              properties:
+                session_id:
+                  type: integer
+                  example: 10
+                reason:
+                  type: string
+                  example: "Coach emergency or scheduling conflict."
+      responses:
+        '200':
+          description: Session successfully cancelled.
+
+  /api/coach/session/cancel/accept:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Coach Portal
+      summary: Accept Cancellation Request
+      description: Approves a client's cancellation request for a scheduled session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+              properties:
+                session_id:
+                  type: integer
+                  example: 10
+      responses:
+        '200':
+          description: Client cancellation successfully approved.
+
   # =========================================================================
   # SMS GATEWAY ROUTING
   # =========================================================================
@@ -1723,7 +1881,7 @@ components:
           example: "admin"
         status:
           type: string
-          enum: [pending, active, inactive, finished]
+          enum: [pending, active, inactive, finished, freezed]
           example: "active"
 
     Profile:
@@ -2056,7 +2214,7 @@ components:
           example: "PT Session"
         status:
           type: string
-          enum: [pending, upcoming, ongoing, completed]
+          enum: [pending, upcoming, ongoing, completed, no_show, cancelled, pending_for_cancellation]
           example: upcoming
 
     CalendarItem:
