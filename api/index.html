@@ -848,12 +848,12 @@
         columns: [
           { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary auto-incrementing ID." },
           { name: "name", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Display name of the user." },
-          { name: "email", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Email address (non-unique to allow client renewals)." },
+          { name: "email", type: "VARCHAR(255)", constraints: ["UNIQUE"], nullable: "No", default: "None", description: "Email address (strictly unique for login/identity)." },
           { name: "email_verified_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp when email verification succeeded." },
           { name: "password", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Blowfish/Bcrypt hashed password (Admins only)." },
           { name: "pin", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Hashed 6-digit login PIN (Coaches & Clients only)." },
           { name: "role", type: "ENUM('admin','coach','client')", constraints: [], nullable: "No", default: "None", description: "Access control role for dashboard authorization." },
-          { name: "status", type: "ENUM('pending','active','inactive','finished','freezed')", constraints: [], nullable: "No", default: "'active'", description: "State of account access ('finished' signals an expired renewal, 'freezed' represents a frozen account)." },
+          { name: "is_suspended", type: "TINYINT(1)", constraints: [], nullable: "No", default: "0", description: "Toggles user suspension (0 = Active, 1 = Suspended)." },
           { name: "remember_token", type: "VARCHAR(100)", constraints: [], nullable: "Yes", default: "NULL", description: "Laravel remember-me token." },
           { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Record creation timestamp." },
           { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Record modification timestamp." }
@@ -948,6 +948,8 @@
           { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
           { name: "user_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Refers to users.id." },
           { name: "pt_id", type: "VARCHAR(50)", constraints: ["UNIQUE"], nullable: "No", default: "None", description: "Public Trainee Client ID (e.g. PT00842)." },
+          { name: "registration_type", type: "ENUM('new','renewal')", constraints: [], nullable: "No", default: "'new'", description: "Identifies onboarding pathway." },
+          { name: "status", type: "ENUM('pending','active','inactive','finished','freezed')", constraints: [], nullable: "No", default: "'pending'", description: "State of package details ('finished' signals package expired, 'freezed' represents a frozen package)." },
           { name: "coach_detail_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "Yes", default: "NULL", description: "Refers to coach_details.id of assigned coach." },
           { name: "height", type: "DECIMAL(5,2)", constraints: [], nullable: "Yes", default: "NULL", description: "Trainee height in cm." },
           { name: "fitness_goal", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Fitness goal text (e.g. HIIT, Muscle Build)." },
@@ -1114,6 +1116,60 @@
           { name: "sent_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Actual dispatch time." },
           { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Created timestamp." },
           { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Updated timestamp." }
+        ]
+      },
+      {
+        name: "surveys",
+        category: "Administration",
+        description: "Stores admin-defined feedback and satisfaction surveys.",
+        relations: [
+          { type: "Has Many", table: "survey_questions", field: "survey_id" },
+          { type: "Has Many", table: "survey_responses", field: "survey_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary auto-incrementing ID." },
+          { name: "survey_code", type: "VARCHAR(50)", constraints: ["UNIQUE"], nullable: "No", default: "None", description: "Unique tracking code (e.g. SRV-9821)." },
+          { name: "title", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Survey Title (e.g. Coach Feedback Survey)." },
+          { name: "description", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "Detailed survey purpose and instructions." },
+          { name: "locations", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Comma-separated target screen keys (e.g., 'dashboard,profile')." },
+          { name: "active", type: "TINYINT(1)", constraints: [], nullable: "No", default: "1", description: "Active state toggle (1 for active, 0 for inactive)." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Record creation timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Record modification timestamp." }
+        ]
+      },
+      {
+        name: "survey_questions",
+        category: "Administration",
+        description: "Stores individual questions grouped under surveys.",
+        relations: [
+          { type: "Belongs To", table: "surveys", field: "survey_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "survey_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Associated survey primary ID." },
+          { name: "type", type: "ENUM('short','paragraph','choice','checkbox','dropdown')", constraints: [], nullable: "No", default: "None", description: "Question input format." },
+          { name: "title", type: "TEXT", constraints: [], nullable: "No", default: "None", description: "Question statement/text." },
+          { name: "required", type: "TINYINT(1)", constraints: [], nullable: "No", default: "0", description: "Required flag (1 = mandatory, 0 = optional)." },
+          { name: "options", type: "TEXT", constraints: [], nullable: "Yes", default: "NULL", description: "JSON string list of dropdown/multiple-choice options." },
+          { name: "sort_order", type: "INT", constraints: [], nullable: "No", default: "0", description: "Reordering sorting index." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Creation timestamp." },
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Modification timestamp." }
+        ]
+      },
+      {
+        name: "survey_responses",
+        category: "Administration",
+        description: "Stores client-submitted answers to active surveys.",
+        relations: [
+          { type: "Belongs To", table: "surveys", field: "survey_id" },
+          { type: "Belongs To", table: "client_details", field: "client_id" }
+        ],
+        columns: [
+          { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary ID." },
+          { name: "survey_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Associated survey primary ID." },
+          { name: "client_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Trainee client_details.id of responder." },
+          { name: "answers", type: "JSON", constraints: [], nullable: "No", default: "None", description: "JSON payload containing question IDs and their respective submitted values." },
+          { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Response submission timestamp." }
         ]
       }
     ];

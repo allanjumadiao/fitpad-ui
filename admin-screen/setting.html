@@ -74,6 +74,9 @@
                 <button onclick="switchTab('admins', this)" class="tab-btn text-sm font-bold uppercase tracking-widest pb-4 border-b-4 border-transparent text-gray-400 hover:text-fitpad-gray hover:border-gray-200 transition-colors">
                     Admin Management
                 </button>
+                <button id="tab-btn-surveys" onclick="switchTab('surveys', this)" class="tab-btn text-sm font-bold uppercase tracking-widest pb-4 border-b-4 border-transparent text-gray-400 hover:text-fitpad-gray hover:border-gray-200 transition-colors flex items-center gap-2">
+                    Surveys <ion-icon name="document-text-outline" class="text-gray-300"></ion-icon>
+                </button>
                 <button onclick="switchTab('audit', this)" class="tab-btn text-sm font-bold uppercase tracking-widest pb-4 border-b-4 border-transparent text-gray-400 hover:text-fitpad-gray hover:border-gray-200 transition-colors flex items-center gap-2">
                     Security Logs <ion-icon name="lock-closed" class="text-gray-300"></ion-icon>
                 </button>
@@ -340,6 +343,92 @@
         </div>
 
         <!-- ============================================== -->
+        <!-- TAB 5: SURVEYS -->
+        <!-- ============================================== -->
+        <div id="tab-surveys" class="tab-content">
+            <div class="w-full">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="px-8 py-6 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-black text-fitpad-gray uppercase tracking-tight flex items-center gap-2">
+                                <ion-icon name="document-text" class="text-brand-yellow text-2xl"></ion-icon> Surveys & Feedback
+                            </h3>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Manage feedback forms and client targeting</p>
+                        </div>
+                        <a href="add-survey.html" class="bg-brand-yellow text-fitpad-gray px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-md flex items-center justify-center gap-2">
+                            <ion-icon name="add-circle" class="text-lg"></ion-icon> Create Survey
+                        </a>
+                    </div>
+                    
+                    <!-- SURVEY FILTER BAR -->
+                    <div class="px-8 py-4 border-b border-gray-100 bg-white flex flex-col sm:flex-row gap-4 shrink-0">
+                        <div class="relative flex-1 bg-white">
+                            <ion-icon name="search-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></ion-icon>
+                            <input type="text" id="surveySearch" onkeyup="filterAndPaginateSurveys()" placeholder="Search surveys..." class="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all shadow-sm">
+                        </div>
+                        <div class="relative w-full sm:w-56 bg-white">
+                            <select id="surveyLocationFilter" onchange="filterAndPaginateSurveys()" class="w-full bg-gray-50 border border-gray-200 pl-4 pr-10 py-2.5 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] appearance-none cursor-pointer shadow-sm">
+                                <option value="all">All Locations</option>
+                                <option value="dashboard">Dashboard</option>
+                                <option value="session-list">Session List</option>
+                                <option value="session">Active Session</option>
+                                <option value="profile">Profile</option>
+                            </select>
+                            <ion-icon name="chevron-down-outline" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></ion-icon>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-white border-b border-gray-100">
+                                    <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Survey Title</th>
+                                    <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Target Screen(s)</th>
+                                    <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Questions Count</th>
+                                    <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status</th>
+                                    <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="surveyTableBody" class="divide-y divide-gray-50">
+                                <!-- Dynamic survey rows will be injected here -->
+                            </tbody>
+                        </table>
+                        
+                        <!-- Empty State -->
+                        <div id="surveyEmptyState" class="hidden text-center py-20 bg-white">
+                            <div class="w-16 h-16 mx-auto rounded-full bg-yellow-50 text-brand-yellow flex items-center justify-center text-3xl mb-4">
+                                <ion-icon name="document-text-outline"></ion-icon>
+                            </div>
+                            <h4 class="text-base font-black text-fitpad-gray uppercase tracking-tight mb-1">No Surveys Configured</h4>
+                            <p class="text-xs text-gray-400 font-medium mb-6">Create dynamic feedback surveys to collect client reviews.</p>
+                            <a href="add-survey.html" class="bg-fitpad-gray text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-md inline-block">
+                                Create First Survey
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SURVEY PAGINATION FOOTER -->
+                    <div id="surveyPagination" class="px-8 py-4 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                            Showing <span id="surveyStartIndex" class="text-fitpad-gray">0</span> to <span id="surveyEndIndex" class="text-fitpad-gray">0</span> of <span id="surveyTotalCount" class="text-fitpad-gray">0</span> surveys
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="prevSurveyPage()" id="btnPrevSurveyPage" class="p-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 text-fitpad-gray transition-all shadow-sm flex items-center justify-center disabled:opacity-50 disabled:pointer-events-none">
+                                <ion-icon name="chevron-back-outline" class="text-sm"></ion-icon>
+                            </button>
+                            <div id="surveyPageNumbers" class="flex items-center gap-1">
+                                <!-- Dynamic page numbers -->
+                            </div>
+                            <button onclick="nextSurveyPage()" id="btnNextSurveyPage" class="p-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 text-fitpad-gray transition-all shadow-sm flex items-center justify-center disabled:opacity-50 disabled:pointer-events-none">
+                                <ion-icon name="chevron-forward-outline" class="text-sm"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
         <!-- TAB 4: AUDIT LOGS -->
         <!-- ============================================== -->
         <div id="tab-audit" class="tab-content">
@@ -444,6 +533,28 @@
                 <div id="previewMediaContainer" class="w-full flex flex-col justify-center items-center">
                     <!-- Dynamic Image injected via JS -->
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 4. SURVEY PREVIEW MODAL                    -->
+    <!-- ========================================= -->
+    <div id="viewSurveyModal" class="fixed inset-0 z-[60] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity opacity-0">
+        <div id="viewSurveyModalContent" class="bg-white rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
+            <div class="px-8 py-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center shrink-0">
+                <h3 id="previewSurveyTitle" class="text-lg font-black text-fitpad-gray uppercase tracking-tight flex items-center gap-2">
+                    <ion-icon name="document-text" class="text-brand-yellow text-2xl"></ion-icon> Survey Preview
+                </h3>
+                <button type="button" onclick="closeViewSurveyModal()" class="text-gray-400 hover:text-red-500 transition-colors p-1"><ion-icon name="close-circle" class="text-2xl"></ion-icon></button>
+            </div>
+            
+            <div id="previewSurveyBody" class="p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1 bg-gray-50">
+                <!-- Questions preview injected dynamically -->
+            </div>
+            
+            <div class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end shrink-0">
+                <button type="button" onclick="closeViewSurveyModal()" class="bg-fitpad-gray text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-md">Close Preview</button>
             </div>
         </div>
     </div>
@@ -804,6 +915,781 @@
                 setTimeout(() => { modal.classList.add('hidden'); }, 300);
             }
         };
+
+        // ==========================================
+        // Survey Tab Logic
+        // ==========================================
+        
+        // Default seed surveys if localStorage empty
+        const defaultSurveys = [
+            {
+                id: "SRV-20912",
+                title: "Coach Feedback Survey",
+                description: "Tell us how your coach is doing and how we can improve your training sessions.",
+                locations: ["dashboard", "profile"],
+                active: true,
+                createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+                questions: [
+                    {
+                        id: "q-1",
+                        type: "choice",
+                        title: "How would you rate your coach's responsiveness?",
+                        required: true,
+                        options: ["Excellent", "Good", "Average", "Poor"]
+                    },
+                    {
+                        id: "q-2",
+                        type: "paragraph",
+                        title: "What does your coach do best during training sessions?",
+                        required: false
+                    },
+                    {
+                        id: "q-3",
+                        type: "choice",
+                        title: "Would you recommend this coach to a friend?",
+                        required: true,
+                        options: ["Yes", "No", "Not sure"]
+                    }
+                ]
+            },
+            {
+                id: "SRV-48123",
+                title: "PT Feedback Survey",
+                description: "Help us evaluate our personal training session structures and routines.",
+                locations: ["session", "session-list"],
+                active: true,
+                createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+                questions: [
+                    {
+                        id: "q-4",
+                        type: "choice",
+                        title: "Was the session duration appropriate for your fitness goal?",
+                        required: true,
+                        options: ["Too short", "Just right", "Too long"]
+                    },
+                    {
+                        id: "q-5",
+                        type: "checkbox",
+                        title: "Which exercises did you find most challenging?",
+                        required: false,
+                        options: ["Strength/Squats", "Cardio/HIIT", "Core/Plank", "Mobility/Stretching"]
+                    },
+                    {
+                        id: "q-6",
+                        type: "short",
+                        title: "Any additional remarks for your trainer?",
+                        required: false
+                    }
+                ]
+            },
+            {
+                id: "SRV-10293",
+                title: "Client Onboarding Survey",
+                description: "Help us understand your goals and current fitness level during onboarding.",
+                locations: ["dashboard"],
+                active: true,
+                createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
+                questions: [
+                    {
+                        id: "q-7",
+                        type: "dropdown",
+                        title: "What is your main fitness objective?",
+                        required: true,
+                        options: ["Weight Loss", "Muscle Gain", "Endurance Training", "General Health"]
+                    },
+                    {
+                        id: "q-8",
+                        type: "choice",
+                        title: "How many days per week do you plan to train?",
+                        required: true,
+                        options: ["1-2 days", "3-4 days", "5+ days"]
+                    }
+                ]
+            },
+            {
+                id: "SRV-98765",
+                title: "App Usability Feedback",
+                description: "Share your experience using the Fitpad mobile and desktop application.",
+                locations: ["profile"],
+                active: true,
+                createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+                questions: [
+                    {
+                        id: "q-9",
+                        type: "choice",
+                        title: "How easy is it to navigate the app?",
+                        required: true,
+                        options: ["Very Easy", "Somewhat Easy", "Neutral", "Difficult"]
+                    },
+                    {
+                        id: "q-10",
+                        type: "paragraph",
+                        title: "What features would you like to see added to Fitpad?",
+                        required: false
+                    }
+                ]
+            },
+            {
+                id: "SRV-54321",
+                title: "Exercise Variety Survey",
+                description: "Are you satisfied with the selection and variety of workouts assigned?",
+                locations: ["session-list"],
+                active: false,
+                createdAt: new Date(Date.now() - 86400000 * 15).toISOString(),
+                questions: [
+                    {
+                        id: "q-11",
+                        type: "choice",
+                        title: "Do you feel your workouts have enough variety?",
+                        required: true,
+                        options: ["Yes, perfect", "Somewhat, could be better", "No, too repetitive"]
+                    }
+                ]
+            },
+            {
+                id: "SRV-65478",
+                title: "Nutrition Plan Review",
+                description: "Give us feedback on the personalized diet and nutrition guides.",
+                locations: ["dashboard", "profile"],
+                active: false,
+                createdAt: new Date(Date.now() - 86400000 * 12).toISOString(),
+                questions: [
+                    {
+                        id: "q-12",
+                        type: "choice",
+                        title: "How easy is it to follow your nutrition plan?",
+                        required: true,
+                        options: ["Very Easy", "Manageable", "Difficult", "Not following any"]
+                    },
+                    {
+                        id: "q-13",
+                        type: "paragraph",
+                        title: "What are your biggest hurdles in maintaining your diet?",
+                        required: false
+                    }
+                ]
+            },
+            {
+                id: "SRV-11111",
+                title: "Goal Setting Review",
+                description: "A periodic survey to assess if your current targets need to be updated.",
+                locations: ["dashboard"],
+                active: true,
+                createdAt: new Date(Date.now() - 86400000 * 8).toISOString(),
+                questions: [
+                    {
+                        id: "q-14",
+                        type: "choice",
+                        title: "Have you reached any of your fitness goals this month?",
+                        required: true,
+                        options: ["Yes, multiple", "Yes, one of them", "No, still working on them"]
+                    }
+                ]
+            },
+            {
+                id: "SRV-22222",
+                title: "Trainer Professionalism Poll",
+                description: "Rate the professionalism, punctuality, and attitude of your personal trainers.",
+                locations: ["profile"],
+                active: true,
+                createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+                questions: [
+                    {
+                        id: "q-15",
+                        type: "choice",
+                        title: "Is your trainer always on time for your workouts?",
+                        required: true,
+                        options: ["Always", "Mostly", "Sometimes", "Rarely"]
+                    },
+                    {
+                        id: "q-16",
+                        type: "choice",
+                        title: "How would you rate their communication style?",
+                        required: true,
+                        options: ["Encouraging & Clear", "Professional & Polite", "A bit passive", "Unprofessional"]
+                    }
+                ]
+            },
+            {
+                id: "SRV-33333",
+                title: "Gym Amenities Survey",
+                description: "We want to know your thoughts on our facilities, equipment, and cleanliness.",
+                locations: ["dashboard"],
+                active: false,
+                createdAt: new Date(Date.now() - 86400000 * 20).toISOString(),
+                questions: [
+                    {
+                        id: "q-17",
+                        type: "choice",
+                        title: "How clean is the training facility?",
+                        required: true,
+                        options: ["Immaculate", "Clean enough", "Needs improvement", "Dirty"]
+                    },
+                    {
+                        id: "q-18",
+                        type: "checkbox",
+                        title: "Which amenities do you use most?",
+                        required: false,
+                        options: ["Showers/Lockers", "Juice Bar", "Cardio Zone", "Free Weights Area"]
+                    }
+                ]
+            },
+            {
+                id: "SRV-44444",
+                title: "Session Length Preference",
+                description: "Are standard 60-minute training sessions alignment with your schedule?",
+                locations: ["session"],
+                active: true,
+                createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
+                questions: [
+                    {
+                        id: "q-19",
+                        type: "choice",
+                        title: "What is your preferred duration for a personal training session?",
+                        required: true,
+                        options: ["30 Minutes", "45 Minutes", "60 Minutes", "90 Minutes"]
+                    }
+                ]
+            },
+            {
+                id: "SRV-55555",
+                title: "Injury History & Safety",
+                description: "Help us keep you safe. Inform us of any recent strains, injuries, or discomfort.",
+                locations: ["profile"],
+                active: true,
+                createdAt: new Date(Date.now() - 86400000 * 9).toISOString(),
+                questions: [
+                    {
+                        id: "q-20",
+                        type: "choice",
+                        title: "Do you currently feel any pain or physical discomfort?",
+                        required: true,
+                        options: ["Yes, chronic pain", "Yes, minor joint soreness", "No, feeling fully healthy"]
+                    },
+                    {
+                        id: "q-21",
+                        type: "paragraph",
+                        title: "If yes, please describe the location and severity of the soreness:",
+                        required: false
+                    }
+                ]
+            },
+            {
+                id: "SRV-66666",
+                title: "Workout Music Survey",
+                description: "What playlist genres pump you up the most during intense training?",
+                locations: ["dashboard", "session-list"],
+                active: true,
+                createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+                questions: [
+                    {
+                        id: "q-22",
+                        type: "checkbox",
+                        title: "Which genres do you prefer while working out?",
+                        required: true,
+                        options: ["Rock/Metal", "Hip Hop/Rap", "EDM/Dance", "Pop Hits", "No Music"]
+                    }
+                ]
+            }
+        ];
+
+        function seedMockResponses() {
+            let responses = localStorage.getItem("fitpad_survey_responses");
+            if (responses) return;
+            
+            const mockResponses = [
+                {
+                    id: "resp-1",
+                    surveyId: "SRV-20912",
+                    client_name: "Jane Doe",
+                    submitted_at: new Date(Date.now() - 3600000 * 2).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Excellent" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "She is extremely patient and demonstrates every movement clearly." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-2",
+                    surveyId: "SRV-20912",
+                    client_name: "John Smith",
+                    submitted_at: new Date(Date.now() - 3600000 * 5).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Good" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Keeps me focused and tracks my progress consistently." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-3",
+                    surveyId: "SRV-20912",
+                    client_name: "Michael Johnson",
+                    submitted_at: new Date(Date.now() - 3600000 * 10).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Excellent" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Very knowledgeable about injury recovery and stretching posture." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-4",
+                    surveyId: "SRV-20912",
+                    client_name: "Sarah Adams",
+                    submitted_at: new Date(Date.now() - 3600000 * 18).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Good" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Great energy and always arrives on time." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-5",
+                    surveyId: "SRV-20912",
+                    client_name: "David Brown",
+                    submitted_at: new Date(Date.now() - 86400000 * 1).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Average" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Workouts are hard, but sometimes they are answering calls during sets." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Not sure" }
+                    ]
+                },
+                {
+                    id: "resp-6",
+                    surveyId: "SRV-20912",
+                    client_name: "Emily Davis",
+                    submitted_at: new Date(Date.now() - 86400000 * 1.5).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Excellent" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Motivating and tailors the plan to my changing stamina." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-7",
+                    surveyId: "SRV-20912",
+                    client_name: "Robert Wilson",
+                    submitted_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Poor" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Doesn't pay enough attention, often on their phone." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "No" }
+                    ]
+                },
+                {
+                    id: "resp-8",
+                    surveyId: "SRV-20912",
+                    client_name: "Linda Taylor",
+                    submitted_at: new Date(Date.now() - 86400000 * 2.5).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Good" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Explains the science and muscles behind every single exercise." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-9",
+                    surveyId: "SRV-20912",
+                    client_name: "James Martinez",
+                    submitted_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Excellent" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Very organized workouts and answers texts within minutes." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-10",
+                    surveyId: "SRV-20912",
+                    client_name: "Patricia Anderson",
+                    submitted_at: new Date(Date.now() - 86400000 * 3.5).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Good" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Nice pacing and keeps workouts very clean and professional." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-11",
+                    surveyId: "SRV-20912",
+                    client_name: "William Jackson",
+                    submitted_at: new Date(Date.now() - 86400000 * 4).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Average" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "He is friendly, but sometimes he forgets to log my session weights." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Not sure" }
+                    ]
+                },
+                {
+                    id: "resp-12",
+                    surveyId: "SRV-20912",
+                    client_name: "Elizabeth White",
+                    submitted_at: new Date(Date.now() - 86400000 * 4.5).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Excellent" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Super energetic! Makes the training environment very fun." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-13",
+                    surveyId: "SRV-20912",
+                    client_name: "Richard Thomas",
+                    submitted_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Good" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Always focused on safety, which I appreciate." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-14",
+                    surveyId: "SRV-20912",
+                    client_name: "Susan Harris",
+                    submitted_at: new Date(Date.now() - 86400000 * 5.5).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Excellent" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Perfect posture corrections and highly technical training guidance." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                {
+                    id: "resp-15",
+                    surveyId: "SRV-20912",
+                    client_name: "Joseph Martin",
+                    submitted_at: new Date(Date.now() - 86400000 * 6).toISOString(),
+                    answers: [
+                        { question_id: "q-1", question_title: "How would you rate your coach's responsiveness?", value: "Good" },
+                        { question_id: "q-2", question_title: "What does your coach do best during training sessions?", value: "Helped me break through my bench press plateau." },
+                        { question_id: "q-3", question_title: "Would you recommend this coach to a friend?", value: "Yes" }
+                    ]
+                },
+                
+                // Seed responses for PT Feedback Survey (SRV-48123)
+                {
+                    id: "resp-16",
+                    surveyId: "SRV-48123",
+                    client_name: "Jane Doe",
+                    submitted_at: new Date(Date.now() - 3600000 * 1).toISOString(),
+                    answers: [
+                        { question_id: "q-4", question_title: "Was the session duration appropriate for your fitness goal?", value: "Just right" },
+                        { question_id: "q-5", question_title: "Which exercises did you find most challenging?", value: "Strength/Squats, Core/Plank" },
+                        { question_id: "q-6", question_title: "Any additional remarks for your trainer?", value: "Great tempo today!" }
+                    ]
+                },
+                {
+                    id: "resp-17",
+                    surveyId: "SRV-48123",
+                    client_name: "John Smith",
+                    submitted_at: new Date(Date.now() - 3600000 * 6).toISOString(),
+                    answers: [
+                        { question_id: "q-4", question_title: "Was the session duration appropriate for your fitness goal?", value: "Too long" },
+                        { question_id: "q-5", question_title: "Which exercises did you find most challenging?", value: "Cardio/HIIT" },
+                        { question_id: "q-6", question_title: "Any additional remarks for your trainer?", value: "I felt a bit exhausted toward the end." }
+                    ]
+                },
+                {
+                    id: "resp-18",
+                    surveyId: "SRV-48123",
+                    client_name: "Sarah Adams",
+                    submitted_at: new Date(Date.now() - 86400000 * 1).toISOString(),
+                    answers: [
+                        { question_id: "q-4", question_title: "Was the session duration appropriate for your fitness goal?", value: "Just right" },
+                        { question_id: "q-5", question_title: "Which exercises did you find most challenging?", value: "Core/Plank, Strength/Squats" },
+                        { question_id: "q-6", question_title: "Any additional remarks for your trainer?", value: "Excellent session as always." }
+                    ]
+                }
+            ];
+            
+            localStorage.setItem("fitpad_survey_responses", JSON.stringify(mockResponses));
+        }
+
+        function getSurveys() {
+            let surveys = localStorage.getItem("fitpad_surveys");
+            if (!surveys) {
+                localStorage.setItem("fitpad_surveys", JSON.stringify(defaultSurveys));
+                surveys = JSON.stringify(defaultSurveys);
+            }
+            seedMockResponses();
+            return JSON.parse(surveys);
+        }
+
+        function saveSurveys(surveys) {
+            localStorage.setItem("fitpad_surveys", JSON.stringify(surveys));
+        }
+
+        let currentSurveyPage = 1;
+        const surveyPerPage = 10;
+
+        function filterAndPaginateSurveys() {
+            const searchVal = document.getElementById("surveySearch").value.toLowerCase();
+            const locationVal = document.getElementById("surveyLocationFilter").value;
+            const surveys = getSurveys();
+            const allResponses = JSON.parse(localStorage.getItem("fitpad_survey_responses") || "[]");
+            
+            // Filter
+            const filtered = surveys.filter(survey => {
+                const matchesSearch = survey.title.toLowerCase().includes(searchVal) || 
+                                     (survey.description && survey.description.toLowerCase().includes(searchVal));
+                const matchesLocation = locationVal === "all" || survey.locations.includes(locationVal);
+                return matchesSearch && matchesLocation;
+            });
+            
+            // Calculate total pages
+            const totalCount = filtered.length;
+            const totalPages = Math.ceil(totalCount / surveyPerPage) || 1;
+            
+            // Clamp current page
+            if (currentSurveyPage > totalPages) currentSurveyPage = totalPages;
+            if (currentSurveyPage < 1) currentSurveyPage = 1;
+            
+            // Paginate
+            const startIndex = (currentSurveyPage - 1) * surveyPerPage;
+            const endIndex = Math.min(startIndex + surveyPerPage, totalCount);
+            const paginated = filtered.slice(startIndex, endIndex);
+            
+            // Render Table Body
+            const tableBody = document.getElementById("surveyTableBody");
+            const emptyState = document.getElementById("surveyEmptyState");
+            const paginationEl = document.getElementById("surveyPagination");
+            
+            if (!tableBody) return;
+            tableBody.innerHTML = "";
+            
+            if (totalCount === 0) {
+                emptyState.classList.remove("hidden");
+                if (paginationEl) paginationEl.classList.add("hidden");
+                return;
+            } else {
+                emptyState.classList.add("hidden");
+                if (paginationEl) paginationEl.classList.remove("hidden");
+            }
+            
+            paginated.forEach(survey => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-gray-50 transition-colors";
+                
+                // Get response count for this survey
+                const responseCount = allResponses.filter(r => r.surveyId === survey.id).length;
+
+                // Format locations
+                const locationBadges = survey.locations.map(loc => {
+                    let label = loc;
+                    let colorClass = "bg-gray-100 text-gray-600";
+                    if (loc === "dashboard") { label = "Dashboard"; colorClass = "bg-blue-50 text-blue-700"; }
+                    if (loc === "session-list") { label = "Session List"; colorClass = "bg-purple-50 text-purple-700"; }
+                    if (loc === "session") { label = "Active Session"; colorClass = "bg-orange-50 text-orange-700"; }
+                    if (loc === "profile") { label = "Profile"; colorClass = "bg-green-50 text-green-700"; }
+                    return `<span class="${colorClass} px-2.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider mr-1">${label}</span>`;
+                }).join(" ");
+
+                // Status toggle/badge
+                const statusBadge = survey.active 
+                    ? `<span onclick="toggleSurveyStatus('${survey.id}')" class="cursor-pointer bg-green-100 text-green-700 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest hover:brightness-95 transition-all">Active</span>`
+                    : `<span onclick="toggleSurveyStatus('${survey.id}')" class="cursor-pointer bg-gray-100 text-gray-500 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest hover:brightness-95 transition-all">Inactive</span>`;
+
+                tr.innerHTML = `
+                    <td class="p-5">
+                        <div class="text-sm font-bold text-fitpad-gray">${survey.title}</div>
+                        <div class="text-[10px] text-gray-400 font-medium truncate max-w-[280px]" title="${survey.description || ''}">${survey.description || 'No description'}</div>
+                    </td>
+                    <td class="p-5">${locationBadges || '<span class="text-gray-300 font-medium text-xs">None</span>'}</td>
+                    <td class="p-5 text-sm font-black text-fitpad-gray">${survey.questions.length}</td>
+                    <td class="p-5 text-center">${statusBadge}</td>
+                    <td class="p-5 text-right space-x-1">
+                        <button onclick="viewSurveyDetails('${survey.id}')" class="p-2 text-gray-400 hover:text-blue-500 transition-colors rounded-lg hover:bg-gray-100" title="View Preview"><ion-icon name="eye" class="text-lg"></ion-icon></button>
+                        <button onclick="window.location.href='add-survey.html?id=${survey.id}'" class="p-2 text-gray-400 hover:text-yellow-600 transition-colors rounded-lg hover:bg-gray-100" title="Edit Survey"><ion-icon name="create" class="text-lg"></ion-icon></button>
+                        <button onclick="window.location.href='view-responses.html?id=${survey.id}'" class="relative p-2 text-gray-400 hover:text-green-600 transition-colors rounded-lg hover:bg-gray-100" title="View Responses">
+                            <ion-icon name="chatbubbles" class="text-lg"></ion-icon>
+                            ${responseCount > 0 ? `<span class="absolute top-0 right-0 bg-green-500 text-white text-[8px] font-black w-[16px] h-[16px] rounded-full flex items-center justify-center border border-white transform translate-x-1/4 -translate-y-1/4">${responseCount}</span>` : ''}
+                        </button>
+                        <button onclick="deleteSurveyItem('${survey.id}', this)" class="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-gray-100" title="Delete Survey"><ion-icon name="trash" class="text-lg"></ion-icon></button>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            // Update counts
+            document.getElementById("surveyStartIndex").innerText = totalCount === 0 ? 0 : startIndex + 1;
+            document.getElementById("surveyEndIndex").innerText = endIndex;
+            document.getElementById("surveyTotalCount").innerText = totalCount;
+            
+            // Buttons state
+            document.getElementById("btnPrevSurveyPage").disabled = currentSurveyPage === 1;
+            document.getElementById("btnNextSurveyPage").disabled = currentSurveyPage === totalPages;
+            
+            // Render page numbers
+            const pageNumbers = document.getElementById("surveyPageNumbers");
+            if (pageNumbers) {
+                pageNumbers.innerHTML = "";
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement("button");
+                    btn.onclick = () => { currentSurveyPage = i; filterAndPaginateSurveys(); };
+                    if (i === currentSurveyPage) {
+                        btn.className = "px-3 py-1 bg-brand-yellow text-fitpad-gray font-black text-xs rounded-lg shadow-sm";
+                    } else {
+                        btn.className = "px-3 py-1 bg-white border border-gray-200 text-gray-400 font-bold text-xs rounded-lg hover:bg-gray-50 transition-all shadow-sm";
+                    }
+                    btn.innerText = i;
+                    pageNumbers.appendChild(btn);
+                }
+            }
+        }
+
+        function prevSurveyPage() {
+            if (currentSurveyPage > 1) {
+                currentSurveyPage--;
+                filterAndPaginateSurveys();
+            }
+        }
+
+        function nextSurveyPage() {
+            const surveys = getSurveys();
+            const searchVal = document.getElementById("surveySearch").value.toLowerCase();
+            const locationVal = document.getElementById("surveyLocationFilter").value;
+            const filteredCount = surveys.filter(survey => {
+                const matchesSearch = survey.title.toLowerCase().includes(searchVal) || 
+                                     (survey.description && survey.description.toLowerCase().includes(searchVal));
+                const matchesLocation = locationVal === "all" || survey.locations.includes(locationVal);
+                return matchesSearch && matchesLocation;
+            }).length;
+            const totalPages = Math.ceil(filteredCount / surveyPerPage);
+            if (currentSurveyPage < totalPages) {
+                currentSurveyPage++;
+                filterAndPaginateSurveys();
+            }
+        }
+
+        function renderSurveys() {
+            filterAndPaginateSurveys();
+        }
+
+        function toggleSurveyStatus(id) {
+            let surveys = getSurveys();
+            surveys = surveys.map(s => {
+                if (s.id === id) {
+                    s.active = !s.active;
+                }
+                return s;
+            });
+            saveSurveys(surveys);
+            renderSurveys();
+            FitpadAlert.show({ type: 'success', title: 'Status Updated', message: 'Survey status updated successfully.' });
+        }
+
+        function deleteSurveyItem(id, btnElement) {
+            FitpadAlert.show({
+                type: 'danger',
+                title: 'Delete Survey',
+                message: 'Are you sure you want to delete this survey? All client prompts for this survey will be deactivated.',
+                confirmText: 'Yes, Delete',
+                cancelText: 'Cancel',
+                onConfirm: () => {
+                    let surveys = getSurveys();
+                    surveys = surveys.filter(s => s.id !== id);
+                    saveSurveys(surveys);
+                    
+                    if (btnElement) {
+                        const row = btnElement.closest('tr');
+                        if(row) row.remove();
+                    }
+                    
+                    setTimeout(() => { 
+                        renderSurveys();
+                        FitpadAlert.show({ type: 'success', title: 'Deleted', message: 'Survey removed successfully.' }); 
+                    }, 400);
+                }
+            });
+        }
+
+
+        function viewSurveyDetails(id) {
+            const surveys = getSurveys();
+            const survey = surveys.find(s => s.id === id);
+            if (!survey) return;
+
+            document.getElementById("previewSurveyTitle").innerHTML = `<ion-icon name="document-text" class="text-brand-yellow"></ion-icon> ${survey.title}`;
+            const container = document.getElementById("previewSurveyBody");
+            
+            let html = `
+                <div class="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm mb-4">
+                    <h4 class="text-base font-black text-fitpad-gray tracking-tight">${survey.title}</h4>
+                    <p class="text-xs text-gray-400 font-medium leading-relaxed mt-2">${survey.description || 'No description provided.'}</p>
+                </div>
+            `;
+
+            survey.questions.forEach((q, index) => {
+                let requiredStar = q.required ? '<span class="text-red-500 ml-0.5">*</span>' : '';
+                html += `
+                    <div class="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm space-y-3">
+                        <label class="block text-xs font-black text-fitpad-gray uppercase tracking-widest">Question ${index + 1}: ${q.title}${requiredStar}</label>
+                `;
+
+                if (q.type === 'short') {
+                    html += `<input type="text" disabled placeholder="Short answer text" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs font-medium outline-none">`;
+                } else if (q.type === 'paragraph') {
+                    html += `<textarea disabled rows="3" placeholder="Long answer text" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs font-medium outline-none resize-none"></textarea>`;
+                } else if (q.type === 'choice') {
+                    q.options.forEach(opt => {
+                        html += `
+                            <div class="flex items-center gap-2">
+                                <input type="radio" disabled class="text-brand-yellow focus:ring-brand-yellow h-4 w-4 border-gray-300">
+                                <span class="text-xs font-semibold text-gray-500">${opt}</span>
+                            </div>
+                        `;
+                    });
+                } else if (q.type === 'checkbox') {
+                    q.options.forEach(opt => {
+                        html += `
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" disabled class="rounded text-brand-yellow focus:ring-brand-yellow h-4 w-4 border-gray-300">
+                                <span class="text-xs font-semibold text-gray-500">${opt}</span>
+                            </div>
+                        `;
+                    });
+                } else if (q.type === 'dropdown') {
+                    html += `
+                        <div class="relative">
+                            <select disabled class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs font-bold text-gray-400 outline-none appearance-none">
+                                <option>Choose option...</option>
+                                ${q.options.map(opt => `<option>${opt}</option>`).join("")}
+                            </select>
+                            <ion-icon name="chevron-down-outline" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></ion-icon>
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+            
+            const modal = document.getElementById('viewSurveyModal');
+            const content = document.getElementById('viewSurveyModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeViewSurveyModal() {
+            const modal = document.getElementById('viewSurveyModal');
+            const content = document.getElementById('viewSurveyModalContent');
+            modal.classList.add('opacity-0'); content.classList.remove('scale-100'); content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            document.body.style.overflow = '';
+        }
+
+        // On document load hooks
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSurveys();
+            
+            // Handle active tab routing from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const tabParam = urlParams.get('tab');
+            if (tabParam === 'surveys') {
+                const btn = document.getElementById('tab-btn-surveys');
+                if (btn) switchTab('surveys', btn);
+            }
+        });
     </script>
 
     <!-- Global Alert Modal -->

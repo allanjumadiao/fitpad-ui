@@ -109,8 +109,54 @@
     <main class="w-full max-w-4xl bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
         <form id="registrationForm" onsubmit="handleRegistration(event)" class="p-8 md:p-12 space-y-12">
 
+            <!-- Registration Type Selection -->
+            <section class="space-y-6">
+                <h2 class="text-xl font-black text-fitpad-gray uppercase tracking-tight mb-6 flex items-center gap-2 border-b border-gray-100 pb-4">
+                    <span class="bg-brand-yellow text-fitpad-gray w-8 h-8 rounded-full flex items-center justify-center text-sm">
+                        <ion-icon name="options-outline"></ion-icon>
+                    </span>
+                    Registration Type
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="registrationType" value="new" checked onchange="toggleRegType(this.value)" class="sr-only plan-radio" required>
+                        <div class="border-2 border-gray-200 rounded-2xl p-6 text-center hover:border-gray-300 transition-all flex flex-col justify-center items-center relative overflow-hidden">
+                            <ion-icon name="checkmark-circle" class="check-icon absolute top-3 right-3 text-brand-yellow text-xl opacity-0 transition-opacity drop-shadow-md"></ion-icon>
+                            <span class="block text-lg font-black text-fitpad-gray mb-1">New Client</span>
+                            <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Registering for the first time</span>
+                        </div>
+                    </label>
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="registrationType" value="renewal" onchange="toggleRegType(this.value)" class="sr-only plan-radio">
+                        <div class="border-2 border-gray-200 rounded-2xl p-6 text-center hover:border-gray-300 transition-all flex flex-col justify-center items-center relative overflow-hidden">
+                            <ion-icon name="checkmark-circle" class="check-icon absolute top-3 right-3 text-brand-yellow text-xl opacity-0 transition-opacity drop-shadow-md"></ion-icon>
+                            <span class="block text-lg font-black text-fitpad-gray mb-1">Renewal Client</span>
+                            <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Renewing package/updating plan</span>
+                        </div>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Renewal Verification Block -->
+            <section id="renewalBlock" class="hidden bg-gray-50 border border-gray-200 rounded-3xl p-6 md:p-8 space-y-4">
+                <h3 class="text-sm font-black text-fitpad-gray uppercase tracking-widest flex items-center gap-2">
+                    <ion-icon name="key-outline" class="text-brand-yellow text-xl"></ion-icon> Existing Account Lookup
+                </h3>
+                <p class="text-xs text-gray-500 font-medium">Please enter your existing PT ID (e.g. PT-1042) or email address to retrieve your personal training profile.</p>
+                <div class="flex flex-col sm:flex-row gap-4 items-end bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                    <div class="flex-1 w-full">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">PT ID or Email Address *</label>
+                        <input type="text" id="lookupQuery" placeholder="e.g. PT-1042 or email@example.com" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                    </div>
+                    <button type="button" onclick="performLookup()" class="bg-fitpad-gray text-white px-8 py-4 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-md shrink-0 h-[52px] flex items-center justify-center gap-2 w-full sm:w-auto">
+                        <ion-icon name="search" class="text-sm text-brand-yellow"></ion-icon> Submit Lookup
+                    </button>
+                </div>
+                <p id="lookupFeedback" class="text-xs font-bold hidden"></p>
+            </section>
+
             <!-- 2.1 Account Information -->
-            <section>
+            <section id="accountInfoSection">
                 <h2 class="text-xl font-black text-fitpad-gray uppercase tracking-tight mb-6 flex items-center gap-2 border-b border-gray-100 pb-4">
                     <span class="bg-brand-yellow text-fitpad-gray w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
                     Account Information
@@ -134,15 +180,20 @@
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Date of Birth *</label>
                         <input type="date" id="birthday" required class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
                     </div>
-                    <div>
+                    <div id="pinContainer">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Pin Number *</label>
                         <input type="password" id="pinNumber" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkPinMatch();" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
                         <p class="text-[10px] text-gray-400 font-semibold mt-2">Must be a 6-digit numeric PIN.</p>
                     </div>
-                    <div>
+                    <div id="confirmPinContainer">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Confirm Pin Number *</label>
                         <input type="password" id="confirmPinNumber" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkPinMatch();" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
                         <p id="pinError" class="text-red-500 text-xs font-bold mt-2 hidden">PIN numbers do not match.</p>
+                    </div>
+                    <div id="pinToggleContainer" class="hidden md:col-span-2">
+                        <button type="button" id="pinToggleBtn" onclick="togglePinUpdate()" class="text-xs font-bold text-yellow-600 hover:text-brand-yellow underline underline-offset-2 transition-colors flex items-center gap-1">
+                            <ion-icon name="key-outline"></ion-icon> Update Login PIN
+                        </button>
                     </div>
                 </div>
             </section>
@@ -155,10 +206,20 @@
                 </h2>
                 <p class="text-sm text-gray-500 font-medium mb-6">Payment and billing will be handled internally after registration.</p>
                 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                    <!-- Plan 1 -->
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="sessionPlan" value="1" class="sr-only plan-radio" required>
+                        <div class="border-2 border-gray-200 rounded-2xl p-6 text-center hover:border-gray-300 transition-all h-full flex flex-col justify-center items-center relative overflow-hidden">
+                            <ion-icon name="checkmark-circle" class="check-icon absolute top-3 right-3 text-brand-yellow text-xl opacity-0 transition-opacity drop-shadow-md"></ion-icon>
+                            <span class="block text-4xl font-black text-fitpad-gray mb-1">1</span>
+                            <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Session</span>
+                            <span class="text-[10px] font-extrabold text-yellow-600 bg-yellow-50 rounded-full px-3 py-0.5 inline-block">Single Session</span>
+                        </div>
+                    </label>
                     <!-- Plan 12 -->
                     <label class="relative cursor-pointer group">
-                        <input type="radio" name="sessionPlan" value="12" class="sr-only plan-radio" required>
+                        <input type="radio" name="sessionPlan" value="12" class="sr-only plan-radio">
                         <div class="border-2 border-gray-200 rounded-2xl p-6 text-center hover:border-gray-300 transition-all h-full flex flex-col justify-center items-center relative overflow-hidden">
                             <ion-icon name="checkmark-circle" class="check-icon absolute top-3 right-3 text-brand-yellow text-xl opacity-0 transition-opacity drop-shadow-md"></ion-icon>
                             <span class="block text-4xl font-black text-fitpad-gray mb-1">12</span>
@@ -548,6 +609,7 @@
         let calendarYear = todayDate.getFullYear();
         let calendarMonth = todayDate.getMonth(); // 0-indexed
         let selectedDateStr = null; // e.g. "2026-06-08"
+        let selectedDates = []; // array of selected dates strings
         let selectedCoachId = null;
         let selectedSlots = []; // array of { dateStr: '2026-06-08', slot: '09:00 AM - 10:00 AM' }
 
@@ -569,6 +631,7 @@
             // Reset selected slots & date since they belong to another coach
             selectedSlots = [];
             selectedDateStr = null;
+            selectedDates = [];
             
             // Show calendar interface & hide placeholder
             document.getElementById('calendarPlaceholder').classList.add('hidden');
@@ -613,6 +676,7 @@
             }
 
             const todayStart = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
+            const isActiveDatePending = selectedDateStr && !selectedSlots.some(s => s.dateStr === selectedDateStr);
 
             // Create buttons for each day
             for (let day = 1; day <= totalDays; day++) {
@@ -632,11 +696,22 @@
                     btn.className = 'calendar-day-btn disabled';
                     btn.disabled = true;
                 } else if (isAvailable) {
-                    btn.className = 'calendar-day-btn available';
-                    btn.onclick = () => selectDate(dateStr);
-                    
-                    if (dateStr === selectedDateStr) {
-                        btn.classList.add('selected');
+                    if (isActiveDatePending && dateStr !== selectedDateStr) {
+                        btn.className = 'calendar-day-btn disabled opacity-50';
+                        btn.disabled = true;
+                        if (selectedDates.includes(dateStr)) {
+                            btn.classList.add('selected');
+                        }
+                    } else {
+                        btn.className = 'calendar-day-btn available';
+                        btn.onclick = () => selectDate(dateStr);
+                        
+                        if (selectedDates.includes(dateStr)) {
+                            btn.classList.add('selected');
+                        }
+                        if (dateStr === selectedDateStr) {
+                            btn.classList.add('ring-2', 'ring-fitpad-gray');
+                        }
                     }
                 } else {
                     btn.className = 'calendar-day-btn disabled';
@@ -689,9 +764,28 @@
 
         // Date selection event
         function selectDate(dateStr) {
-            selectedDateStr = dateStr;
+            if (selectedDateStr === dateStr) {
+                // If it is already the active viewed date, clicking it again unselects it
+                const index = selectedDates.indexOf(dateStr);
+                if (index > -1) {
+                    selectedDates.splice(index, 1);
+                }
+                // Clear any slots associated with this date
+                selectedSlots = selectedSlots.filter(s => s.dateStr !== dateStr);
+                // Set viewed date to another selected date, or null
+                selectedDateStr = selectedDates.length > 0 ? selectedDates[selectedDates.length - 1] : null;
+            } else {
+                // If not the active viewed date, make it active
+                selectedDateStr = dateStr;
+                // If not already selected, add it to selectedDates
+                if (!selectedDates.includes(dateStr)) {
+                    selectedDates.push(dateStr);
+                }
+            }
             renderCalendar();
             showSlotsForSelectedDate();
+            updateSelectedSlotsSummary();
+            checkSubmissionVisibility();
         }
 
         // Render time slots panel
@@ -742,9 +836,12 @@
             if (index > -1) {
                 selectedSlots.splice(index, 1);
             } else {
+                // Ensure only 1 slot per date: remove any other slot for this date first
+                selectedSlots = selectedSlots.filter(s => s.dateStr !== dateStr);
                 selectedSlots.push({ dateStr, slot });
             }
 
+            renderCalendar();
             showSlotsForSelectedDate();
             updateSelectedSlotsSummary();
             checkSubmissionVisibility();
@@ -792,7 +889,23 @@
         }
 
         function removeSlot(index) {
+            const removedSlot = selectedSlots[index];
             selectedSlots.splice(index, 1);
+            
+            // Check if there are no slots left for this date
+            const hasSlotsLeft = selectedSlots.some(s => s.dateStr === removedSlot.dateStr);
+            if (!hasSlotsLeft) {
+                const dIndex = selectedDates.indexOf(removedSlot.dateStr);
+                if (dIndex > -1) {
+                    selectedDates.splice(dIndex, 1);
+                }
+                // If it was the active viewed date, update it
+                if (selectedDateStr === removedSlot.dateStr) {
+                    selectedDateStr = selectedDates.length > 0 ? selectedDates[selectedDates.length - 1] : null;
+                }
+            }
+            
+            renderCalendar();
             showSlotsForSelectedDate();
             updateSelectedSlotsSummary();
             checkSubmissionVisibility();
@@ -829,26 +942,158 @@
             }
         }
 
+        let isLookupSuccessful = false;
+        let isUpdatingPin = false;
+
+        function toggleRegType(type) {
+            const renewalBlock = document.getElementById("renewalBlock");
+            const accountSection = document.getElementById("accountInfoSection");
+            
+            if (type === "renewal") {
+                renewalBlock.classList.remove("hidden");
+                resetAccountFields(true);
+            } else {
+                renewalBlock.classList.add("hidden");
+                resetAccountFields(false);
+                accountSection.classList.remove("opacity-60");
+            }
+        }
+
+        function resetAccountFields(disableAll) {
+            isLookupSuccessful = false;
+            isUpdatingPin = false;
+            const fields = ["firstName", "lastName", "email", "birthday", "pinNumber", "confirmPinNumber"];
+            fields.forEach(f => {
+                const el = document.getElementById(f);
+                el.value = "";
+                el.disabled = disableAll;
+                el.required = !disableAll;
+                el.classList.remove('border-red-500', 'bg-red-50', 'focus:ring-red-500');
+                el.classList.add('border-gray-200', 'bg-gray-50');
+            });
+            document.getElementById("lookupQuery").value = "";
+            document.getElementById("lookupFeedback").classList.add("hidden");
+            
+            // Reset PIN toggle & container states
+            document.getElementById("pinContainer").classList.remove("hidden");
+            document.getElementById("confirmPinContainer").classList.remove("hidden");
+            document.getElementById("pinToggleContainer").classList.add("hidden");
+            document.getElementById("pinToggleBtn").innerHTML = '<ion-icon name="key-outline"></ion-icon> Update Login PIN';
+        }
+
+        function performLookup() {
+            const query = document.getElementById("lookupQuery").value.trim().toLowerCase();
+            const feedback = document.getElementById("lookupFeedback");
+            
+            if (!query) {
+                feedback.className = "text-xs font-bold text-red-500 mt-2";
+                feedback.innerText = "Please enter a PT ID or Email Address.";
+                feedback.classList.remove("hidden");
+                return;
+            }
+            
+            // Seeded clients database matching client-list.html
+            const mockClients = [
+                { id: "PT-1042", email: "jane.doe@example.com", first: "Jane", last: "Doe", dob: "1994-05-12" },
+                { id: "PT-1045", email: "mark.smith@example.com", first: "Mark", last: "Smith", dob: "1991-08-20" },
+                { id: "PT-1048", email: "james.cooper@example.com", first: "James", last: "Cooper", dob: "1988-11-03" },
+                { id: "PT-0931", email: "lisa.wong@example.com", first: "Lisa", last: "Wong", dob: "1995-03-15" }
+            ];
+            
+            const client = mockClients.find(c => c.id.toLowerCase() === query || c.email.toLowerCase() === query);
+            
+            if (client) {
+                // Populate Account fields
+                document.getElementById("firstName").value = client.first;
+                document.getElementById("lastName").value = client.last;
+                document.getElementById("email").value = client.email;
+                document.getElementById("birthday").value = client.dob;
+                
+                // Pre-populate mock PIN so default validations pass
+                document.getElementById("pinNumber").value = "123456";
+                document.getElementById("confirmPinNumber").value = "123456";
+                
+                // Disable these fields
+                const fields = ["firstName", "lastName", "email", "birthday"];
+                fields.forEach(f => {
+                    const el = document.getElementById(f);
+                    el.disabled = true;
+                    el.required = false;
+                });
+
+                // Hide PIN inputs for renewal by default and show toggle button
+                isUpdatingPin = false;
+                document.getElementById("pinContainer").classList.add("hidden");
+                document.getElementById("confirmPinContainer").classList.add("hidden");
+                document.getElementById("pinNumber").required = false;
+                document.getElementById("confirmPinNumber").required = false;
+                document.getElementById("pinNumber").disabled = true;
+                document.getElementById("confirmPinNumber").disabled = true;
+                
+                document.getElementById("pinToggleContainer").classList.remove("hidden");
+                document.getElementById("pinToggleBtn").innerHTML = '<ion-icon name="key-outline"></ion-icon> Update Login PIN';
+                
+                isLookupSuccessful = true;
+                feedback.className = "text-xs font-bold text-green-600 mt-2";
+                feedback.innerText = `Client Profile Found: ${client.first} ${client.last} (${client.id}). You can now select your session plan and schedule below.`;
+                feedback.classList.remove("hidden");
+                
+                document.getElementById("accountInfoSection").classList.add("opacity-60");
+            } else {
+                isLookupSuccessful = false;
+                feedback.className = "text-xs font-bold text-red-500 mt-2";
+                feedback.innerText = "No active client found matching that PT ID or Email Address. Please verify and try again.";
+                feedback.classList.remove("hidden");
+            }
+        }
+
         // Registration form handler
         function handleRegistration(event) {
             event.preventDefault();
             
-            const pinNumber = document.getElementById('pinNumber').value;
+            const regType = document.querySelector('input[name="registrationType"]:checked').value;
             const confirmInput = document.getElementById('confirmPinNumber');
-            const errorElement = document.getElementById('pinError');
+            
+            if (regType === "renewal") {
+                if (!isLookupSuccessful) {
+                    alert("Please submit your PT ID or Email lookup to retrieve your profile first.");
+                    return;
+                }
+                if (isUpdatingPin) {
+                    const pinNumber = document.getElementById('pinNumber').value;
+                    const errorElement = document.getElementById('pinError');
 
-            if (!checkPinMatch()) {
-                errorElement.classList.remove('hidden');
-                confirmInput.classList.add('border-red-500', 'bg-red-50', 'focus:ring-red-500');
-                confirmInput.classList.remove('border-gray-200', 'bg-gray-50');
-                confirmInput.focus();
-                return;
-            }
+                    if (!checkPinMatch()) {
+                        errorElement.classList.remove('hidden');
+                        confirmInput.classList.add('border-red-500', 'bg-red-50', 'focus:ring-red-500');
+                        confirmInput.classList.remove('border-gray-200', 'bg-gray-50');
+                        confirmInput.focus();
+                        return;
+                    }
 
-            const regex = /^\d{6}$/;
-            if (!regex.test(pinNumber)) {
-                alert("PIN number must be exactly 6 digits.");
-                return;
+                    const regex = /^\d{6}$/;
+                    if (!regex.test(pinNumber)) {
+                        alert("PIN number must be exactly 6 digits.");
+                        return;
+                    }
+                }
+            } else {
+                const pinNumber = document.getElementById('pinNumber').value;
+                const errorElement = document.getElementById('pinError');
+
+                if (!checkPinMatch()) {
+                    errorElement.classList.remove('hidden');
+                    confirmInput.classList.add('border-red-500', 'bg-red-50', 'focus:ring-red-500');
+                    confirmInput.classList.remove('border-gray-200', 'bg-gray-50');
+                    confirmInput.focus();
+                    return;
+                }
+
+                const regex = /^\d{6}$/;
+                if (!regex.test(pinNumber)) {
+                    alert("PIN number must be exactly 6 digits.");
+                    return;
+                }
             }
 
             if (!selectedCoachId) {
@@ -869,7 +1114,14 @@
                 return `• ${d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} at ${s.slot}`;
             }).join('\n');
 
-            alert(`Registration Submitted!\n\nCoach: ${coachName}\nSelected Slots:\n${slotsText}\n\nYour account status is Pending. Please check your email for the verification link to activate your account.`);
+            const planVal = document.querySelector('input[name="sessionPlan"]:checked').value;
+
+            if (regType === "renewal") {
+                const clientName = document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
+                alert(`Renewal Submitted Successfully!\n\nClient: ${clientName}\nSession Plan: ${planVal} Session${planVal !== '1' ? 's' : ''}\nCoach: ${coachName}\nSelected Slots:\n${slotsText}\n\nYour package renewal is being processed. You will receive a notification shortly.`);
+            } else {
+                alert(`Registration Submitted!\n\nCoach: ${coachName}\nSession Plan: ${planVal} Session${planVal !== '1' ? 's' : ''}\nSelected Slots:\n${slotsText}\n\nYour account status is Pending. Please check your email for the verification link to activate your account.`);
+            }
             
             // Reset page state
             document.getElementById('registrationForm').reset();
@@ -881,12 +1133,68 @@
             selectedCoachId = null;
             selectedSlots = [];
             selectedDateStr = null;
+            selectedDates = [];
+            isLookupSuccessful = false;
+            isUpdatingPin = false;
             
+            // Reset fields disabled states
+            const fields = ["firstName", "lastName", "email", "birthday", "pinNumber", "confirmPinNumber"];
+            fields.forEach(f => {
+                const el = document.getElementById(f);
+                el.disabled = false;
+                el.required = true;
+            });
+
+            document.getElementById("pinContainer").classList.remove("hidden");
+            document.getElementById("confirmPinContainer").classList.remove("hidden");
+            document.getElementById("pinToggleContainer").classList.add("hidden");
+            document.getElementById("pinToggleBtn").innerHTML = '<ion-icon name="key-outline"></ion-icon> Update Login PIN';
+            
+            document.getElementById("accountInfoSection").classList.remove("opacity-60");
+            document.getElementById('renewalBlock').classList.add('hidden');
             document.getElementById('calendarPlaceholder').classList.remove('hidden');
             document.getElementById('calendarWrapper').classList.add('hidden');
             document.getElementById('submissionSection').classList.add('hidden');
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function togglePinUpdate() {
+            isUpdatingPin = !isUpdatingPin;
+            const pinContainer = document.getElementById("pinContainer");
+            const confirmPinContainer = document.getElementById("confirmPinContainer");
+            const pinToggleBtn = document.getElementById("pinToggleBtn");
+            const pinNumber = document.getElementById("pinNumber");
+            const confirmPinNumber = document.getElementById("confirmPinNumber");
+
+            if (isUpdatingPin) {
+                // Show PIN fields
+                pinContainer.classList.remove("hidden");
+                confirmPinContainer.classList.remove("hidden");
+                pinToggleBtn.innerHTML = '<ion-icon name="close-circle-outline"></ion-icon> Keep Existing PIN';
+                
+                // Clear and make them required
+                pinNumber.value = "";
+                confirmPinNumber.value = "";
+                pinNumber.required = true;
+                confirmPinNumber.required = true;
+                pinNumber.disabled = false;
+                confirmPinNumber.disabled = false;
+            } else {
+                // Hide PIN fields
+                pinContainer.classList.add("hidden");
+                confirmPinContainer.classList.add("hidden");
+                pinToggleBtn.innerHTML = '<ion-icon name="key-outline"></ion-icon> Update Login PIN';
+                
+                // Populate mock PIN and make them not required
+                pinNumber.value = "123456";
+                confirmPinNumber.value = "123456";
+                pinNumber.required = false;
+                confirmPinNumber.required = false;
+                pinNumber.disabled = true;
+                confirmPinNumber.disabled = true;
+            }
+            checkPinMatch();
         }
     </script>
     <!-- Global Alert Modal -->

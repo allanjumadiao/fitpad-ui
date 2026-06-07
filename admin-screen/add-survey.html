@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitpad - Survey Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
+        .brand-yellow { color: #d8f511; }
+        .bg-brand-yellow { background-color: #d8f511; }
+        .bg-fitpad-gray { background-color: #535353; }
+        .text-fitpad-gray { color: #535353; }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen bg-gray-50">
+
+    <!-- HEADER / NAVIGATION BAR -->
+    <header class="bg-fitpad-gray text-white px-6 py-5 sticky top-0 z-40 shadow-sm shrink-0">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="setting.html?tab=surveys" class="text-gray-400 hover:text-white transition-colors flex items-center justify-center p-2 rounded-xl hover:bg-white/5">
+                    <ion-icon name="arrow-back-outline" class="text-2xl"></ion-icon>
+                </a>
+                <div>
+                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em]">Administration</span>
+                    <h1 id="page-title" class="text-xl font-black uppercase tracking-tight">Create Survey</h1>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="setting.html?tab=surveys" class="px-5 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 hover:text-white rounded-xl text-xs font-bold text-gray-300 uppercase tracking-widest transition-all">
+                    Cancel
+                </a>
+                <button onclick="saveSurvey()" class="px-6 py-2.5 bg-brand-yellow text-fitpad-gray hover:brightness-110 rounded-xl text-xs font-black uppercase tracking-widest shadow-md transition-all">
+                    Save Survey
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN EDITING WORKSPACE -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+        
+        <!-- LEFT COLUMN: SURVEY METADATA & CONFIGURATIONS -->
+        <section class="lg:col-span-4 space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-5">
+                <h3 class="text-sm font-black text-fitpad-gray uppercase tracking-widest border-b border-gray-50 pb-3 flex items-center gap-2">
+                    <ion-icon name="settings-outline" class="text-brand-yellow text-lg"></ion-icon> Survey Settings
+                </h3>
+                
+                <!-- Title input -->
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Survey Title *</label>
+                    <input type="text" id="survey-title" required placeholder="e.g. Coach Feedback Survey" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                </div>
+
+                <!-- Description input -->
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Description</label>
+                    <textarea id="survey-desc" rows="4" placeholder="Describe the purpose of this survey to your clients..." class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-medium text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all resize-none"></textarea>
+                </div>
+
+                <!-- Display locations checkboxes -->
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 border-t border-gray-50 pt-4">Target Visibility *</label>
+                    <p class="text-[10px] text-gray-400 font-medium mb-3">Select which client screens will show this survey prompt.</p>
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="location" value="dashboard" class="rounded text-brand-yellow focus:ring-brand-yellow h-5 w-5 border-gray-300">
+                            <div>
+                                <span class="text-xs font-bold text-fitpad-gray">Client Dashboard</span>
+                                <span class="block text-[9px] text-gray-400 font-medium">Shows on the main welcome board</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="location" value="session-list" class="rounded text-brand-yellow focus:ring-brand-yellow h-5 w-5 border-gray-300">
+                            <div>
+                                <span class="text-xs font-bold text-fitpad-gray">Session List Screen</span>
+                                <span class="block text-[9px] text-gray-400 font-medium">Shows above the training logs</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="location" value="session" class="rounded text-brand-yellow focus:ring-brand-yellow h-5 w-5 border-gray-300">
+                            <div>
+                                <span class="text-xs font-bold text-fitpad-gray">Active Session Screen</span>
+                                <span class="block text-[9px] text-gray-400 font-medium">Shows inside the ongoing session panel</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            <input type="checkbox" name="location" value="profile" class="rounded text-brand-yellow focus:ring-brand-yellow h-5 w-5 border-gray-300">
+                            <div>
+                                <span class="text-xs font-bold text-fitpad-gray">My Profile Screen</span>
+                                <span class="block text-[9px] text-gray-400 font-medium">Shows inside the trainee profile page</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: DYNAMIC GOOGLE FORMS QUESTION BUILDER -->
+        <section class="lg:col-span-8 flex flex-col space-y-6">
+            
+            <!-- Questions List Container -->
+            <div id="questions-container" class="space-y-6">
+                <!-- Dynamically created question cards will insert here -->
+            </div>
+
+            <!-- Add Question Action Button -->
+            <button onclick="addNewQuestion()" class="w-full py-4 border-2 border-dashed border-gray-300 rounded-3xl hover:border-brand-yellow hover:bg-white text-gray-400 hover:text-yellow-600 transition-all font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 bg-gray-50/50 shadow-sm">
+                <ion-icon name="add-circle" class="text-xl"></ion-icon> Add Question
+            </button>
+        </section>
+    </main>
+
+    <!-- Custom Alert System -->
+    <div id="globalModal" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity opacity-0">
+        <div id="globalModalContent" class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="p-8 text-center">
+                <div id="globalModalIcon" class="w-16 h-16 mx-auto rounded-full bg-brand-yellow/20 text-yellow-600 flex items-center justify-center text-3xl mb-6"><ion-icon name="information-circle"></ion-icon></div>
+                <h3 id="globalModalTitle" class="text-xl font-black text-fitpad-gray uppercase tracking-tight mb-2">Notice</h3>
+                <p id="globalModalMessage" class="text-sm text-gray-500 font-medium leading-relaxed mb-8">Message goes here.</p>
+                <div id="globalModalActions" class="flex flex-col gap-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert helper script -->
+    <script src="../js/custom-alert.js"></script>
+
+    <!-- BUILDER SCRIPTS -->
+    <script>
+        let questions = [];
+        let editingSurveyId = null;
+
+        // On window load
+        window.onload = function() {
+            // Get URL params to detect Edit Mode
+            const urlParams = new URLSearchParams(window.location.search);
+            const surveyId = urlParams.get('id');
+            
+            if (surveyId) {
+                editingSurveyId = surveyId;
+                document.getElementById('page-title').innerText = "Edit Survey";
+                loadExistingSurveyData(surveyId);
+            } else {
+                // Prepopulate with a default welcome question in create mode
+                addNewQuestion();
+            }
+        };
+
+        // Load existing survey data if edit mode
+        function loadExistingSurveyData(id) {
+            const surveys = JSON.parse(localStorage.getItem("fitpad_surveys") || "[]");
+            const survey = surveys.find(s => s.id === id);
+            if (!survey) {
+                FitpadAlert.show({ 
+                    type: 'error', 
+                    title: 'Survey Not Found', 
+                    message: 'The requested survey could not be located in database.',
+                    onConfirm: () => window.location.href = 'setting.html?tab=surveys'
+                });
+                return;
+            }
+
+            document.getElementById('survey-title').value = survey.title;
+            document.getElementById('survey-desc').value = survey.description || '';
+            
+            // Check checkboxes
+            const checkboxes = document.querySelectorAll('input[name="location"]');
+            checkboxes.forEach(cb => {
+                if (survey.locations.includes(cb.value)) {
+                    cb.checked = true;
+                }
+            });
+
+            // Dynamically load questions
+            survey.questions.forEach(q => {
+                addNewQuestion(q);
+            });
+        }
+
+        // Generate unique IDs
+        function generateUid() {
+            return 'q-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Add a new question block in builder
+        function addNewQuestion(qData = null) {
+            const container = document.getElementById('questions-container');
+            const qId = qData ? qData.id : generateUid();
+            
+            // Create question item in state list
+            const questionObj = {
+                id: qId,
+                type: qData ? qData.type : 'short',
+                title: qData ? qData.title : '',
+                required: qData ? qData.required : false,
+                options: qData ? (qData.options || []) : ['Option 1', 'Option 2']
+            };
+            
+            questions.push(questionObj);
+
+            // Create DOM element
+            const card = document.createElement('div');
+            card.className = "bg-white rounded-3xl p-6 shadow-sm border border-gray-100 relative group transition-all duration-300";
+            card.id = `q-card-${qId}`;
+            
+            card.innerHTML = `
+                <!-- Top controls: reorder and delete -->
+                <div class="absolute right-6 top-6 flex items-center gap-1 opacity-50 group-hover:opacity-100 transition-opacity">
+                    <button onclick="moveQuestionUp('${qId}')" class="p-1.5 text-gray-400 hover:text-fitpad-gray hover:bg-gray-100 rounded-lg transition-colors" title="Move Up"><ion-icon name="arrow-up" class="text-base"></ion-icon></button>
+                    <button onclick="moveQuestionDown('${qId}')" class="p-1.5 text-gray-400 hover:text-fitpad-gray hover:bg-gray-100 rounded-lg transition-colors" title="Move Down"><ion-icon name="arrow-down" class="text-base"></ion-icon></button>
+                    <button onclick="deleteQuestion('${qId}')" class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors ml-2" title="Delete Question"><ion-icon name="trash" class="text-base"></ion-icon></button>
+                </div>
+
+                <div class="space-y-4 pt-4">
+                    <!-- Title Input & Type Selector -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+                        <div class="md:col-span-8">
+                            <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Question Text *</label>
+                            <input type="text" id="q-title-${qId}" placeholder="Untitled Question" value="${questionObj.title}" oninput="updateQuestionTitle('${qId}', this.value)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                        </div>
+                        <div class="md:col-span-4">
+                            <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Answer Format</label>
+                            <div class="relative">
+                                <select onchange="updateQuestionType('${qId}', this.value)" id="q-type-${qId}" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] appearance-none cursor-pointer">
+                                    <option value="short" ${questionObj.type === 'short' ? 'selected' : ''}>Short Answer (Text)</option>
+                                    <option value="paragraph" ${questionObj.type === 'paragraph' ? 'selected' : ''}>Paragraph (Textarea)</option>
+                                    <option value="choice" ${questionObj.type === 'choice' ? 'selected' : ''}>Multiple Choice (Radio)</option>
+                                    <option value="checkbox" ${questionObj.type === 'checkbox' ? 'selected' : ''}>Checkboxes</option>
+                                    <option value="dropdown" ${questionObj.type === 'dropdown' ? 'selected' : ''}>Dropdown Select</option>
+                                </select>
+                                <ion-icon name="chevron-down-outline" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></ion-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Answers options panel (shown conditionally) -->
+                    <div id="options-panel-${qId}" class="${['choice', 'checkbox', 'dropdown'].includes(questionObj.type) ? '' : 'hidden'} mt-4 border-t border-gray-50 pt-4">
+                        <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">Configure Selection Options</label>
+                        <div id="options-list-${qId}" class="space-y-2.5">
+                            <!-- Options list items will be injected here -->
+                        </div>
+                        <button onclick="addOption('${qId}')" class="mt-3 text-[10px] font-bold text-yellow-600 hover:text-yellow-700 uppercase tracking-wider flex items-center gap-1 hover:underline">
+                            <ion-icon name="add-circle-outline" class="text-sm"></ion-icon> Add Option
+                        </button>
+                    </div>
+
+                    <!-- Required Toggle -->
+                    <div class="flex items-center justify-between border-t border-gray-50 pt-4 mt-2 shrink-0">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="q-req-${qId}" ${questionObj.required ? 'checked' : ''} onchange="updateQuestionRequired('${qId}', this.checked)" class="rounded text-brand-yellow focus:ring-brand-yellow h-4 w-4 border-gray-300 cursor-pointer">
+                            <label for="q-req-${qId}" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">Required Question</label>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(card);
+            
+            // Render options list if applicable
+            renderOptions(qId);
+        }
+
+        // Options rendering engine
+        function renderOptions(qId) {
+            const q = questions.find(item => item.id === qId);
+            const listContainer = document.getElementById(`options-list-${qId}`);
+            if (!listContainer || !q) return;
+
+            listContainer.innerHTML = '';
+            q.options.forEach((opt, index) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = "flex items-center gap-2 group/opt";
+                
+                // Show matching icon indicator
+                let iconName = 'radio-button-off-outline';
+                if (q.type === 'checkbox') iconName = 'square-outline';
+                if (q.type === 'dropdown') iconName = 'chevron-forward-outline';
+
+                optDiv.innerHTML = `
+                    <ion-icon name="${iconName}" class="text-gray-300 text-lg"></ion-icon>
+                    <input type="text" value="${opt}" oninput="updateOptionValue('${qId}', ${index}, this.value)" placeholder="Option ${index + 1}" class="flex-1 bg-gray-50 border border-gray-100 p-2 rounded-lg text-xs font-semibold text-fitpad-gray outline-none focus:ring-1 focus:ring-brand-yellow">
+                    <button onclick="deleteOption('${qId}', ${index})" class="p-1 text-gray-400 hover:text-red-500 hover:bg-gray-100 rounded opacity-0 group-hover/opt:opacity-100 transition-opacity" title="Remove Option"><ion-icon name="close-outline" class="text-lg"></ion-icon></button>
+                `;
+                listContainer.appendChild(optDiv);
+            });
+        }
+
+        // Dynamic State modifiers
+        function updateQuestionTitle(qId, val) {
+            const q = questions.find(item => item.id === qId);
+            if (q) q.title = val;
+        }
+
+        function updateQuestionRequired(qId, isChecked) {
+            const q = questions.find(item => item.id === qId);
+            if (q) q.required = isChecked;
+        }
+
+        function updateQuestionType(qId, type) {
+            const q = questions.find(item => item.id === qId);
+            if (!q) return;
+
+            q.type = type;
+
+            const panel = document.getElementById(`options-panel-${qId}`);
+            if (['choice', 'checkbox', 'dropdown'].includes(type)) {
+                panel.classList.remove('hidden');
+                // Ensure at least two options are present
+                if (q.options.length < 2) {
+                    q.options = ['Option 1', 'Option 2'];
+                }
+                renderOptions(qId);
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+
+        function addOption(qId) {
+            const q = questions.find(item => item.id === qId);
+            if (q) {
+                q.options.push(`Option ${q.options.length + 1}`);
+                renderOptions(qId);
+            }
+        }
+
+        function updateOptionValue(qId, index, val) {
+            const q = questions.find(item => item.id === qId);
+            if (q && q.options[index] !== undefined) {
+                q.options[index] = val;
+            }
+        }
+
+        function deleteOption(qId, index) {
+            const q = questions.find(item => item.id === qId);
+            if (q) {
+                if (q.options.length <= 1) {
+                    FitpadAlert.show({ type: 'error', title: 'Action Blocked', message: 'Multiple choice, checkboxes, and dropdown list questions must contain at least 1 option.' });
+                    return;
+                }
+                q.options.splice(index, 1);
+                renderOptions(qId);
+            }
+        }
+
+        function deleteQuestion(qId) {
+            if (questions.length <= 1) {
+                FitpadAlert.show({ type: 'error', title: 'Action Blocked', message: 'A survey must contain at least one question.' });
+                return;
+            }
+
+            questions = questions.filter(item => item.id !== qId);
+            const card = document.getElementById(`q-card-${qId}`);
+            if (card) {
+                card.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => card.remove(), 250);
+            }
+        }
+
+        // UP / DOWN question list sorting
+        function moveQuestionUp(qId) {
+            const index = questions.findIndex(item => item.id === qId);
+            if (index <= 0) return; // Already at the top
+            
+            // Swap in state
+            const temp = questions[index];
+            questions[index] = questions[index - 1];
+            questions[index - 1] = temp;
+            
+            // Re-render container elements in DOM
+            reorderDomContainer();
+        }
+
+        function moveQuestionDown(qId) {
+            const index = questions.findIndex(item => item.id === qId);
+            if (index < 0 || index >= questions.length - 1) return; // Already at the bottom
+            
+            // Swap in state
+            const temp = questions[index];
+            questions[index] = questions[index + 1];
+            questions[index + 1] = temp;
+            
+            // Re-render container elements in DOM
+            reorderDomContainer();
+        }
+
+        function reorderDomContainer() {
+            const container = document.getElementById('questions-container');
+            // Copy state elements
+            const stateSnapshot = [...questions];
+            
+            // Fade out
+            container.style.opacity = '0.3';
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+                questions = [];
+                stateSnapshot.forEach(q => {
+                    addNewQuestion(q);
+                });
+                container.style.opacity = '1';
+            }, 150);
+        }
+
+        // SAVE SURVEY ENTRY
+        function saveSurvey() {
+            const title = document.getElementById('survey-title').value.trim();
+            const description = document.getElementById('survey-desc').value.trim();
+            
+            // 1. Validation check - Title
+            if (!title) {
+                FitpadAlert.show({ type: 'error', title: 'Missing Title', message: 'Please input a survey title.' });
+                return;
+            }
+
+            // 2. Validation check - Target Locations
+            const checkboxes = document.querySelectorAll('input[name="location"]:checked');
+            if (checkboxes.length === 0) {
+                FitpadAlert.show({ type: 'error', title: 'Select Target', message: 'Please select at least one client screen target for displaying the survey.' });
+                return;
+            }
+            const locations = Array.from(checkboxes).map(cb => cb.value);
+
+            // 3. Validation check - Questions
+            if (questions.length === 0) {
+                FitpadAlert.show({ type: 'error', title: 'No Questions', message: 'Please add at least one question to this survey.' });
+                return;
+            }
+
+            for (let i = 0; i < questions.length; i++) {
+                const q = questions[i];
+                if (!q.title.trim()) {
+                    FitpadAlert.show({ type: 'error', title: 'Untitled Question', message: `Question ${i + 1} does not have a text title. Please fill it in.` });
+                    return;
+                }
+
+                if (['choice', 'checkbox', 'dropdown'].includes(q.type)) {
+                    // Check if they filled out the options properly
+                    const blankOpts = q.options.filter(opt => !opt.trim());
+                    if (blankOpts.length > 0) {
+                        FitpadAlert.show({ type: 'error', title: 'Blank Option', message: `One or more options in Question ${i + 1} are empty. Please fill them out or remove them.` });
+                        return;
+                    }
+                }
+            }
+
+            // 4. Save to Database
+            const surveys = JSON.parse(localStorage.getItem("fitpad_surveys") || "[]");
+            
+            if (editingSurveyId) {
+                // Edit mode
+                const index = surveys.findIndex(s => s.id === editingSurveyId);
+                if (index !== -1) {
+                    surveys[index].title = title;
+                    surveys[index].description = description;
+                    surveys[index].locations = locations;
+                    surveys[index].questions = questions;
+                    surveys[index].updatedAt = new Date().toISOString();
+                }
+            } else {
+                // Create mode
+                const newSurvey = {
+                    id: 'SRV-' + Math.floor(10000 + Math.random() * 90000),
+                    title: title,
+                    description: description,
+                    locations: locations,
+                    questions: questions,
+                    active: true,
+                    createdAt: new Date().toISOString()
+                };
+                surveys.push(newSurvey);
+            }
+
+            localStorage.setItem("fitpad_surveys", JSON.stringify(surveys));
+
+            FitpadAlert.show({ 
+                type: 'success', 
+                title: editingSurveyId ? 'Survey Saved' : 'Survey Created', 
+                message: editingSurveyId ? 'The survey configurations have been successfully updated.' : 'A new feedback survey has been added to the system.',
+                onConfirm: () => window.location.href = 'setting.html?tab=surveys'
+            });
+        }
+    </script>
+</body>
+</html>
