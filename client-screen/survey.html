@@ -9,10 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
-        .brand-yellow { color: #d8f511; }
-        .bg-brand-yellow { background-color: #d8f511; }
-        .bg-fitpad-gray { background-color: #535353; }
-        .text-fitpad-gray { color: #535353; }
+        .brand-yellow { color: #d6ed17; }
+        .bg-brand-yellow { background-color: #d6ed17; }
+        .bg-fitpad-gray { background-color: #606060; }
+        .text-fitpad-gray { color: #606060; }
         
         /* Entrance animation for cards */
         .slide-up {
@@ -208,9 +208,9 @@
                 let inputHtml = '';
                 
                 if (q.type === 'short') {
-                    inputHtml = `<input type="text" id="ans-${q.id}" placeholder="Your answer" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 focus:border-[#d8f511] transition-all">`;
+                    inputHtml = `<input type="text" id="ans-${q.id}" placeholder="Your answer" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 focus:border-[#d6ed17] transition-all">`;
                 } else if (q.type === 'paragraph') {
-                    inputHtml = `<textarea id="ans-${q.id}" rows="4" placeholder="Your answer" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-medium text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 focus:border-[#d8f511] transition-all resize-none"></textarea>`;
+                    inputHtml = `<textarea id="ans-${q.id}" rows="4" placeholder="Your answer" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-medium text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 focus:border-[#d6ed17] transition-all resize-none"></textarea>`;
                 } else if (q.type === 'choice') {
                     inputHtml = `<div class="space-y-3">`;
                     q.options.forEach((opt, optIndex) => {
@@ -236,7 +236,7 @@
                 } else if (q.type === 'dropdown') {
                     inputHtml = `
                         <div class="relative">
-                            <select id="ans-${q.id}" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 focus:border-[#d8f511] appearance-none cursor-pointer">
+                            <select id="ans-${q.id}" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 focus:border-[#d6ed17] appearance-none cursor-pointer">
                                 <option value="" disabled selected>Select an option...</option>
                                 ${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                             </select>

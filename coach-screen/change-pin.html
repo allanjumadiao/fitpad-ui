@@ -9,10 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
-        .brand-yellow { color: #d8f511; }
-        .bg-brand-yellow { background-color: #d8f511; }
-        .bg-fitpad-gray { background-color: #535353; }
-        .text-fitpad-gray { color: #535353; }
+        .brand-yellow { color: #d6ed17; }
+        .bg-brand-yellow { background-color: #d6ed17; }
+        .bg-fitpad-gray { background-color: #606060; }
+        .text-fitpad-gray { color: #606060; }
     </style>
 </head>
 <body class="flex flex-col md:flex-row min-h-screen">
@@ -70,7 +70,7 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Current PIN Number</label>
                     <div class="relative">
-                        <input type="password" id="currentPin" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all pr-12">
+                        <input type="password" id="currentPin" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 transition-all pr-12">
                         <button type="button" onclick="togglePassword('currentPin', 'eyeCurrent')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-fitpad-gray transition-colors p-1">
                             <ion-icon id="eyeCurrent" name="eye-off-outline" class="text-xl"></ion-icon>
                         </button>
@@ -83,7 +83,7 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">New PIN Number</label>
                     <div class="relative">
-                        <input type="password" id="newPin" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all pr-12">
+                        <input type="password" id="newPin" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 transition-all pr-12">
                         <button type="button" onclick="togglePassword('newPin', 'eyeNew')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-fitpad-gray transition-colors p-1">
                             <ion-icon id="eyeNew" name="eye-off-outline" class="text-xl"></ion-icon>
                         </button>
@@ -94,7 +94,7 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Confirm New PIN Number</label>
                     <div class="relative">
-                        <input type="password" id="confirmPin" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all pr-12">
+                        <input type="password" id="confirmPin" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 transition-all pr-12">
                         <button type="button" onclick="togglePassword('confirmPin', 'eyeConfirm')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-fitpad-gray transition-colors p-1">
                             <ion-icon id="eyeConfirm" name="eye-off-outline" class="text-xl"></ion-icon>
                         </button>

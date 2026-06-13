@@ -9,10 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
-        .brand-yellow { color: #d8f511; }
-        .bg-brand-yellow { background-color: #d8f511; }
-        .bg-fitpad-gray { background-color: #535353; }
-        .text-fitpad-gray { color: #535353; }
+        .brand-yellow { color: #d6ed17; }
+        .bg-brand-yellow { background-color: #d6ed17; }
+        .bg-fitpad-gray { background-color: #606060; }
+        .text-fitpad-gray { color: #606060; }
         
         /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -58,11 +58,11 @@
         <div class="flex flex-col md:flex-row gap-4 mb-6">
             <div class="relative flex-1">
                 <ion-icon name="search-outline" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></ion-icon>
-                <input type="text" placeholder="Search by Coach Name, ID, or Email..." class="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all shadow-sm">
+                <input type="text" placeholder="Search by Coach Name, ID, or Email..." class="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 transition-all shadow-sm">
             </div>
             <div class="w-full md:w-56 relative">
                 <ion-icon name="filter-outline" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none"></ion-icon>
-                <select class="w-full pl-12 pr-10 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all shadow-sm cursor-pointer appearance-none">
+                <select class="w-full pl-12 pr-10 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 transition-all shadow-sm cursor-pointer appearance-none">
                     <option value="all">All Statuses</option>
                     <option value="active">Active Coaches</option>
                     <option value="inactive">Inactive Coaches</option>
@@ -156,11 +156,11 @@
             <form onsubmit="handleRegisterCoach(event)">
                 <div class="p-8 space-y-5">
                     <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">First Name *</label><input type="text" required placeholder="e.g. John" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
-                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Last Name *</label><input type="text" required placeholder="e.g. Doe" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
+                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">First Name *</label><input type="text" required placeholder="e.g. John" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]"></div>
+                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Last Name *</label><input type="text" required placeholder="e.g. Doe" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]"></div>
                     </div>
-                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Email Address *</label><input type="email" required placeholder="coach@fitpad.com" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
-                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Temporary Password *</label><input type="password" required minlength="8" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"><p class="text-[10px] text-gray-400 font-medium mt-1">Minimum 8 characters.</p></div>
+                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Email Address *</label><input type="email" required placeholder="coach@fitpad.com" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]"></div>
+                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Temporary Password *</label><input type="password" required minlength="8" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]"><p class="text-[10px] text-gray-400 font-medium mt-1">Minimum 8 characters.</p></div>
                 </div>
                 <div class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
                     <button type="button" onclick="closeRegisterModal()" class="text-xs font-bold text-gray-400 uppercase hover:text-fitpad-gray px-4 py-2">Cancel</button>

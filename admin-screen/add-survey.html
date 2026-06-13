@@ -9,10 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
-        .brand-yellow { color: #d8f511; }
-        .bg-brand-yellow { background-color: #d8f511; }
-        .bg-fitpad-gray { background-color: #535353; }
-        .text-fitpad-gray { color: #535353; }
+        .brand-yellow { color: #d6ed17; }
+        .bg-brand-yellow { background-color: #d6ed17; }
+        .bg-fitpad-gray { background-color: #606060; }
+        .text-fitpad-gray { color: #606060; }
         
         /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -58,13 +58,13 @@
                 <!-- Title input -->
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Survey Title *</label>
-                    <input type="text" id="survey-title" required placeholder="e.g. Coach Feedback Survey" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                    <input type="text" id="survey-title" required placeholder="e.g. Coach Feedback Survey" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                 </div>
 
                 <!-- Description input -->
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Description</label>
-                    <textarea id="survey-desc" rows="4" placeholder="Describe the purpose of this survey to your clients..." class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-medium text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all resize-none"></textarea>
+                    <textarea id="survey-desc" rows="4" placeholder="Describe the purpose of this survey to your clients..." class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-xl text-sm font-medium text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all resize-none"></textarea>
                 </div>
 
                 <!-- Display locations checkboxes -->
@@ -227,12 +227,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
                         <div class="md:col-span-8">
                             <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Question Text *</label>
-                            <input type="text" id="q-title-${qId}" placeholder="Untitled Question" value="${questionObj.title}" oninput="updateQuestionTitle('${qId}', this.value)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                            <input type="text" id="q-title-${qId}" placeholder="Untitled Question" value="${questionObj.title}" oninput="updateQuestionTitle('${qId}', this.value)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                         </div>
                         <div class="md:col-span-4">
                             <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Answer Format</label>
                             <div class="relative">
-                                <select onchange="updateQuestionType('${qId}', this.value)" id="q-type-${qId}" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] appearance-none cursor-pointer">
+                                <select onchange="updateQuestionType('${qId}', this.value)" id="q-type-${qId}" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] appearance-none cursor-pointer">
                                     <option value="short" ${questionObj.type === 'short' ? 'selected' : ''}>Short Answer (Text)</option>
                                     <option value="paragraph" ${questionObj.type === 'paragraph' ? 'selected' : ''}>Paragraph (Textarea)</option>
                                     <option value="choice" ${questionObj.type === 'choice' ? 'selected' : ''}>Multiple Choice (Radio)</option>

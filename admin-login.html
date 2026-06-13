@@ -9,10 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
-        .brand-yellow { color: #d8f511; }
-        .bg-brand-yellow { background-color: #d8f511; }
-        .bg-fitpad-gray { background-color: #535353; }
-        .text-fitpad-gray { color: #535353; }
+        .brand-yellow { color: #d6ed17; }
+        .bg-brand-yellow { background-color: #d6ed17; }
+        .bg-fitpad-gray { background-color: #606060; }
+        .text-fitpad-gray { color: #606060; }
     </style>
 </head>
 <body class="min-h-screen bg-fitpad-gray flex flex-col items-center justify-center p-4">
@@ -41,7 +41,7 @@
                     <label for="adminId" class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                         <ion-icon name="person-circle-outline" class="text-lg text-brand-yellow"></ion-icon> Admin ID
                     </label>
-                    <input type="text" id="adminId" required placeholder="e.g. ADM-001" value="FITPAD-001" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                    <input type="text" id="adminId" required placeholder="e.g. ADM-001" value="FITPAD-001" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 transition-all">
                 </div>
 
                 <!-- Password Field -->
@@ -53,7 +53,7 @@
                         <a href="#" onclick="alert('Please contact the IT System Administrator to retrieve or reset your Admin credentials.'); return false;" class="text-[10px] font-bold text-gray-400 hover:text-fitpad-gray hover:underline uppercase tracking-widest transition-colors">Forgot?</a>
                     </div>
                     <div class="relative">
-                        <input type="password" id="password" required minlength="8" placeholder="••••••••" value="password" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all pr-12">
+                        <input type="password" id="password" required minlength="8" placeholder="••••••••" value="password" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 transition-all pr-12">
                         <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-fitpad-gray transition-colors p-1 flex items-center justify-center">
                             <ion-icon id="eyeIcon" name="eye-off-outline" class="text-xl"></ion-icon>
                         </button>

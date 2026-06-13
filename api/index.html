@@ -849,7 +849,7 @@
           { name: "id", type: "BIGINT UNSIGNED", constraints: ["PK", "AI"], nullable: "No", default: "None", description: "Primary auto-incrementing ID." },
           { name: "name", type: "VARCHAR(255)", constraints: [], nullable: "No", default: "None", description: "Display name of the user." },
           { name: "email", type: "VARCHAR(255)", constraints: ["UNIQUE"], nullable: "No", default: "None", description: "Email address (strictly unique for login/identity)." },
-          { name: "email_verified_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp when email verification succeeded." },
+
           { name: "password", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Blowfish/Bcrypt hashed password (Admins only)." },
           { name: "pin", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Hashed 6-digit login PIN (Coaches & Clients only)." },
           { name: "role", type: "ENUM('admin','coach','client')", constraints: [], nullable: "No", default: "None", description: "Access control role for dashboard authorization." },
@@ -940,6 +940,7 @@
         relations: [
           { type: "Belongs To", table: "users", field: "user_id" },
           { type: "Belongs To", table: "coach_details", field: "coach_detail_id" },
+          { type: "Belongs To", table: "session_plans", field: "session_plan_id" },
           { type: "Has Many", table: "client_schedules", field: "client_detail_id" },
           { type: "Has Many", table: "client_assessments", field: "client_detail_id" },
           { type: "Has Many", table: "training_sessions", field: "client_detail_id" }
@@ -953,13 +954,14 @@
           { name: "coach_detail_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "Yes", default: "NULL", description: "Refers to coach_details.id of assigned coach." },
           { name: "height", type: "DECIMAL(5,2)", constraints: [], nullable: "Yes", default: "NULL", description: "Trainee height in cm." },
           { name: "fitness_goal", type: "VARCHAR(255)", constraints: [], nullable: "Yes", default: "NULL", description: "Fitness goal text (e.g. HIIT, Muscle Build)." },
-          { name: "base_sessions", type: "INT", constraints: [], nullable: "No", default: "0", description: "Standard paid plan sessions (12, 24, 30, 50)." },
+          { name: "session_plan_id", type: "BIGINT UNSIGNED", constraints: ["FK"], nullable: "No", default: "None", description: "Reference to session_plans.id." },
           { name: "free_sessions", type: "INT", constraints: [], nullable: "No", default: "0", description: "Complimentary sessions given." },
           { name: "used_sessions", type: "INT", constraints: [], nullable: "No", default: "0", description: "Deducted count of completed and approved workouts." },
           { name: "validation_period_days", type: "INT", constraints: [], nullable: "Yes", default: "NULL", description: "Total validity period in days based on the session package." },
           { name: "first_session_date", type: "DATE", constraints: [], nullable: "Yes", default: "NULL", description: "Date of the first session to start validation countdown." },
           { name: "created_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
-          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." }
+          { name: "updated_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp." },
+          { name: "account_verified_at", type: "TIMESTAMP", constraints: [], nullable: "Yes", default: "NULL", description: "Timestamp when account verification succeeded." }
         ]
       },
       {

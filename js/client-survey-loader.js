@@ -34,40 +34,65 @@
         // Create banner element
         const banner = document.createElement('div');
         banner.id = `survey-banner-${eligibleSurvey.id}`;
-        banner.className = "relative bg-fitpad-gray text-white p-6 rounded-3xl mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 overflow-hidden shadow-lg border border-white/5 transition-all duration-500 opacity-0 -translate-y-4";
+        banner.className = "relative mb-8 transition-all duration-500 opacity-0 -translate-y-4";
         
         // Add absolute backdrop decoration glow
         banner.innerHTML = `
-            <div class="absolute -right-8 -bottom-8 w-24 h-24 bg-[#d8f511]/10 rounded-full blur-xl pointer-events-none"></div>
-            <div class="absolute left-0 inset-y-0 w-1.5 bg-brand-yellow"></div>
-            
-            <div class="flex items-start gap-4 pr-6">
-                <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-brand-yellow shrink-0">
-                    <ion-icon name="document-text" class="text-2xl"></ion-icon>
+            <!-- Mobile View Survey Banner -->
+            <div class="md:hidden relative bg-fitpad-gray text-white p-3.5 rounded-[1.25rem] flex items-center justify-between gap-4 overflow-hidden shadow-lg border border-white/5">
+                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-brand-yellow"></div>
+                
+                <div class="flex items-center gap-4 pl-2">
+                    <div>
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <h2 class="text-xs font-black uppercase tracking-tight">We value your feedback!</h2>
+                        </div>
+                        <h3 class="text-[10px] font-bold text-gray-200 leading-tight">${eligibleSurvey.title}</h3>
+                    </div>
                 </div>
-                <div>
-                    <h4 class="text-base font-black uppercase tracking-tight flex items-center gap-2">
-                        We Value Your Feedback!
-                        <span class="bg-[#d8f511]/20 text-brand-yellow text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Survey</span>
-                    </h4>
-                    <p class="text-sm font-semibold text-white/90 mt-1">${eligibleSurvey.title}</p>
-                    <p class="text-xs text-gray-400 font-medium mt-1">${eligibleSurvey.description || 'Please take a brief moment to answer a few quick questions to help us improve.'}</p>
+                
+                <!-- Actions -->
+                <div class="flex items-center gap-3 shrink-0">
+                    <button onclick="dismissSurveyBanner('${eligibleSurvey.id}')" class="text-[9px] font-bold text-gray-400 uppercase tracking-widest hover:text-white transition-colors">Later</button>
+                    <a href="survey.html?id=${eligibleSurvey.id}&ref=${screenKey}" class="bg-brand-yellow text-fitpad-gray px-3.5 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-md whitespace-nowrap">
+                        Start
+                    </a>
                 </div>
             </div>
-            
-            <div class="flex items-center gap-3 shrink-0 relative z-10 self-end md:self-auto">
-                <button onclick="dismissSurveyBanner('${eligibleSurvey.id}')" class="px-4 py-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-all">
-                    Later
+
+            <!-- Desktop View Survey Banner -->
+            <div class="hidden md:flex relative bg-fitpad-gray text-white p-6 rounded-3xl items-center justify-between gap-4 overflow-hidden shadow-lg border border-white/5">
+                <div class="absolute -right-8 -bottom-8 w-24 h-24 bg-[#d6ed17]/10 rounded-full blur-xl pointer-events-none"></div>
+                <div class="absolute left-0 inset-y-0 w-1.5 bg-brand-yellow"></div>
+                
+                <div class="flex items-start gap-4 pr-6">
+                    <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-brand-yellow shrink-0">
+                        <ion-icon name="document-text" class="text-2xl"></ion-icon>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-black uppercase tracking-tight flex items-center gap-2 mb-1">
+                            We Value Your Feedback!
+                            <span class="bg-[#d6ed17]/20 text-brand-yellow text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Survey</span>
+                        </h4>
+                        <p class="text-sm font-semibold text-white/90 leading-tight">${eligibleSurvey.title}</p>
+                        <p class="text-xs text-gray-400 font-medium mt-1">${eligibleSurvey.description || 'Please take a brief moment to answer a few quick questions to help us improve.'}</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-3 shrink-0 relative z-10">
+                    <button onclick="dismissSurveyBanner('${eligibleSurvey.id}')" class="px-4 py-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-all">
+                        Later
+                    </button>
+                    <a href="survey.html?id=${eligibleSurvey.id}&ref=${screenKey}" class="px-6 py-3 bg-brand-yellow text-fitpad-gray hover:brightness-110 rounded-xl text-xs font-black uppercase tracking-widest shadow-md transition-all whitespace-nowrap">
+                        Start Survey
+                    </a>
+                </div>
+                
+                <!-- Close icon button top right -->
+                <button onclick="dismissSurveyBanner('${eligibleSurvey.id}')" class="absolute right-4 top-4 text-gray-400 hover:text-white transition-colors p-1" title="Dismiss">
+                    <ion-icon name="close" class="text-xl"></ion-icon>
                 </button>
-                <a href="survey.html?id=${eligibleSurvey.id}&ref=${screenKey}" class="px-6 py-3 bg-brand-yellow text-fitpad-gray hover:brightness-110 rounded-xl text-xs font-black uppercase tracking-widest shadow-md transition-all">
-                    Start Survey
-                </a>
             </div>
-            
-            <!-- Close icon button top right -->
-            <button onclick="dismissSurveyBanner('${eligibleSurvey.id}')" class="absolute right-4 top-4 text-gray-400 hover:text-white transition-colors p-1" title="Dismiss">
-                <ion-icon name="close" class="text-xl"></ion-icon>
-            </button>
         `;
 
         // Prepend it as first child of <main>

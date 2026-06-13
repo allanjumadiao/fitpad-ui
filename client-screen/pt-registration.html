@@ -9,10 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
-        .brand-yellow { color: #d8f511; }
-        .bg-brand-yellow { background-color: #d8f511; }
-        .bg-fitpad-gray { background-color: #535353; }
-        .text-fitpad-gray { color: #535353; }
+        .brand-yellow { color: #d6ed17; }
+        .bg-brand-yellow { background-color: #d6ed17; }
+        .bg-fitpad-gray { background-color: #606060; }
+        .text-fitpad-gray { color: #606060; }
         
         /* Custom Scrollbar for Modal */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -21,7 +21,7 @@
         
         /* Custom Radio Button Styling for Session Plans */
         .plan-radio:checked + div {
-            border-color: #d8f511;
+            border-color: #d6ed17;
             background-color: #fdfce8;
         }
         .plan-radio:checked + div .check-icon {
@@ -30,11 +30,11 @@
 
         /* Custom Radio for Coach Selection */
         .coach-radio:checked + div {
-            border-color: #d8f511;
+            border-color: #d6ed17;
             background-color: #fdfce8;
         }
         .coach-radio:checked + div .check-icon {
-            color: #d8f511;
+            color: #d6ed17;
             opacity: 1;
         }
 
@@ -61,23 +61,23 @@
         .calendar-day-btn.available {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
-            color: #535353;
+            color: #606060;
             cursor: pointer;
         }
 
         .calendar-day-btn.available:hover {
-            border-color: #d8f511;
+            border-color: #d6ed17;
             background-color: #fdfce8;
         }
 
         .calendar-day-btn.selected {
-            background-color: #d8f511 !important;
-            color: #535353 !important;
-            border-color: #d8f511 !important;
+            background-color: #d6ed17 !important;
+            color: #606060 !important;
+            border-color: #d6ed17 !important;
         }
 
         .calendar-day-btn.today {
-            border: 2px solid #535353;
+            border: 2px solid #606060;
         }
 
         /* Dot indicator on available days */
@@ -91,7 +91,7 @@
             background-color: #84cc16; /* green dot */
         }
         .calendar-day-btn.selected::after {
-            background-color: #535353; /* dark dot if selected */
+            background-color: #606060; /* dark dot if selected */
         }
     </style>
 </head>
@@ -146,7 +146,7 @@
                 <div class="flex flex-col sm:flex-row gap-4 items-end bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
                     <div class="flex-1 w-full">
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">PT ID or Email Address *</label>
-                        <input type="text" id="lookupQuery" placeholder="e.g. PT-1042 or email@example.com" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                        <input type="text" id="lookupQuery" placeholder="e.g. PT-1042 or email@example.com" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                     </div>
                     <button type="button" onclick="performLookup()" class="bg-fitpad-gray text-white px-8 py-4 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-md shrink-0 h-[52px] flex items-center justify-center gap-2 w-full sm:w-auto">
                         <ion-icon name="search" class="text-sm text-brand-yellow"></ion-icon> Submit Lookup
@@ -165,29 +165,29 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">First Name *</label>
-                        <input type="text" id="firstName" required maxlength="100" placeholder="e.g. Jane" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                        <input type="text" id="firstName" required maxlength="100" placeholder="e.g. Jane" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Last Name *</label>
-                        <input type="text" id="lastName" required maxlength="100" placeholder="e.g. Doe" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                        <input type="text" id="lastName" required maxlength="100" placeholder="e.g. Doe" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Email Address *</label>
-                        <input type="email" id="email" required placeholder="jane.doe@example.com" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                        <input type="email" id="email" required placeholder="jane.doe@example.com" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                         <p id="emailError" class="text-red-500 text-xs font-bold mt-2 hidden">Email is already registered.</p>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Date of Birth *</label>
-                        <input type="date" id="birthday" required class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                        <input type="date" id="birthday" required class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                     </div>
                     <div id="pinContainer">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Pin Number *</label>
-                        <input type="password" id="pinNumber" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkPinMatch();" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                        <input type="password" id="pinNumber" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkPinMatch();" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                         <p class="text-[10px] text-gray-400 font-semibold mt-2">Must be a 6-digit numeric PIN.</p>
                     </div>
                     <div id="confirmPinContainer">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Confirm Pin Number *</label>
-                        <input type="password" id="confirmPinNumber" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkPinMatch();" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                        <input type="password" id="confirmPinNumber" required minlength="6" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkPinMatch();" placeholder="••••••" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                         <p id="pinError" class="text-red-500 text-xs font-bold mt-2 hidden">PIN numbers do not match.</p>
                     </div>
                     <div id="pinToggleContainer" class="hidden md:col-span-2">
@@ -469,7 +469,7 @@
                 
                 <div class="bg-gray-50 p-6 rounded-2xl mb-8 border border-gray-200">
                     <label class="flex items-start gap-4 cursor-pointer">
-                        <input type="checkbox" id="termsAgreement" required class="mt-1 w-5 h-5 accent-[#d8f511] cursor-pointer">
+                        <input type="checkbox" id="termsAgreement" required class="mt-1 w-5 h-5 accent-[#d6ed17] cursor-pointer">
                         <div>
                             <span class="block text-sm font-bold text-fitpad-gray">
                                 I agree to the <button type="button" onclick="openTermsModal()" class="text-yellow-600 hover:text-brand-yellow underline underline-offset-2 transition-colors">Terms and Conditions</button>

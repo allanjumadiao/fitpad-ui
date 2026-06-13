@@ -9,10 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
-        .brand-yellow { color: #d8f511; }
-        .bg-brand-yellow { background-color: #d8f511; }
-        .bg-fitpad-gray { background-color: #535353; }
-        .text-fitpad-gray { color: #535353; }
+        .brand-yellow { color: #d6ed17; }
+        .bg-brand-yellow { background-color: #d6ed17; }
+        .bg-fitpad-gray { background-color: #606060; }
+        .text-fitpad-gray { color: #606060; }
         
         /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -97,11 +97,11 @@
                         <form onsubmit="handleRegisterPlan(event)" class="p-6 space-y-4">
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Sessions</label>
-                                <input type="number" required placeholder="e.g. 12" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                                <input type="number" required placeholder="e.g. 12" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Plan Name / Label</label>
-                                <input type="text" required placeholder="e.g. Starter Package" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                                <input type="text" required placeholder="e.g. Starter Package" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                             </div>
                             <button type="submit" class="w-full mt-4 bg-fitpad-gray text-white px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-md">Create Plan</button>
                         </form>
@@ -157,13 +157,13 @@
                         <form id="exerciseForm" onsubmit="handleRegisterExercise(event)" class="p-6 space-y-5">
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Exercise Name *</label>
-                                <input type="text" id="exNameInput" required placeholder="e.g. Barbell Bench Press" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all">
+                                <input type="text" id="exNameInput" required placeholder="e.g. Barbell Bench Press" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all">
                             </div>
                             
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Category *</label>
                                 <div class="relative">
-                                    <select id="exCategoryInput" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] appearance-none cursor-pointer">
+                                    <select id="exCategoryInput" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] appearance-none cursor-pointer">
                                         <option value="" disabled selected>Select Category...</option>
                                         <option value="Strength">Strength & Hypertrophy</option>
                                         <option value="Cardio">Cardiovascular / HIIT</option>
@@ -212,10 +212,10 @@
                         <div class="px-6 py-4 border-b border-gray-100 bg-white flex flex-col sm:flex-row gap-4 shrink-0">
                             <div class="relative flex-1">
                                 <ion-icon name="search-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></ion-icon>
-                                <input type="text" id="exerciseSearch" onkeyup="filterExercises()" placeholder="Search exercise name..." class="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all shadow-sm">
+                                <input type="text" id="exerciseSearch" onkeyup="filterExercises()" placeholder="Search exercise name..." class="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all shadow-sm">
                             </div>
                             <div class="relative w-full sm:w-56">
-                                <select id="categoryFilter" onchange="filterExercises()" class="w-full bg-gray-50 border border-gray-200 pl-4 pr-10 py-2.5 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] appearance-none cursor-pointer shadow-sm">
+                                <select id="categoryFilter" onchange="filterExercises()" class="w-full bg-gray-50 border border-gray-200 pl-4 pr-10 py-2.5 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] appearance-none cursor-pointer shadow-sm">
                                     <option value="all">All Categories</option>
                                     <option value="strength">Strength</option>
                                     <option value="cardio">Cardio</option>
@@ -364,10 +364,10 @@
                     <div class="px-8 py-4 border-b border-gray-100 bg-white flex flex-col sm:flex-row gap-4 shrink-0">
                         <div class="relative flex-1 bg-white">
                             <ion-icon name="search-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></ion-icon>
-                            <input type="text" id="surveySearch" onkeyup="filterAndPaginateSurveys()" placeholder="Search surveys..." class="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] transition-all shadow-sm">
+                            <input type="text" id="surveySearch" onkeyup="filterAndPaginateSurveys()" placeholder="Search surveys..." class="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] transition-all shadow-sm">
                         </div>
                         <div class="relative w-full sm:w-56 bg-white">
-                            <select id="surveyLocationFilter" onchange="filterAndPaginateSurveys()" class="w-full bg-gray-50 border border-gray-200 pl-4 pr-10 py-2.5 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] appearance-none cursor-pointer shadow-sm">
+                            <select id="surveyLocationFilter" onchange="filterAndPaginateSurveys()" class="w-full bg-gray-50 border border-gray-200 pl-4 pr-10 py-2.5 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] appearance-none cursor-pointer shadow-sm">
                                 <option value="all">All Locations</option>
                                 <option value="dashboard">Dashboard</option>
                                 <option value="session-list">Session List</option>
@@ -493,21 +493,21 @@
             <form onsubmit="handleAddAdmin(event)">
                 <div class="p-8 space-y-5">
                     <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">First Name *</label><input type="text" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
-                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Last Name *</label><input type="text" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
+                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">First Name *</label><input type="text" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]"></div>
+                        <div><label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Last Name *</label><input type="text" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]"></div>
                     </div>
-                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Email Address *</label><input type="email" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
+                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Email Address *</label><input type="email" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]"></div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Admin Role *</label>
                         <div class="relative">
-                            <select required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] appearance-none cursor-pointer">
+                            <select required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] appearance-none cursor-pointer">
                                 <option value="standard" selected>Standard Admin</option>
                                 <option value="super">Super Admin</option>
                             </select>
                             <ion-icon name="chevron-down-outline" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></ion-icon>
                         </div>
                     </div>
-                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Temporary Password *</label><input type="password" required minlength="8" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]"></div>
+                    <div><label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Temporary Password *</label><input type="password" required minlength="8" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]"></div>
                 </div>
                 <div class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
                     <button type="button" onclick="closeAddAdminModal()" class="text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-fitpad-gray transition-colors px-4 py-2">Cancel</button>

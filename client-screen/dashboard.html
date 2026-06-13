@@ -9,10 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
-        .brand-yellow { color: #d8f511; }
-        .bg-brand-yellow { background-color: #d8f511; }
-        .bg-fitpad-gray { background-color: #535353; }
-        .text-fitpad-gray { color: #535353; }
+        .brand-yellow { color: #d6ed17; }
+        .bg-brand-yellow { background-color: #d6ed17; }
+        .bg-fitpad-gray { background-color: #606060; }
+        .text-fitpad-gray { color: #606060; }
     </style>
 </head>
 <body class="flex flex-col md:flex-row min-h-screen">
@@ -80,86 +80,181 @@
         <!-- DASHBOARD WIDGETS -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- 1. Coach Information -->
-            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center text-center relative overflow-hidden group">
-                <div class="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 group-hover:via-brand-yellow transition-colors"></div>
-                
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest w-full text-left mb-6 flex items-center gap-2">
-                    <ion-icon name="shield-checkmark" class="text-brand-yellow text-lg"></ion-icon> Assigned Coach
-                </h3>
-                
-                <div class="w-24 h-24 rounded-full bg-fitpad-gray flex items-center justify-center text-brand-yellow font-black text-3xl mb-4 shadow-inner ring-4 ring-gray-50">
-                    SA
-                </div>
-                
-                <h4 class="text-xl font-black text-fitpad-gray uppercase tracking-tight">Sarah Adams</h4>
-                <p class="text-xs font-mono font-bold text-gray-400 mt-1 bg-gray-50 px-3 py-1 rounded-md">ID: CP-8820</p>
-                
-                <a href="coach-view-profile.html" class="mt-auto pt-6 w-full text-xs font-bold text-brand-yellow uppercase tracking-widest hover:text-yellow-600 transition-colors flex items-center justify-center gap-2">
-                    View Profile <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-            </div>
-
-            <!-- 2. Session Balance -->
-            <div class="bg-fitpad-gray p-6 md:p-8 rounded-3xl shadow-xl text-white relative overflow-hidden flex flex-col justify-between">
+            <!-- 1. Session Balance -->
+            <div class="bg-fitpad-gray p-5 md:p-8 rounded-3xl shadow-xl text-white relative overflow-hidden flex flex-col justify-between border border-gray-600">
                 <!-- Decorative Elements -->
                 <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-white opacity-5 rounded-full blur-2xl"></div>
                 <div class="absolute -left-8 -top-8 w-24 h-24 bg-brand-yellow opacity-10 rounded-full blur-xl"></div>
                 
-                <div class="relative z-10">
-                    <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                <div class="relative z-10 flex flex-col justify-between h-full">
+                    <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                         <ion-icon name="pie-chart" class="text-brand-yellow text-lg"></ion-icon> Session Balance
                     </h3>
                     
-                    <div class="flex items-end gap-3 mb-8">
-                        <h2 class="text-7xl font-black brand-yellow leading-none tracking-tighter">10</h2>
-                        <p class="text-sm text-gray-300 font-bold uppercase tracking-widest pb-1">Remaining</p>
+                    <!-- Mobile View: Horizontal Split -->
+                    <div class="md:hidden flex items-center justify-center gap-6 w-full mb-4">
+                        <!-- Left Block: Remaining Count -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-[4.5rem] font-black brand-yellow leading-none tracking-tighter -ml-1">14</span>
+                            <div class="flex flex-col items-start gap-1 pb-1">
+                                <span class="text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider" style="background-color: rgba(214, 237, 23, 0.15); color: #d6ed17;">+2 Free</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-gray-300">Remaining</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Block: Balance Details -->
+                        <div class="grid grid-cols-[auto_auto_auto] gap-x-2 gap-y-1.5 items-center font-sans text-left shrink-0">
+                            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Total Plan</span>
+                            <span class="text-xs font-black text-white text-right leading-none">14</span>
+                            <span class="text-[8px] text-gray-400 font-medium leading-none">Sessions</span>
+                            
+                            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Used</span>
+                            <span class="text-xs font-black text-white text-right leading-none">0</span>
+                            <span class="text-[8px] text-gray-400 font-medium leading-none">Sessions</span>
+                            
+                            <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Valid For</span>
+                            <span class="text-xs font-black text-white text-right leading-none">30</span>
+                            <span class="text-[8px] text-gray-400 font-medium leading-none">Days Left</span>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-6">
-                        <div>
-                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Total Plan</p>
-                            <p class="text-base font-black text-white">12 <span class="text-[10px] font-semibold text-gray-400 ml-1">Sessions</span></p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Used</p>
-                            <p class="text-base font-black text-white">2 <span class="text-[10px] font-semibold text-gray-400 ml-1">Sessions</span></p>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-1 mb-1">
-                                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Valid For</p>
+                    <!-- Desktop View: Vertical Flow -->
+                    <div class="hidden md:flex flex-col flex-1">
+                        <div class="flex items-end gap-3 mb-6">
+                            <span class="text-[6rem] font-black brand-yellow leading-none tracking-tighter -ml-1">14</span>
+                            <div class="flex flex-col items-start gap-1 pb-2">
+                                <span class="text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-wider" style="background-color: rgba(214, 237, 23, 0.15); color: #d6ed17;">+2 Free</span>
+                                <span class="text-sm font-black uppercase tracking-widest text-gray-300">Remaining</span>
                             </div>
-                            <p class="text-base font-black text-white">28 <span class="text-[10px] font-semibold text-gray-400 ml-1">Days Left</span></p>
                         </div>
+                        
+                        <hr class="border-white/10 mb-6">
+                        
+                        <div class="flex justify-between items-start gap-4">
+                            <div>
+                                <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Plan</p>
+                                <p class="text-sm font-black tracking-tight whitespace-nowrap">
+                                    <span class="text-white">14</span> 
+                                    <span class="text-[10px] text-gray-400 font-medium ml-1">Sessions</span>
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-1">Used</p>
+                                <p class="text-sm font-black tracking-tight text-white whitespace-nowrap">
+                                    <span class="text-white">0</span> 
+                                    <span class="text-[10px] text-gray-400 font-medium ml-1">Sessions</span>
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-1">Valid For</p>
+                                <p class="text-sm font-black tracking-tight text-white whitespace-nowrap">
+                                    <span class="text-white">30</span> 
+                                    <span class="text-[10px] text-gray-400 font-medium ml-1">Days Left</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar / Meter -->
+                    <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden mt-auto">
+                        <div class="bg-brand-yellow h-full rounded-full" style="width: 100%"></div>
                     </div>
                 </div>
             </div>
 
+            <!-- 2. Coach Information -->
+            <div class="bg-white p-5 md:p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col relative overflow-hidden group">
+                <div class="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 group-hover:via-brand-yellow transition-colors"></div>
+                
+                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest w-full text-left mb-4 md:mb-6 flex items-center gap-2">
+                    <ion-icon name="shield-checkmark" class="text-brand-yellow text-lg"></ion-icon> Assigned Coach
+                </h3>
+                
+                <!-- Mobile View -->
+                <a href="coach-view-profile.html" class="md:hidden flex items-center gap-4 w-full active:scale-[0.99] transition-all">
+                    <!-- Avatar -->
+                    <div class="w-16 h-16 rounded-full bg-fitpad-gray flex items-center justify-center text-brand-yellow font-black text-xl shadow-inner ring-4 ring-gray-50 border-4 border-white shrink-0">
+                        SA
+                    </div>
+                    <!-- Details -->
+                    <div class="flex-1 text-left">
+                        <h4 class="text-lg font-black text-fitpad-gray uppercase tracking-tight leading-tight">Sarah Adams</h4>
+                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">ID: CP-8820</p>
+                    </div>
+                </a>
+
+                <!-- Desktop View -->
+                <div class="hidden md:flex flex-col items-center text-center w-full flex-1">
+                    <!-- Avatar -->
+                    <div class="w-24 h-24 rounded-full bg-fitpad-gray flex items-center justify-center text-brand-yellow font-black text-3xl mb-4 shadow-inner ring-4 ring-gray-50 border-[6px] border-white shrink-0">
+                        SA
+                    </div>
+                    
+                    <h4 class="text-xl font-black text-fitpad-gray uppercase tracking-tight">Sarah Adams</h4>
+                    <p class="text-xs font-mono font-bold text-gray-400 mt-1 bg-gray-50 px-3 py-1 rounded-md">ID: CP-8820</p>
+                    
+                    <a href="coach-view-profile.html" class="mt-auto pt-6 w-full text-xs font-bold text-brand-yellow uppercase tracking-widest hover:text-yellow-600 transition-colors flex items-center justify-center gap-2">
+                        View Profile <ion-icon name="arrow-forward"></ion-icon>
+                    </a>
+                </div>
+            </div>
+
             <!-- 3. Next Upcoming Schedule -->
-            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col">
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest w-full text-left mb-6 flex items-center gap-2">
+            <div class="bg-white p-5 md:p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col">
+                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest w-full text-left mb-4 md:mb-6 flex items-center gap-2">
                     <ion-icon name="time" class="text-brand-yellow text-lg"></ion-icon> Next Upcoming Session
                 </h3>
                 
-                <div class="flex-1 flex flex-col justify-center items-center bg-gray-50 rounded-2xl border border-gray-200 p-6 text-center group hover:border-brand-yellow transition-colors relative overflow-hidden">
+                <!-- Mobile View -->
+                <div class="md:hidden flex-1 bg-gray-50 rounded-[1.25rem] p-4 flex items-center justify-start text-left border border-gray-200/60 shadow-inner relative overflow-hidden">
+                    <!-- Accent side bar -->
+                    <div class="absolute left-0 inset-y-0 w-1.5 bg-gray-200"></div>
+                    
+                    <div class="flex items-center gap-4 w-full pl-2">
+                        <!-- Calendar Date Icon -->
+                        <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex flex-col items-center justify-center border border-gray-100 shrink-0">
+                            <span class="text-[8px] font-black text-red-500 uppercase tracking-widest leading-none mb-0.5">May</span>
+                            <span class="text-lg font-black text-fitpad-gray leading-none">13</span>
+                        </div>
+                        
+                        <!-- Details -->
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-base font-black text-fitpad-gray uppercase tracking-tight mb-1 leading-none">Wednesday</h4>
+                            <div class="bg-white border border-gray-200 px-3 py-1 rounded-lg flex items-center gap-1.5 shadow-sm mb-2 w-fit">
+                                <ion-icon name="time-outline" class="text-brand-yellow text-base"></ion-icon>
+                                <span class="text-xs font-bold text-gray-600">09:00 AM - 10:00 AM</span>
+                            </div>
+                            
+                            <!-- Cancellation buttons and badges -->
+                            <div class="w-full flex justify-start">
+                                <button onclick="openCancelModal()" class="text-[9px] text-red-600 hover:text-red-700 hover:underline font-bold uppercase tracking-wider transition-all flex items-center gap-1">
+                                    <ion-icon name="close-circle-outline" class="text-xs"></ion-icon> Request Cancellation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop View -->
+                <div class="hidden md:flex flex-col flex-1 justify-center items-center bg-gray-50 rounded-2xl border border-gray-200 p-6 text-center group hover:border-brand-yellow transition-colors relative overflow-hidden">
                     <!-- Accent side bar -->
                     <div class="absolute left-0 inset-y-0 w-1.5 bg-gray-200 group-hover:bg-brand-yellow transition-colors"></div>
 
                     <!-- Calendar Date Icon -->
                     <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex flex-col items-center justify-center border border-gray-100 mb-4 z-10">
-                        <span class="text-[10px] font-black text-red-500 uppercase tracking-widest">May</span>
+                        <span class="text-[10px] font-black text-red-500 uppercase tracking-widest leading-none mb-1">May</span>
                         <span class="text-2xl font-black text-fitpad-gray leading-none">13</span>
                     </div>
                     
-                    <h4 class="text-xl font-black text-fitpad-gray uppercase tracking-tight mb-2">Wednesday</h4>
+                    <h4 class="text-xl font-black text-fitpad-gray uppercase tracking-tight mb-2 z-10">Wednesday</h4>
                     
-                    <div class="bg-white border border-gray-200 px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm z-10">
+                    <div class="bg-white border border-gray-200 px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm z-10 mb-4">
                         <ion-icon name="time-outline" class="text-brand-yellow text-lg"></ion-icon>
                         <span class="text-sm font-bold text-gray-600">09:00 AM - 10:00 AM</span>
                     </div>
 
                     <!-- Cancellation request container -->
-                    <div id="cancellation-status-container" class="mt-4 flex justify-center z-10 w-full">
+                    <div id="cancellation-status-container" class="flex justify-center z-10 w-full">
                         <button id="request-cancel-btn" onclick="openCancelModal()" class="text-[10px] text-red-600 hover:text-red-700 hover:underline font-bold uppercase tracking-wider transition-all flex items-center gap-1">
                             <ion-icon name="close-circle-outline" class="text-sm"></ion-icon> Request Cancellation
                         </button>
@@ -221,7 +316,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Reason / Remarks</label>
-                        <textarea id="cancelReason" required placeholder="Describe your reason here..." rows="4" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all resize-none"></textarea>
+                        <textarea id="cancelReason" required placeholder="Describe your reason here..." rows="4" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-semibold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 transition-all resize-none"></textarea>
                     </div>
                 </div>
                 

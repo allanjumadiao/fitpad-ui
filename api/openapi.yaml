@@ -1113,37 +1113,85 @@ paths:
       tags:
         - Trainee Portal
       summary: Trainee Dashboard Stats
+      description: |
+        Returns the full client dashboard payload including assigned coach information,
+        session balance breakdown (base plan + complimentary sessions), and the next
+        upcoming scheduled session.
+
+        **Days Left rules:**
+        - `days_left` counts down only when `client_details.status = active`.
+        - The countdown is **paused** (not decremented) when the status is `freezed`, `pending`, `finished`, or `inactive`. The `is_validity_paused` flag reflects this state.
+
+        **Session Balance formula:**
+        - `total = base + free` (where `free` = complimentary bonus sessions)
+        - `used  = total - remaining`
       responses:
         '200':
-          description: Client metrics.
+          description: Client dashboard payload.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  remaining_sessions:
-                    type: integer
-                    example: 22
-                  total_sessions:
-                    type: integer
-                    example: 24
-                  validation_period:
-                    type: object
-                    properties:
-                      total_days:
-                        type: integer
-                        example: 30
-                      days_remaining:
-                        type: integer
-                        example: 28
-                      start_date:
-                        type: string
-                        format: date
-                        example: "2026-05-13"
-                  next_session:
-                    $ref: '#/components/schemas/TrainingSessionShort'
-                  coach:
-                    $ref: '#/components/schemas/CoachDetailCard'
+                $ref: '#/components/schemas/ClientDashboard'
+        '401':
+          description: Unauthenticated — missing or invalid Bearer token.
+        '403':
+          description: Forbidden — authenticated user is not a client.
+
+  /api/client/schedules/{id}/cancel-request:
+    post:
+      security:
+        - BearerToken: []
+      tags:
+        - Trainee Portal
+      summary: Submit Session Cancellation Request
+      description: |
+        Submits a cancellation request for an upcoming scheduled session.
+
+        **Business rules enforced:**
+        - The session must belong to the authenticated client.
+        - The `scheduled_date` must be in the future.
+        - No existing `pending` cancellation request may exist for the same schedule.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The `client_schedules` primary key ID of the upcoming session.
+          example: 5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+                  maxLength: 1000
+                  description: Client's stated reason for requesting the cancellation.
+                  example: "I have a medical appointment that was moved to this time slot."
+      responses:
+        '204':
+          description: Cancellation request submitted successfully. No response body.
+        '404':
+          description: Session schedule not found or does not belong to the client.
+        '422':
+          description: |
+            Validation or domain rule failure. Possible reasons:
+            - `reason` field is missing or too long.
+            - The session date is in the past.
+            - A pending cancellation request already exists for this session.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Unauthenticated.
+        '403':
+          description: Forbidden — authenticated user is not a client.
 
   /api/client/profile:
     get:
@@ -2459,6 +2507,140 @@ components:
         end_time:
           type: string
           example: "09:00"
+        cancellation_status:
+          type: string
+          nullable: true
+          enum: [pending, approved, rejected, rescheduled]
+          description: Status of any existing cancellation request for this session. Null if none.
+          example: null
+
+    ClientDashboard:
+      type: object
+      description: Full client dashboard payload.
+      properties:
+        coach:
+          type: object
+          description: Assigned coach summary.
+          properties:
+            name:
+              type: string
+              example: "Sarah Adams"
+            initials:
+              type: string
+              description: First letter of first name + first letter of last name.
+              example: "SA"
+            coach_id:
+              type: string
+              description: Unique coach identity badge (e.g. CP-8820).
+              example: "CP-8820"
+        session_balance:
+          $ref: '#/components/schemas/SessionBalance'
+        next_session:
+          $ref: '#/components/schemas/NextSession'
+
+    SessionBalance:
+      type: object
+      description: |
+        Session usage breakdown for the client's current active plan.
+        - `base` = sessions from the chosen session plan.
+        - `free` = complimentary/bonus sessions added on top.
+        - `total` = base + free.
+        - `used` = total - remaining.
+        - `days_left` is null when `is_validity_paused` is true (status is not active).
+      properties:
+        base:
+          type: integer
+          description: Sessions from the selected session plan.
+          example: 12
+        free:
+          type: integer
+          description: Complimentary bonus sessions added on top of the plan.
+          example: 2
+        total:
+          type: integer
+          description: Total sessions available (base + free).
+          example: 14
+        used:
+          type: integer
+          description: Sessions already consumed (total - remaining).
+          example: 4
+        remaining:
+          type: integer
+          description: Sessions still available.
+          example: 10
+        days_left:
+          type: integer
+          nullable: true
+          description: Days remaining until plan validity expires. Null when paused.
+          example: 28
+        validity_ends_at:
+          type: string
+          format: date
+          nullable: true
+          description: The absolute date the plan expires.
+          example: "2026-07-13"
+        is_validity_paused:
+          type: boolean
+          description: True when the client status is not active (freezed, pending, finished, inactive). Countdown is paused.
+          example: false
+
+    NextSession:
+      type: object
+      nullable: true
+      description: The client's next upcoming scheduled session. Null if no future session is scheduled.
+      properties:
+        id:
+          type: integer
+          description: The `client_schedules` primary key (used for cancellation requests).
+          example: 5
+        scheduled_date:
+          type: string
+          format: date
+          example: "2026-05-13"
+        day_of_week:
+          type: string
+          description: Full name of the day of the week.
+          example: "Wednesday"
+        time_slot:
+          type: string
+          description: Human-readable time range of the session.
+          example: "09:00 AM - 10:00 AM"
+        cancellation_status:
+          type: string
+          nullable: true
+          enum: [pending, approved, rejected, rescheduled]
+          description: Status of any existing cancellation request for this session. Null if none.
+          example: null
+
+    SessionCancellationRequest:
+      type: object
+      description: A client's request to cancel an upcoming scheduled session.
+      properties:
+        id:
+          type: integer
+          example: 1
+        client_schedule_id:
+          type: integer
+          description: The schedule being requested for cancellation.
+          example: 5
+        reason:
+          type: string
+          description: Client's stated reason.
+          example: "I have a medical appointment that was moved to this time slot."
+        status:
+          type: string
+          enum: [pending, approved, rejected, rescheduled]
+          description: |
+            Current review status of the cancellation request.
+            - `pending` — awaiting coach/admin review
+            - `approved` — session cancelled
+            - `rejected` — cancellation denied, session stands
+            - `rescheduled` — coach resolved request by moving the session to a new date/time
+          example: "pending"
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-06-13T09:30:00Z"
 
     DailyScheduleRow:
       type: object
@@ -2614,14 +2796,18 @@ components:
       type: object
       required:
         - id
+        - survey_code
         - title
         - description
         - locations
         - questions
         - active
-        - createdAt
+        - created_at
       properties:
         id:
+          type: integer
+          example: 1
+        survey_code:
           type: string
           example: "SRV-9821"
         title:
@@ -2643,7 +2829,15 @@ components:
         active:
           type: boolean
           example: true
-        createdAt:
+        created_by:
+          type: integer
+          nullable: true
+          example: 1
+        updated_by:
+          type: integer
+          nullable: true
+          example: 1
+        created_at:
           type: string
           format: date-time
           example: "2026-06-07T12:00:00Z"
@@ -2677,11 +2871,15 @@ components:
       type: object
       required:
         - id
+        - question_code
         - type
         - title
         - required
       properties:
         id:
+          type: integer
+          example: 1
+        question_code:
           type: string
           example: "q-12345"
         type:
@@ -2699,6 +2897,15 @@ components:
           items:
             type: string
           example: ["Excellent", "Good", "Average", "Poor"]
+          nullable: true
+        created_by:
+          type: integer
+          nullable: true
+          example: 1
+        updated_by:
+          type: integer
+          nullable: true
+          example: 1
 
     SurveyQuestionInput:
       type: object

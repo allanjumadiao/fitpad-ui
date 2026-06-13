@@ -9,10 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #F3F4F6; }
-        .brand-yellow { color: #d8f511; }
-        .bg-brand-yellow { background-color: #d8f511; }
-        .bg-fitpad-gray { background-color: #535353; }
-        .text-fitpad-gray { color: #535353; }
+        .brand-yellow { color: #d6ed17; }
+        .bg-brand-yellow { background-color: #d6ed17; }
+        .bg-fitpad-gray { background-color: #606060; }
+        .text-fitpad-gray { color: #606060; }
         
         /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -62,25 +62,25 @@
             <!-- Search -->
             <div class="relative md:col-span-1">
                 <ion-icon name="search-outline" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></ion-icon>
-                <input type="text" placeholder="Search Coach or Client..." class="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 transition-all">
+                <input type="text" placeholder="Search Coach or Client..." class="w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 transition-all">
             </div>
             
             <!-- Date Filter (From) -->
             <div class="relative">
                 <label class="absolute -top-2 left-3 bg-white px-1 text-[8px] font-bold text-gray-400 uppercase tracking-widest">From Date</label>
-                <input type="date" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 cursor-pointer">
+                <input type="date" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 cursor-pointer">
             </div>
 
             <!-- Date Filter (To) -->
             <div class="relative">
                 <label class="absolute -top-2 left-3 bg-white px-1 text-[8px] font-bold text-gray-400 uppercase tracking-widest">To Date</label>
-                <input type="date" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 cursor-pointer">
+                <input type="date" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 cursor-pointer">
             </div>
             
             <!-- Status Filter -->
             <div class="relative">
                 <label class="absolute -top-2 left-3 bg-white px-1 text-[8px] font-bold text-gray-400 uppercase tracking-widest">Status</label>
-                <select class="w-full pl-3 pr-8 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]/50 cursor-pointer appearance-none">
+                <select class="w-full pl-3 pr-8 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]/50 cursor-pointer appearance-none">
                     <option value="all">All Statuses</option>
                     <option value="pending_approval">Completed (Needs Approval)</option>
                     <option value="approved">Approved</option>
@@ -291,7 +291,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
                             <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Select Client *</label>
-                            <select required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511] appearance-none cursor-pointer">
+                            <select required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17] appearance-none cursor-pointer">
                                 <option value="" disabled selected>Search/Select Client...</option>
                                 <option value="PT-1042">Jane Doe (Assigned: Sarah Adams)</option>
                                 <option value="PT-1045">Mark Smith (Assigned: Marcus Reed)</option>
@@ -299,15 +299,15 @@
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Session Date *</label>
-                            <input type="date" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]">
+                            <input type="date" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Start Time *</label>
-                            <input type="time" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]">
+                            <input type="time" required class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]">
                         </div>
                         <div class="col-span-2">
                             <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Admin Reason / Note *</label>
-                            <input type="text" required placeholder="e.g. System offline yesterday, retroactive entry." class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d8f511]">
+                            <input type="text" required placeholder="e.g. System offline yesterday, retroactive entry." class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl text-sm font-bold text-fitpad-gray outline-none focus:ring-2 focus:ring-[#d6ed17]">
                         </div>
                     </div>
                 </div>
